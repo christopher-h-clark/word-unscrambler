@@ -51,6 +51,9 @@ It's not intrinsic to the methodology, just status reporting and expectation man
 * I was surprised at the quality of the UX examples the AI generated.
 Typography was extremely simple and the most sophisticated background was a gradient, but it looked far better than I expected.
 I was envisioning a left-aligned layout with some sort of image to the right, but went with a centered layout with a gradient because I didn't want to spend extra time generating a background image.
+* The AI model surfaced options for the word list that I hadn't considered.
+I saw a list of 3-letter words on Wiktionary, but they didn't have similar lists for longer words.
+In addition to Wiktionary, it suggested SCOWL, which I'd never heard of before, but it looked like a great choice!
 
 #### Where AI Failed
 
@@ -74,6 +77,10 @@ I suppose some stories could apply to multiple epics, but I've never seen that i
     4. Epic 4: Testing & Quality Assurance (5 stories)
     5. Epic 5: Deployment & Documentation (4 stories)
 ```
+* The implementation readiness assessment couldn't find the PRD, so I had to tell it that it was located in the `planning_artifacts` directory (which is where the earlier process put it!).
+It noted the inconsistency and offered to move it to the `planning-artifacts` directory.
+So I guess the inconsistency was resolved.
+My guess is that BMAD will fix this in the next version or a subsequent version.
 
 ### What would you clean up in the code if you were to ship this project?
 
