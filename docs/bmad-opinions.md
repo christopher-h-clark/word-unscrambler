@@ -62,6 +62,18 @@ It would have been good for the AI to flag the inconsistency and ask if I wanted
 * It put the `prd.md` document in the `planning_artifacts` directory but the `ux-design-directions.html` and `ux-design-specification.md` documents in the `planning-artifacts` directory.
 I assume that the BMAD method will fix this inconsistency in a future update.
 For now, I think it would still find them all even if I moved the PRD into the `planning-artifacs` directory (it found this document, so I explicitly excluded it).
+* It calculated 5 epics with 18 stories, but epics 1–4 have 5 stories each and epic 5 has 4 stories, which looks like 24 stories to me (and ultimately claimed to write 23 stories, but wrote 24!).
+It's somewhat amusing given that computers were initially built to do math accurately.
+I suppose some stories could apply to multiple epics, but I've never seen that in practice.
+```
+    📋 Epic Structure Created
+    5 Epics with 18 Stories:
+    1. Epic 1: Project Foundation & Setup (5 stories)
+    2. Epic 2: Backend API Implementation (5 stories)
+    3. Epic 3: Frontend UI Implementation (5 stories)
+    4. Epic 4: Testing & Quality Assurance (5 stories)
+    5. Epic 5: Deployment & Documentation (4 stories)
+```
 
 ### What would you clean up in the code if you were to ship this project?
 
