@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>word-unscrambler - UX Design Directions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0f0f0f;
+            color: #e8e8e8;
+            padding: 40px 20px;
+        }
+
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+
+        .direction-nav {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .direction-button {
+            padding: 10px 20px;
+            background: #2d2d2d;
+            border: 2px solid transparent;
+            color: #e8e8e8;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 200ms;
+        }
+
+        .direction-button:hover {
+            background: #3a3a3a;
+        }
+
+        .direction-button.active {
+            background: #4a9eff;
+            border-color: #4a9eff;
+            color: #0f0f0f;
+        }
+
+        .directions-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .direction {
+            display: none;
+            margin-bottom: 80px;
+        }
+
+        .direction.active {
+            display: block;
+        }
+
+        .direction-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #4a9eff;
+        }
+
+        .direction-description {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 32px;
+            max-width: 600px;
+        }
+
+        .mockup-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 60px 40px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Direction 1: Classic Centered */
+        .mockup-1 .mockup-container {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #4a9eff;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .input-group {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 24px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a1a;
+            border: 2px solid #3a3a3a;
+            color: #e8e8e8;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: all 200ms;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #20b2aa;
+            box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.2);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-top: 8px;
+            text-align: left;
+        }
+
+        .button {
+            padding: 12px 32px;
+            background: #4a9eff;
+            border: none;
+            color: #0f0f0f;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 200ms;
+            font-family: inherit;
+        }
+
+        .button:hover {
+            background: #6bb6ff;
+            transform: translateY(-2px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 48px;
+            text-align: left;
+        }
+
+        .result-group {
+            margin-bottom: 32px;
+        }
+
+        .result-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #a0a0a0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-words {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #e8e8e8;
+        }
+
+        .result-words-item {
+            display: inline;
+            margin-right: 12px;
+        }
+
+        /* Direction 2: Left-aligned */
+        .mockup-2 .mockup-container {
+            align-items: flex-start;
+            padding-left: 60px;
+        }
+
+        .mockup-2 .input-group {
+            max-width: 400px;
+        }
+
+        /* Direction 3: Compact */
+        .mockup-3 .mockup-container {
+            padding: 40px;
+            min-height: auto;
+        }
+
+        .mockup-3 .title {
+            font-size: 48px;
+        }
+
+        .mockup-3 .subtitle {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .mockup-3 .input-group {
+            max-width: 350px;
+            margin-bottom: 16px;
+        }
+
+        .mockup-3 .input-field,
+        .mockup-3 .button {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        /* Direction 4: Two column results */
+        .mockup-4 .results-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            max-width: none;
+        }
+
+        /* Direction 5: Minimal accents */
+        .mockup-5 .subtitle {
+            color: #e8e8e8;
+        }
+
+        .mockup-5 .button {
+            background: #3a3a3a;
+            color: #4a9eff;
+            border: 2px solid #4a9eff;
+        }
+
+        .mockup-5 .button:hover {
+            background: #4a4a4a;
+        }
+
+        /* Direction 6: Bold button */
+        .mockup-6 .button {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Direction 7: Card-based results */
+        .mockup-7 .result-group {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 4px;
+            border-left: 3px solid #4a9eff;
+            margin-bottom: 16px;
+        }
+
+        /* Direction 8: Gradient hero */
+        .mockup-8 .mockup-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f2c4a 50%, #2d1a1a 100%);
+        }
+
+        .evaluation-guide {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 40px;
+            background: #2d2d2d;
+            border-radius: 8px;
+        }
+
+        .evaluation-guide h2 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: #4a9eff;
+        }
+
+        .evaluation-criteria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .criteria-item {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 4px;
+            border-left: 3px solid #20b2aa;
+        }
+
+        .criteria-item h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #20b2aa;
+        }
+
+        .criteria-item p {
+            font-size: 14px;
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        .no-results {
+            color: #d4775f;
+            font-style: italic;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .mockup-container {
+                padding: 40px 20px;
+            }
+
+            .mockup-4 .results-section {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 40px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>word-unscrambler Design Directions</h1>
+        <p>Explore 8 different visual approaches to the user interface</p>
+        <p style="font-size: 12px; margin-top: 16px;">Click a direction below to preview</p>
+    </div>
+
+    <div class="direction-nav">
+        <button class="direction-button active" onclick="showDirection(1)">1. Classic Centered</button>
+        <button class="direction-button" onclick="showDirection(2)">2. Left-Aligned</button>
+        <button class="direction-button" onclick="showDirection(3)">3. Compact</button>
+        <button class="direction-button" onclick="showDirection(4)">4. Grid Results</button>
+        <button class="direction-button" onclick="showDirection(5)">5. Minimal Accents</button>
+        <button class="direction-button" onclick="showDirection(6)">6. Bold Button</button>
+        <button class="direction-button" onclick="showDirection(7)">7. Card Results</button>
+        <button class="direction-button" onclick="showDirection(8)">8. Gradient Hero</button>
+    </div>
+
+    <div class="directions-container">
+        <!-- Direction 1 -->
+        <div class="direction mockup-1 active">
+            <h2 class="direction-title">Direction 1: Classic Centered</h2>
+            <p class="direction-description">Traditional centered layout with full-width hero section. Clean, balanced, and immediately clear. Hero content dominates; results section appears below.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-group-title">4-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abac</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 2 -->
+        <div class="direction mockup-2">
+            <h2 class="direction-title">Direction 2: Left-Aligned</h2>
+            <p class="direction-description">Left-aligned content against the hero background. Supports right-side imagery or additional space. More asymmetrical, modern feel.</p>
+            <div class="mockup-container">
+                <div class="title">Word<br>Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 3 -->
+        <div class="direction mockup-3">
+            <h2 class="direction-title">Direction 3: Compact</h2>
+            <p class="direction-description">Reduced padding and sizing. Feels more efficient, less spacious. Good for users who want to get in and out quickly.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 4 -->
+        <div class="direction mockup-4">
+            <h2 class="direction-title">Direction 4: Grid Results</h2>
+            <p class="direction-description">Results displayed in a two-column grid. More words visible at once, but requires more horizontal space on desktop.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-group-title">4-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abac</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 5 -->
+        <div class="direction mockup-5">
+            <h2 class="direction-title">Direction 5: Minimal Accents</h2>
+            <p class="direction-description">Reduced color accents. Button uses outline style instead of filled. More understated, even more minimal feel.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 6 -->
+        <div class="direction mockup-6">
+            <h2 class="direction-title">Direction 6: Bold Button</h2>
+            <p class="direction-description">Button spans full width for maximum prominence. Creates strong visual weight and clear call-to-action. Excellent for mobile.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 7 -->
+        <div class="direction mockup-7">
+            <h2 class="direction-title">Direction 7: Card Results</h2>
+            <p class="direction-description">Each word-length section appears in a card with background and left border accent. More structured, visually distinct sections.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-group-title">4-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abac</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 8 -->
+        <div class="direction mockup-8">
+            <h2 class="direction-title">Direction 8: Gradient Hero</h2>
+            <p class="direction-description">Hero section features a subtle multi-color gradient. Adds visual interest while maintaining dark theme. More sophisticated feel.</p>
+            <div class="mockup-container">
+                <div class="title">Word Unscrambler</div>
+                <div class="subtitle">Simple, fast, and easy</div>
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Enter 3-7 letters">
+                    <div class="input-hint">3-7 letters accepted</div>
+                </div>
+                <button class="button">Unscramble!</button>
+                <div class="results-section">
+                    <div class="result-group">
+                        <div class="result-group-title">3-Letter Words</div>
+                        <div class="result-words">
+                            <span class="result-words-item">abc</span>
+                            <span class="result-words-item">bac</span>
+                            <span class="result-words-item">cab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="evaluation-guide">
+        <h2>Evaluation Guide: How to Choose</h2>
+        <div class="evaluation-criteria">
+            <div class="criteria-item">
+                <h3>✅ Layout Intuitiveness</h3>
+                <p>Which information hierarchy matches your priorities? Does the flow feel natural and obvious?</p>
+            </div>
+            <div class="criteria-item">
+                <h3>✅ Interaction Style</h3>
+                <p>Which interaction patterns match your core experience? Do buttons and inputs feel responsive and clear?</p>
+            </div>
+            <div class="criteria-item">
+                <h3>✅ Visual Weight</h3>
+                <p>Which visual density feels right? Does it feel spacious (clean and calm) or efficient (compact)?</p>
+            </div>
+            <div class="criteria-item">
+                <h3>✅ Results Presentation</h3>
+                <p>How should results be displayed? Single column, cards, grid, or flowing text?</p>
+            </div>
+            <div class="criteria-item">
+                <h3>✅ Button Prominence</h3>
+                <p>Should the button be a subtle accent or a bold focal point? How obvious should it be?</p>
+            </div>
+            <div class="criteria-item">
+                <h3>✅ Brand Alignment</h3>
+                <p>Which direction best supports your emotional goals? Does it feel professional, minimal, and calm?</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDirection(num) {
+            // Hide all directions
+            document.querySelectorAll('.direction').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.direction-button').forEach(b => b.classList.remove('active'));
+
+            // Show selected direction
+            document.querySelectorAll('.direction')[num - 1].classList.add('active');
+            document.querySelectorAll('.direction-button')[num - 1].classList.add('active');
+
+            // Scroll to mockup
+            document.querySelector('.mockup-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
