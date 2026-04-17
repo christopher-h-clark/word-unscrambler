@@ -51,6 +51,7 @@ It's not intrinsic to the methodology, just status reporting and expectation man
 * I was surprised at the quality of the UX examples the AI generated.
 Typography was extremely simple and the most sophisticated background was a gradient, but it looked far better than I expected.
 I was envisioning a left-aligned layout with some sort of image to the right, but went with a centered layout with a gradient because I didn't want to spend extra time generating a background image.
+* The implementation readiness analysis discovered the inconsistent placement of the `prd.md` file (see below under "Where AI Failed") and offered to automatically move it to the correct location.
 * The AI model surfaced options for the word list that I hadn't considered.
 I saw a list of 3-letter words on Wiktionary, but they didn't have similar lists for longer words.
 In addition to Wiktionary, it suggested SCOWL, which I'd never heard of before, but it looked like a great choice!
@@ -86,6 +87,14 @@ My guess is that BMAD will fix this in the next version or a subsequent version.
 
 ### What would you do differently if you were to do this again?
 
-This time around, I minimized use of brainstorming and advanced elicitation features because I already had an idea that was well-developed and I wanted to keep it focused and simple.
+* This time around, I minimized use of brainstorming and advanced elicitation features because I already had an idea that was well-developed and I wanted to keep it focused and simple.
+* Another experiment could be to start with an existing code base and see how it handles adding features, fixing defects, etc.
 
-Another experiment could be to start with an existing code base and see how it handles adding features, fixing defects, etc.
+### What would you do the same if you were to do this again?
+
+* I would definitely try to keep the amount of work being done in a single cycle of architecture, planning, and implementation as simple as possible.
+I understand that more complex projects probably require a lot more analysis work up front to define the MVP and align some follow-on work.
+Just like with human-driven processes, it takes a lot of time (and in this case, tokens) to do the planning stages.
+Just like with human-driven processes, it makes sense to defer the analysis and definition of anything not pertaining to MVP or a current effort (possibly covering multiple sprints) until it's time to implement that portion, because the risk of the work being invalidated or becoming irrelevant is moderate and it doesn't contribute to the immediate goal.
+Just like with human-driven processes, I think we want to do enough analysis and planning to avoid painting ourselves into a corner, but place our primary focus on the immediate goal and address the future in the future.
+I think I need to do a brownfield BMAD experiment to clarify my thoughts on this.
