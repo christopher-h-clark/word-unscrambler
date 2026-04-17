@@ -45,6 +45,9 @@ It seemed to forget things I told it previously, so it either failed to write it
 * I changed my mind about the word length, switching from 3-10 letters to 3-7 letters, but the API specification wasn't updated to reflect that.
 It would have been good for the AI to flag the inconsistency and ask if I wanted to stick with 3-10 letters or update the existing documents to indicate 3-7 letters.
 
+* It put the `prd.md` document in the `planning_artifacts` directory but the `ux-design-directions.html` and `ux-design-specification.md` documents in the `planning-artifacts` directory.
+I assume that the BMAD method will fix this inconsistency in a future update.
+
 ### What would you clean up in the code if you were to ship this project?
 
 ### What would you do differently if you were to do this again?
