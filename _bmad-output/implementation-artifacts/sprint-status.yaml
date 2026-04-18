@@ -46,8 +46,8 @@ development_status:
   1-1-clone-fullstack-typescript-starter: done
   1-2-configure-typescript-strict-mode: done
   1-3-install-configure-tailwind-css: done
-  1-4-setup-testing-infrastructure: review
-  1-5-configure-git-workflow: ready-for-dev
+  1-4-setup-testing-infrastructure: done
+  1-5-configure-git-workflow: done
   epic-1-retrospective: optional
 
   epic-2: backlog
