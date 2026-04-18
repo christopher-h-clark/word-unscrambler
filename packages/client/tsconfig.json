@@ -5,7 +5,11 @@
     "jsx": "react-jsx",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "types": [],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.tsx"]

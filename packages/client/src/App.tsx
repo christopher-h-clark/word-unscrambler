@@ -1,34 +1,20 @@
-import { Box, CssBaseline, Toolbar } from '@mui/material';
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router';
-import { Header } from './components/Header';
-import { Home } from './components/Home';
-import { LazyLoadingExample } from './components/LazyLoadingExample';
-import { RouterExample } from './components/RouterExample';
-import { SideMenu } from './components/SideMenu';
-import { StyledComponentExample } from './components/StyledComponentExample';
-import { Usage } from './components/Usage';
-import { UsersList } from './components/UsersList';
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <Header />
-        <SideMenu />
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <Toolbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/usage" element={<Usage />} />
-            <Route path="/fetch-example" element={<UsersList />} />
-            <Route path="/lazy-example" element={<LazyLoadingExample />} />
-            <Route path="/styled-example" element={<StyledComponentExample />} />
-            <Route path="/router-example/:slug" element={<RouterExample />} />
-          </Routes>
-        </Box>
-      </Box>
-    </BrowserRouter>
+    <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-md space-y-6">
+        <h1 className="text-3xl font-bold text-text-primary text-center">Word Unscrambler</h1>
+        <p className="text-muted-foreground text-center text-sm">
+          Enter your letters to find all possible words
+        </p>
+        <div className="space-y-4">
+          <Input placeholder="Enter letters (e.g. a b c d e)" />
+          <Button className="w-full">Find Words</Button>
+        </div>
+      </div>
+    </div>
   );
 };
