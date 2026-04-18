@@ -8,7 +8,7 @@ inputDocuments:
   - project-context.md
 epicsApproved: true
 epicCount: 5
-storyCount: 23
+storyCount: 24
 frCoverage: 14/14
 allStoriesApproved: true
 validationStatus: complete
@@ -26,10 +26,10 @@ This document provides the complete epic and story breakdown for word-unscramble
 
 ### Functional Requirements
 
-FR1: Accept user input for 3-7 character letter combinations (a-z, case-insensitive, plus ? wildcard)
+FR1: Accept user input for 3-10 character letter combinations (a-z, case-insensitive, plus ? wildcard)
 FR2: Validate input and reject non-alphabetic characters (except ?)
 FR3: Perform dictionary-based word lookup returning all valid matches that can be formed from input letters
-FR4: Group results by word length (3-letter, 4-letter, 5-letter, 6-letter, 7-letter)
+FR4: Group results by word length (3-letter, 4-letter, 5-letter, 6-letter, 7-letter, 8-letter, 9-letter, 10-letter)
 FR5: Sort results alphabetically within each length group
 FR6: Support wildcard character (?) matching any single letter
 FR7: Display results showing all valid word combinations user can make
@@ -38,7 +38,7 @@ FR9: Auto-focus input field on page load
 FR10: Auto-clear input field when user clicks to start new lookup
 FR11: Support both Enter key and button click for submission
 FR12: Display results within 10 seconds of user submission
-FR13: Return words only 3-7 characters in length (no shorter, no longer)
+FR13: Return words only 3-10 characters in length (no shorter, no longer)
 FR14: Prevent duplicate words in results
 
 ### Non-Functional Requirements
@@ -82,15 +82,15 @@ AR19: Test file organization: unit tests co-located with source, integration tes
 AR20: CORS configuration per environment (development: localhost:3000, production: env var)
 AR21: Implement ErrorBoundary component for React error handling
 AR22: API validation: reject if < 3 or > 10 characters, return 400 status with clear message
-AR23: Dictionary words must be 3-7 characters (filter at load time or lookup time)
+AR23: Dictionary words must be 3-10 characters (filter at load time or lookup time)
 AR24: Results sorted alphabetically (single sort pass, no user-selectable sorting)
 AR25: Test strategy: 60% unit tests, 30% integration tests, 10% E2E tests; minimum 70% coverage
 
 ### UX Design Requirements
 
 UX-DR1: Input field auto-focuses on page load, ready for immediate typing
-UX-DR2: Input placeholder text: "Enter 3-7 letters"
-UX-DR3: Validation hint displayed below input: "3-7 letters accepted"
+UX-DR2: Input placeholder text: "Enter 3-10 letters"
+UX-DR3: Validation hint displayed below input: "3-10 letters accepted"
 UX-DR4: Submit button text: "Unscramble!" with obvious visual prominence
 UX-DR5: Submit via Enter key AND button click (both equally responsive)
 UX-DR6: Results grouped by word length with clear section headers (e.g., "3-Letter Words")
@@ -151,7 +151,7 @@ PR25: Secrets scanning in CI/CD (fail merge if hardcoded credentials detected)
 
 ### Functional Requirements Mapping
 
-**FR1:** Accept user input for 3-7 character combinations → **Epic 3** (SearchForm component)
+**FR1:** Accept user input for 3-10 character combinations → **Epic 3** (SearchForm component)
 **FR2:** Validate input and reject non-alphabetic characters → **Epic 2** (Input validation endpoint)
 **FR3:** Perform dictionary-based word lookup → **Epic 2** (DictionaryService)
 **FR4:** Group results by word length → **Epic 3** (ResultsDisplay component)
@@ -163,7 +163,7 @@ PR25: Secrets scanning in CI/CD (fail merge if hardcoded credentials detected)
 **FR10:** Auto-clear input field on new lookup → **Epic 3** (SearchForm component)
 **FR11:** Support Enter key and button submission → **Epic 3** (SearchForm component)
 **FR12:** Display results within 10 seconds → **Epic 2** (API performance)
-**FR13:** Return only 3-7 character words → **Epic 2** (DictionaryService filtering)
+**FR13:** Return only 3-10 character words → **Epic 2** (DictionaryService filtering)
 **FR14:** Prevent duplicate words in results → **Epic 2** (DictionaryService deduplication)
 
 **Coverage Summary:**
@@ -375,7 +375,7 @@ So that the API can quickly return valid words matching user input.
 
 **Acceptance Criteria:**
 
-**Given** I have packages/server/data/words.txt containing newline-delimited 3-7 letter English words
+**Given** I have packages/server/data/words.txt containing newline-delimited 3-10 letter English words
 **When** the server starts, it initializes DictionaryService
 **Then** DictionaryService loads the entire word list into memory (Set or Trie)
 
@@ -391,7 +391,7 @@ So that the API can quickly return valid words matching user input.
 
 **And** results contain no duplicates
 
-**And** results contain only 3-7 character words
+**And** results contain only 3-10 character words
 
 **And** lookup completes in < 1 second for typical inputs
 
@@ -492,13 +492,13 @@ So that users can enter letters and submit searches with the correct interaction
 **When** the component renders
 **Then** the input field auto-focuses on first load (autoFocus attribute)
 
-**And** the input has placeholder text: "Enter 3-7 letters"
+**And** the input has placeholder text: "Enter 3-10 letters"
 
-**And** hint text below the input reads: "3-7 letters accepted"
+**And** hint text below the input reads: "3-10 letters accepted"
 
 **And** the submit button is labeled "Unscramble!"
 
-**And** the button is disabled (grayed out) unless input contains 3-7 characters
+**And** the button is disabled (grayed out) unless input contains 3-10 characters
 
 **And** pressing Enter key submits the form
 
@@ -693,7 +693,7 @@ So that API behavior is verified end-to-end (validation, dictionary lookup, erro
 - Wildcard input (h?llo) returns 200 with matching words
 - Empty results (xyz) return 200 with empty array (not error)
 - Sorting: words returned are alphabetically sorted
-- Filtering: only 3-7 letter words returned
+- Filtering: only 3-10 letter words returned
 
 **And** tests use Supertest to make actual HTTP requests
 

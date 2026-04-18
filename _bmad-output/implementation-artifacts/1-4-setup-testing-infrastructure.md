@@ -2,7 +2,7 @@
 storyId: 1.4
 storyKey: 1-4-setup-testing-infrastructure
 epic: 1
-status: ready-for-dev
+status: review
 title: Set Up Testing Infrastructure (Vitest, Supertest, Playwright)
 createdDate: 2026-04-17
 lastUpdated: 2026-04-17
@@ -487,46 +487,59 @@ This story aligns with:
 
 ## Dev Agent Record
 
-_Filled in by implementing developer_
-
 ### Tasks Completed
 
-- [ ] Install Vitest + Testing Library in packages/client
-- [ ] Create vitest.config.ts in packages/client
-- [ ] Install Vitest + Supertest in packages/server
-- [ ] Create vitest.config.ts in packages/server
-- [ ] Install Playwright at project root
-- [ ] Run npx playwright install to download browsers
-- [ ] Create playwright.config.ts at root
-- [ ] Create e2e/ directory at root
-- [ ] Add test scripts to all package.json files (root + workspaces)
-- [ ] Verify npm run test works from root and workspaces
-- [ ] Verify npm run test:coverage generates reports
-- [ ] Verify npm run test:e2e works (shows 0 tests found is OK)
-- [ ] Remove Jest if present from starter
+- [x] Install Vitest + Testing Library in packages/client
+- [x] Create vitest.config.ts in packages/client
+- [x] Install Vitest + Supertest in packages/server
+- [x] Create vitest.config.ts in packages/server
+- [x] Install Playwright at project root
+- [x] Run npx playwright install to download browsers
+- [x] Create playwright.config.ts at root
+- [x] Create e2e/ directory at root
+- [x] Add test scripts to all package.json files (root + workspaces)
+- [x] Verify npm run test works from root and workspaces
+- [x] Verify npm run test:coverage generates reports
+- [x] Verify npm run test:e2e works (shows 0 tests found is OK)
+- [x] Remove Jest if present from starter
 
 ### Code Changes
 
-_List files created/modified:_
+- packages/client/package.json: Added vitest@4.1.4, @vitest/ui, @vitest/coverage-v8, @testing-library/react@16, @testing-library/user-event@14, jsdom; added test + test:coverage scripts with --passWithNoTests
+- packages/client/vitest.config.ts: Created with jsdom env, v8 coverage, 70% thresholds, @vitejs/plugin-react
+- packages/server/package.json: Added vitest@4.1.4, @vitest/coverage-v8, supertest@7, @types/supertest; added test + test:coverage scripts with --passWithNoTests
+- packages/server/vitest.config.ts: Created with node env, v8 coverage, 70% thresholds
+- package.json (root): Added @playwright/test@1.59.1; added test:coverage, test:e2e, test:e2e:ui, test:all scripts
+- playwright.config.ts: Created with 3 browsers (chromium/firefox/webkit), 30s timeout, retries:2 in CI
+- e2e/: Created directory for future E2E tests
 
 ### Tests Created
 
-_N/A for infrastructure story (test files created in later stories)_
+N/A — infrastructure story; test files added in later stories.
 
 ### Learnings & Notes
 
-_To be filled by developer after implementation_
+- npm install requires --legacy-peer-deps due to @eslint/js@10 peer dep conflict with eslint@9 in root
+- Vitest exits with code 1 when no tests found; used --passWithNoTests flag so root npm run test succeeds at this stage
+- Playwright browsers downloaded to ~/.ms-playwright cache (Chromium 147, Firefox 148, WebKit 2251)
+- WebKit on mac14-arm64 is frozen — note for CI configuration in Story 1.5
 
 ---
 
 ## File List
 
-_Updated after implementation_
+- packages/client/vitest.config.ts (created)
+- packages/server/vitest.config.ts (created)
+- playwright.config.ts (created)
+- e2e/.gitkeep (created)
+- packages/client/package.json (modified)
+- packages/server/package.json (modified)
+- package.json (modified)
+- packages/client/src/__tests__/components/ (created)
+- packages/client/src/__tests__/hooks/ (created)
+- packages/server/src/__tests__/routes/ (created)
+- packages/server/src/__tests__/services/ (created)
 
-- ✅ packages/client/vitest.config.ts
-- ✅ packages/server/vitest.config.ts
-- ✅ playwright.config.ts (root)
-- ✅ e2e/ (directory)
-- ✅ packages/client/package.json (updated: vitest, testing-library)
-- ✅ packages/server/package.json (updated: vitest, supertest)
-- ✅ package.json (updated: test scripts, playwright)
+## Change Log
+
+- 2026-04-17: Implemented story 1-4 — set up complete testing infrastructure (Vitest, Supertest, Playwright)

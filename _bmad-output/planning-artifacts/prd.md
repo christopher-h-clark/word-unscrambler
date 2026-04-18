@@ -83,16 +83,20 @@ The tool reliably returns accurate results from the word dictionary.
 
 **Measurable outcomes:**
 - Returns all valid words that can be formed from input letters within 10 seconds
-- Supports letter combinations from 3 to 7 letters
+- Supports letter combinations from 3 to 10 letters
 - 99% uptime acceptable (downtime is not critical)
 - Zero false positives (only returns words in the dictionary)
+
+### Dictionary Source
+
+**SCOWL (Spell Checker Oriented Word Lists)** is used for the word dictionary. SCOWL provides comprehensive, well-maintained English word lists across multiple sizes. The project uses the SCOWL 2024.11.24 release with the standard English word list, filtered to include only words with 3–10 characters.
 
 ## Product Scope
 
 ### MVP - Minimum Viable Product (3-day timeline)
 
 **Core functionality only:**
-- Web interface: Simple input field for letters (3-7 letter maximum)
+- Web interface: Simple input field for letters (3-10 letter maximum)
 - Letter validation: Accept only a-z and ? (wildcard)
 - Word lookup: Query dictionary, return all valid words
 - Display results: Show matching words in sortable list (alphabetical)
