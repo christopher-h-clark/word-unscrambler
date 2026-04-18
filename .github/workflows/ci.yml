@@ -46,8 +46,18 @@ jobs:
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npm run build
+      - name: Debug build output
+        run: |
+          echo "Checking for dist directories..."
+          find . -type d -name "dist" 2>/dev/null | head -20
+          echo "Contents of packages/client/dist (if exists):"
+          ls -la packages/client/dist 2>/dev/null || echo "Directory not found"
       - name: Report bundle size
         run: |
+          if [ ! -d "packages/client/dist" ]; then
+            echo "WARNING: packages/client/dist does not exist"
+            exit 1
+          fi
           SIZE=$(find packages/client/dist/assets -name "*.js" -type f -exec du -sb {} \; 2>/dev/null | awk '{sum += $1} END {print sum}')
           if [ -n "$SIZE" ] && [ "$SIZE" -gt 0 ]; then
             echo "Total JS bundle size: ${SIZE} bytes"
@@ -57,7 +67,7 @@ jobs:
             fi
             echo "Bundle size OK (${SIZE} bytes < 100KB)"
           else
-            echo "No JS bundle files found to check"
+            echo "No JS bundle files found in assets/"
           fi
 
   test:

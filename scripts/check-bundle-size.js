@@ -4,19 +4,40 @@ const path = require('path');
 const zlib = require('zlib');
 
 const BUNDLE_LIMIT_KB = 100;
-const bundlePath = path.join(__dirname, '../packages/client/dist/index.js');
+const distPath = path.join(__dirname, '../packages/client/dist');
+const assetsPath = path.join(distPath, 'assets');
 
-if (!fs.existsSync(bundlePath)) {
-  console.error('❌ Bundle file not found at', bundlePath);
+if (!fs.existsSync(distPath)) {
+  console.error('❌ dist/ directory not found at', distPath);
   process.exit(1);
 }
 
-const bundleBuffer = fs.readFileSync(bundlePath);
-const gzippedSize = zlib.gzipSync(bundleBuffer).length / 1024;
+if (!fs.existsSync(assetsPath)) {
+  console.error('❌ assets/ directory not found at', assetsPath);
+  process.exit(1);
+}
 
-console.log(`📦 Bundle size: ${gzippedSize.toFixed(2)} KB (gzipped)`);
+// Find all .js files in assets
+const jsFiles = fs.readdirSync(assetsPath).filter(file => file.endsWith('.js'));
 
-if (gzippedSize > BUNDLE_LIMIT_KB) {
+if (jsFiles.length === 0) {
+  console.error('❌ No .js bundle files found in', assetsPath);
+  process.exit(1);
+}
+
+// Calculate total size of all JS bundles
+let totalSize = 0;
+jsFiles.forEach(file => {
+  const filePath = path.join(assetsPath, file);
+  const bundleBuffer = fs.readFileSync(filePath);
+  const gzippedSize = zlib.gzipSync(bundleBuffer).length / 1024;
+  totalSize += gzippedSize;
+  console.log(`  ${file}: ${gzippedSize.toFixed(2)} KB (gzipped)`);
+});
+
+console.log(`📦 Total bundle size: ${totalSize.toFixed(2)} KB (gzipped)`);
+
+if (totalSize > BUNDLE_LIMIT_KB) {
   console.error(`❌ Bundle exceeds limit of ${BUNDLE_LIMIT_KB}KB`);
   process.exit(1);
 } else {
