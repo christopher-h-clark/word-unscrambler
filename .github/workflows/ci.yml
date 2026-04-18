@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'feature/**', 'fix/**', 'refactor/**', 'test/**', 'docs/**', 'chore/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run type-check
+
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run lint
+      - run: npm run format:check
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run build
+      - name: Report bundle size
+        run: |
+          SIZE=$(find packages/client/dist/assets -name "*.js" -type f -exec du -sb {} \; 2>/dev/null | awk '{sum += $1} END {print sum}')
+          if [ -n "$SIZE" ] && [ "$SIZE" -gt 0 ]; then
+            echo "Total JS bundle size: ${SIZE} bytes"
+            if [ "$SIZE" -gt 102400 ]; then
+              echo "ERROR: Bundle exceeds 100KB"
+              exit 1
+            fi
+            echo "Bundle size OK (${SIZE} bytes < 100KB)"
+          else
+            echo "No JS bundle files found to check"
+          fi
+
+  test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run test:run
+      - run: npm run test:coverage
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm audit --audit-level=moderate
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npx playwright install --with-deps
+      - run: npm run test:e2e
+
+  merge-check:
+    name: All Checks Passed
+    needs: [type-check, lint, build, test, security, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All required checks passed!"
