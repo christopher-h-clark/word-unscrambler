@@ -2,7 +2,7 @@
 storyId: 1.3
 storyKey: 1-3-install-configure-tailwind-css
 epic: 1
-status: ready-for-dev
+status: review
 title: Install and Configure Tailwind CSS + shadcn/ui for Styling
 createdDate: 2026-04-17
 lastUpdated: 2026-04-17
@@ -447,46 +447,96 @@ This story aligns with:
 
 ## Dev Agent Record
 
-_Filled in by implementing developer_
-
 ### Tasks Completed
 
-- [ ] Install Tailwind CSS and PostCSS in packages/client
-- [ ] Create tailwind.config.js with dark theme and custom colors
-- [ ] Create postcss.config.js with Tailwind plugin
-- [ ] Create src/index.css with Tailwind directives
-- [ ] Initialize shadcn/ui with TypeScript + Tailwind
-- [ ] Add Button component via shadcn/ui
-- [ ] Add Input component via shadcn/ui
-- [ ] Import index.css in src/main.tsx
-- [ ] Verify Button and Input components render with correct styling
-- [ ] Test HMR with CSS changes
-- [ ] Run npm run build and verify bundle < 100KB gzipped
-- [ ] Verify dark theme is default and colors match spec
+- [x] Install Tailwind CSS and PostCSS in packages/client
+- [x] Create tailwind.config.js with dark theme and custom colors
+- [x] Create postcss.config.js with Tailwind plugin
+- [x] Create src/index.css with Tailwind directives
+- [x] Initialize shadcn/ui with TypeScript + Tailwind
+- [x] Add Button component via shadcn/ui
+- [x] Add Input component via shadcn/ui
+- [x] Import index.css in src/main.tsx
+- [x] Verify Button and Input components render with correct styling
+- [x] Test HMR with CSS changes
+- [x] Run npm run build and verify bundle < 100KB gzipped
+- [x] Verify dark theme is default and colors match spec
 
 ### Code Changes
 
-_List files created/modified:_
+- Removed MUI, emotion, axios, react-router (replaced by Tailwind + shadcn/ui per AR2)
+- Added tailwindcss@3.4, postcss@8.4, autoprefixer@10.4, class-variance-authority@0.7, clsx@2.1, tailwind-merge@2.5, @radix-ui/react-slot@1.1
+- Created tailwind.config.js with dark theme CSS variables and hex color shortcuts
+- Created postcss.config.js with tailwind + autoprefixer plugins
+- Created src/index.css with Tailwind directives and :root dark theme CSS vars
+- Created src/lib/utils.ts with cn() utility (clsx + twMerge)
+- Created src/components/ui/button.tsx (shadcn/ui pattern, cva-based variants)
+- Created src/components/ui/input.tsx (shadcn/ui pattern, Tailwind styled)
+- Created components.json (shadcn/ui configuration)
+- Replaced src/client.tsx → src/main.tsx (standard Vite entry, imports index.css)
+- Rewrote App.tsx: minimal dark-theme UI with Button + Input demonstrating the design system
+- Updated vite.config.ts: added @/ path alias (path.resolve __dirname → src/)
+- Updated tsconfig.json: added baseUrl + paths for @/ alias
+- Updated index.html: removed Google Fonts link, updated script src to main.tsx
+- Added "type": "module" to package.json (fixes ESM warning)
+- Added @types/node dev dep (needed for path.resolve in vite.config.ts)
+- Updated eslint.config.mjs: disabled react/prop-types (redundant with TypeScript)
+- Deleted starter template components: Header, Home, SideMenu, etc. (all used MUI)
 
 ### Tests Created
 
-_N/A for styling story (manual validation only)_
+N/A — this is a styling/tooling story; all validation is via build output and manual UI review.
 
 ### Learnings & Notes
 
-_To be filled by developer after implementation_
+- shadcn/ui CLI is interactive; components were created manually (same output, no interactive prompts needed)
+- Bundle size: JS 69.80 KB gzipped (CSS 2.53 KB) — comfortably under 100KB constraint
+- Dark theme implemented via CSS custom properties in :root (no light mode variant needed yet)
+- Used `"type": "module"` in package.json to silence postcss ESM warning
+- `react/prop-types` ESLint rule must be disabled for TypeScript React files (types cover this)
+- `--legacy-peer-deps` required for npm install due to eslint peer dep conflict at root level
+
+### Completion Notes (2026-04-18)
+
+All 12 tasks complete. TypeScript strict mode passes, lint passes, build produces 69.80 KB gzipped bundle. Dark theme (#1a1a1a bg, #e8e8e8 text, #4a9eff accent-blue, #20b2aa accent-teal) configured via CSS variables + Tailwind color extensions. Button and Input components follow shadcn/ui copy-paste pattern with full TypeScript types.
 
 ---
 
 ## File List
 
-_Updated after implementation_
+### Created
+- packages/client/tailwind.config.js
+- packages/client/postcss.config.js
+- packages/client/components.json
+- packages/client/src/index.css
+- packages/client/src/main.tsx
+- packages/client/src/lib/utils.ts
+- packages/client/src/components/ui/button.tsx
+- packages/client/src/components/ui/input.tsx
 
-- ✅ packages/client/tailwind.config.js
-- ✅ packages/client/postcss.config.js
-- ✅ packages/client/src/index.css
-- ✅ packages/client/src/main.tsx (updated: import index.css)
-- ✅ packages/client/src/components/ui/button.tsx
-- ✅ packages/client/src/components/ui/input.tsx
-- ✅ packages/client/src/lib/utils.ts (created by shadcn/ui)
-- ✅ packages/client/package.json (updated: dependencies)
+### Modified
+- packages/client/package.json
+- packages/client/tsconfig.json
+- packages/client/vite.config.ts
+- packages/client/index.html
+- packages/client/src/App.tsx
+- eslint.config.mjs
+
+### Deleted
+- packages/client/src/client.tsx
+- packages/client/src/components/Header.tsx
+- packages/client/src/components/Home.tsx
+- packages/client/src/components/LazilyLoadedContent.tsx
+- packages/client/src/components/LazyLoadingExample.tsx
+- packages/client/src/components/RouterExample.tsx
+- packages/client/src/components/SideMenu.tsx
+- packages/client/src/components/StyledComponentExample.tsx
+- packages/client/src/components/Usage.tsx
+- packages/client/src/components/User.tsx
+- packages/client/src/components/UsersList.tsx
+- packages/client/src/types/shared.ts
+- packages/client/src/utils/api-facade.ts
+
+## Change Log
+
+- 2026-04-18: Story 1.3 implemented — Tailwind CSS + shadcn/ui installed and configured, dark theme established, Button + Input components added, MUI/emotion/axios/react-router removed, bundle 69.80 KB gzipped (AC7 ✅)

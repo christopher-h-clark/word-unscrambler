@@ -97,6 +97,8 @@ export default defineConfig(
       ...reactHooks.configs.recommended.rules,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+      // TypeScript provides type safety; runtime PropTypes are redundant
+      'react/prop-types': 'off',
     },
     settings: {
       react: {
