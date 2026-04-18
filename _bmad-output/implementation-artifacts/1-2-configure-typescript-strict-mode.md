@@ -2,10 +2,10 @@
 storyId: 1.2
 storyKey: 1-2-configure-typescript-strict-mode
 epic: 1
-status: ready-for-dev
+status: review
 title: Configure TypeScript Strict Mode and Project Conventions
 createdDate: 2026-04-17
-lastUpdated: 2026-04-17
+lastUpdated: 2026-04-18
 devAgentRecord: []
 fileList: []
 ---
@@ -453,42 +453,71 @@ npm run format     # Prettier formats last (wins conflicts)
 
 ## Dev Agent Record
 
-_Filled in by implementing developer_
-
 ### Tasks Completed
 
-- [ ] Create `tsconfig.base.json` at project root
-- [ ] Update `packages/client/tsconfig.json` with strict mode
-- [ ] Update `packages/server/tsconfig.json` with strict mode
-- [ ] Create `.eslintrc.json` with TypeScript rules
-- [ ] Create `.prettierrc.json` with formatting rules
-- [ ] Add lint/format scripts to root `package.json`
-- [ ] Run `npm run type-check` and verify zero errors
-- [ ] Run `npm run lint` and verify passes
-- [ ] Run `npm run format` and verify auto-formats correctly
-- [ ] Test strict mode catches implicit any types
+- [x] Create `tsconfig.base.json` at project root
+- [x] Update `packages/client/tsconfig.json` with strict mode
+- [x] Update `packages/server/tsconfig.json` with strict mode
+- [x] Create `.eslintrc.json` with TypeScript rules
+- [x] Create `.prettierrc.json` with formatting rules
+- [x] Add lint/format scripts to root `package.json`
+- [x] Run `npm run type-check` and verify zero errors
+- [x] Run `npm run lint` and verify passes
+- [x] Run `npm run format` and verify auto-formats correctly
+- [x] Test strict mode catches implicit any types
 
 ### Code Changes
 
-_List files created/modified:_
+- `tsconfig.base.json` — added `forceConsistentCasingInFileNames: true`
+- `packages/client/tsconfig.json` — added `DOM.Iterable` to lib, updated include/exclude per story spec
+- `packages/server/tsconfig.json` — added `ES2022.Error` to lib (enables `Error({ cause })` for Node 18+)
+- `eslint.config.mjs` — upgraded to strict rules: `no-explicit-any: error`, `no-unused-vars: error`, added `explicit-function-return-type`, `explicit-module-boundary-types`, `naming-convention`; installed ESLint 9 + plugins
+- `.prettierrc.json` — added `useTabs: false`
+- `package.json` — added `lint:fix` script; ESLint packages added to devDependencies
+- `packages/client/src/App.tsx` — added `React.FC` type to App component
+- `packages/client/src/components/SideMenu.tsx` — replaced `ReactElement<any>` with `ReactElement`, added return type to `ListItemLink`
+- `packages/client/src/components/LazyLoadingExample.tsx` — added `React.FC` to `Spinner`
+- `packages/client/src/components/UsersList.tsx` — added `Promise<void>` return type to `fetchUsers`
+- `packages/client/src/utils/api-facade.ts` — added `Promise<IUserDTO[]>` return type to `loadUsersAPI`
+- `packages/server/src/app.ts` — added `{ cause: error }` to thrown Error (satisfies `preserve-caught-error` rule)
+- `packages/client/src/types/shared.ts` — prettier formatting
+- `packages/server/src/types/shared.ts` — prettier formatting
+- `packages/server/src/config.ts` — prettier formatting
 
 ### Tests Created
 
-_N/A for configuration story (manual validation only)_
+N/A — configuration story; validated via `npm run type-check`, `npm run lint`, `npm run format:check`.
 
-### Learnings & Notes
+### Completion Notes
 
-_To be filled by developer after implementation_
+All ACs satisfied:
+- AC1/AC2: strict mode enforced in both workspaces via tsconfig.base.json (strict: true inherited)
+- AC3: tsconfig.base.json has all required compiler options including forceConsistentCasingInFileNames
+- AC4: ESLint configured with TypeScript rules (eslint.config.mjs updated — flat config format used instead of .eslintrc.json per ESLint 9 requirement)
+- AC5: naming-convention rule enforces camelCase/PascalCase/UPPER_CASE
+- AC6: .prettierrc.json has all required settings
+- AC7: noImplicitAny: true via strict mode; no-explicit-any: error in ESLint
+- AC8/AC9: explicit-module-boundary-types and explicit-function-return-type rules enforce typed React components and function parameters
+- AC10: npm run type-check ✅ zero errors; npm run lint ✅ zero errors; npm run format ✅ clean
+
+Decision: Used `eslint.config.mjs` (flat config) instead of `.eslintrc.json` since ESLint 9 requires flat config format. The story spec predates ESLint 9 adoption.
 
 ---
 
 ## File List
 
-_Updated after implementation_
-
-- ✅ Root tsconfig.base.json
-- ✅ Root .eslintrc.json
-- ✅ Root .prettierrc.json
-- ✅ packages/client/tsconfig.json (updated)
-- ✅ packages/server/tsconfig.json (updated)
-- ✅ Root package.json (scripts added)
+- `tsconfig.base.json`
+- `.prettierrc.json`
+- `eslint.config.mjs`
+- `package.json`
+- `packages/client/tsconfig.json`
+- `packages/server/tsconfig.json`
+- `packages/client/src/App.tsx`
+- `packages/client/src/components/SideMenu.tsx`
+- `packages/client/src/components/LazyLoadingExample.tsx`
+- `packages/client/src/components/UsersList.tsx`
+- `packages/client/src/utils/api-facade.ts`
+- `packages/server/src/app.ts`
+- `packages/client/src/types/shared.ts`
+- `packages/server/src/types/shared.ts`
+- `packages/server/src/config.ts`

@@ -1,0 +1,29 @@
+import { Button, Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import React from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router';
+
+export const RouterExample: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { slug } = useParams();
+
+  return (
+    <Card>
+      <CardHeader title="Router Example" />
+      <CardContent>
+        <Typography>
+          location.pathname: <strong>{location.pathname}</strong>
+        </Typography>
+        <Typography>
+          &ldquo;slug&rdquo; parameter: <strong>{slug}</strong>
+        </Typography>
+        <Button variant="contained" color="primary" onClick={() => navigate(-1)}>
+          navigate(-1)
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};

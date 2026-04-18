@@ -1,0 +1,43 @@
+{
+  "name": "word-unscrambler",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A word unscrambler app built with React, TypeScript, and Express",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev -w packages/client",
+    "dev:server": "npm run dev -w packages/server",
+    "build": "npm run build -w packages/server && npm run build -w packages/client",
+    "test": "npm run test -w packages/client && npm run test -w packages/server",
+    "lint": "npm run lint -w packages/client && npm run lint -w packages/server",
+    "lint:fix": "npm run lint -w packages/client -- --fix && npm run lint -w packages/server -- --fix",
+    "type-check": "npm run type-check -w packages/client && npm run type-check -w packages/server",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{ts,tsx,json,md}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.5.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.58.2"
+  },
+  "author": "Chris Clark",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christopher-h-clark/word-unscrambler.git"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["ES2020", "ES2022.Error"],
+    "types": ["node"],
+    "noEmit": false,
+    "isolatedModules": false,
+    "incremental": true,
+    "declaration": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.test.ts", "dist"]
+}
