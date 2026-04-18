@@ -16,6 +16,6 @@ if (IS_DEV) {
 }
 
 const SERVER_PORT = parseInt(process.env.PORT || '3000', 10);
-const CORS_ORIGIN = (process.env.CORS_ORIGIN?.trim() || 'http://localhost:5173').trim();
+const CORS_ORIGIN = process.env.CORS_ORIGIN?.trim() || 'http://localhost:5173';
 
 export { CORS_ORIGIN, IS_DEV, SERVER_PORT };
