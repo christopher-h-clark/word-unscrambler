@@ -12,7 +12,7 @@ export function apiRouter(): Router {
   });
 
   router.get('/api/user/:userId', (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.params.userId as string;
     const user = getUserById(userId);
     if (!user) {
       res.status(404).send(`User ${userId} not found`);
