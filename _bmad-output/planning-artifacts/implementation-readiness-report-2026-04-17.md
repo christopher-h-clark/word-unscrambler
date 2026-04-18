@@ -32,7 +32,7 @@ All planning documents consolidated in `_bmad-output/planning-artifacts/`:
 
 ### Functional Requirements
 
-FR1: Web interface must provide a simple input field for letters (3-7 letter maximum)
+FR1: Web interface must provide a simple input field for letters (3-10 letter maximum)
 FR2: Letter validation must accept only a-z characters and ? (wildcard symbol)
 FR3: Word lookup must query dictionary and return all valid words that can be formed from input letters
 FR4: Display results as a sortable list with alphabetical ordering
@@ -69,7 +69,7 @@ NFR5: Reliability - Tool must reliably return accurate results from word diction
 - Explicit success criteria with measurable outcomes
 - Well-defined MVP scope with exact boundaries
 - Technical requirements quantified (10s response, 99% uptime)
-- Constraints clearly stated (3-7 letter range, wildcard support)
+- Constraints clearly stated (3-10 letter range, wildcard support)
 
 ⚠️ **Gaps for Implementation:**
 - Dictionary source/size not specified (which word list?)
@@ -92,7 +92,7 @@ NFR5: Reliability - Tool must reliably return accurate results from word diction
 | Letter validation | FR2 (validate non-alphabetic), FR11 (validate length in UI) | 2 FRs |
 | Dictionary word lookup | FR3 (lookup), FR6 (wildcard), FR13 (filter by length), FR14 (deduplicate) | 4 FRs |
 | Display results as list | FR4 (group by length), FR5 (sort alphabetically), FR7 (display results) | 3 FRs |
-| Support 3-7 characters | FR1, FR5, FR13 (covered across multiple FRs) | 3 FRs |
+| Support 3-10 characters | FR1, FR5, FR13 (covered across multiple FRs) | 3 FRs |
 | No auth/tracking | Covered implicitly in architecture choices (no user management epic) | 0 FRs |
 | **Performance requirement (10s)** | FR12 (response time) | 1 FR |
 | **Edge case handling** | FR8 (empty results message) | 1 FR |
@@ -101,7 +101,7 @@ NFR5: Reliability - Tool must reliably return accurate results from word diction
 
 | FR # | Epic Requirement | Epic | Status | Notes |
 |------|---|---|---|---|
-| FR1 | Accept user input for 3-7 character combinations | Epic 3 | ✅ Covered | Story 3.1 (SearchForm) |
+| FR1 | Accept user input for 3-10 character combinations | Epic 3 | ✅ Covered | Story 3.1 (SearchForm) |
 | FR2 | Validate input, reject non-alphabetic | Epic 2 | ✅ Covered | Story 2.3 (Input validation) |
 | FR3 | Dictionary-based word lookup | Epic 2 | ✅ Covered | Story 2.2 (DictionaryService) |
 | FR4 | Group results by word length | Epic 3 | ✅ Covered | Story 3.2 (ResultsDisplay) |
@@ -113,7 +113,7 @@ NFR5: Reliability - Tool must reliably return accurate results from word diction
 | FR10 | Auto-clear input on new lookup | Epic 3 | ✅ Covered | Story 3.1 (SearchForm onFocus) |
 | FR11 | Support Enter key + button click | Epic 3 | ✅ Covered | Story 3.1 (SearchForm) |
 | FR12 | Display results within 10 seconds | Epic 2 | ✅ Covered | Story 2.4 (API endpoint performance) |
-| FR13 | Return only 3-7 character words | Epic 2 | ✅ Covered | Story 2.2 (DictionaryService filtering) |
+| FR13 | Return only 3-10 character words | Epic 2 | ✅ Covered | Story 2.2 (DictionaryService filtering) |
 | FR14 | Prevent duplicate words | Epic 2 | ✅ Covered | Story 2.2 (DictionaryService deduplication) |
 
 ### Coverage Statistics
@@ -124,12 +124,12 @@ NFR5: Reliability - Tool must reliably return accurate results from word diction
 
 ### Epic Distribution
 
-- **Epic 1 (Foundation)**: Enables all other epics (6 stories)
+- **Epic 1 (Foundation)**: Enables all other epics (5 stories)
 - **Epic 2 (Backend API)**: Covers 6 FRs via 5 stories  
 - **Epic 3 (Frontend UI)**: Covers 8 FRs via 5 stories
 - **Epic 4 (Testing & QA)**: Validates all FRs (5 stories)
 - **Epic 5 (Deployment)**: Enables production access (4 stories)
-- **Total: 5 epics, 25 stories**
+- **Total: 5 epics, 24 stories**
 
 ### NFR Coverage Assessment
 
@@ -202,7 +202,7 @@ The Architecture document explicitly addresses UX requirements through:
    - UX mentions wildcard as "power feature" but suggests "small hint or label could make this obvious"
    - Current UX spec says "silently rejects others (no validation popup)"
    - Impact: Medium (affects user experience)
-   - Status: Addressed in Epic 3 Story 3.2 (UX-DR2: "3-7 letters accepted" hint)
+   - Status: Addressed in Epic 3 Story 3.2 (UX-DR2: "3-10 letters accepted" hint)
    - Recommendation: Consider inline "e.g., c?t" example in input placeholder
 
 3. **Loading State Not Defined**
@@ -467,12 +467,12 @@ This readiness assessment validated:
 - **Finding:** PRD does not specify which word list/dictionary will be used
 - **Impact:** Low (implementation detail)
 - **Recommendation:** Document in project context before implementation (recommendation for implementation team)
-- **Status:** Not blocking; Architecture addresses this via "File-based (Wiktionary 3-7 letter words)"
+- **Status:** Not blocking; Architecture addresses this via "File-based (Wiktionary 3-10 letter words)"
 
 🟡 **2. Wildcard Feature Discoverability**
 - **Finding:** UX mentions wildcard (?) as "power feature" but discovery mechanism not fully detailed
 - **Impact:** Low (affects user experience, not functionality)
-- **Current Solution:** Epic 3 Story 3.2 includes UX-DR2 ("3-7 letters accepted" hint)
+- **Current Solution:** Epic 3 Story 3.2 includes UX-DR2 ("3-10 letters accepted" hint)
 - **Recommendation:** Consider inline example "e.g., c?t" in input placeholder text during implementation
 
 🟡 **3. Loading State Guidance**

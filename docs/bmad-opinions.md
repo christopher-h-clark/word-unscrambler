@@ -58,6 +58,9 @@ I was envisioning a left-aligned layout with some sort of image to the right, bu
 * The AI model surfaced options for the word list that I hadn't considered.
 I saw a list of 3-letter words on Wiktionary, but they didn't have similar lists for longer words.
 In addition to Wiktionary, it suggested SCOWL, which I'd never heard of before, but it looked like a great choice!
+* It eventually (during implementation of story 1-4) detected and offered to correct the discrepancey between allowing 3–7 vs 3–10 letters, the discrepancy between 18 and 24 stories, and the discrepancy between 23 and 24 stories.
+It actually credited me with calling out the issues in this document!
+I'm fairly impressed that it used this non-standard document to identify and fix actual issues.
 
 #### Where AI Failed
 
@@ -90,6 +93,10 @@ My guess is that BMAD will fix this in the next version or a subsequent version.
 This seemed inefficient.
 * Several command lines failed.
 It seemed odd that the AI would struggle to create a command line that works.
+* Performing code reviews would often land on the AI identifying a clear next step, but not offering something for me to select (like almost every other BMAD skill).
+So I'd essentially re-type the last line of what it told me to get it to proceed with the action it suggested.
+Sort of odd.
+I suppose BMAD will address this in future versions.
 
 ### What would you clean up in the code if you were to ship this project?
 
