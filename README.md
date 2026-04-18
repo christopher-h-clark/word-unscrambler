@@ -41,7 +41,7 @@ npm run format        # Auto-format with Prettier
 
 ## Tech Stack
 
-- **Frontend:** React 19, TypeScript 5, Vite 7, Material UI 7
+- **Frontend:** React 19, TypeScript 5, Vite 7, Tailwind CSS + shadcn/ui
 - **Backend:** Express 5, TypeScript 5, Node.js 18+ LTS
 - **Testing:** Vitest (unit/integration), Playwright (E2E)
 - **Tooling:** ESLint 10, Prettier 3, tsx (dev server), concurrently
