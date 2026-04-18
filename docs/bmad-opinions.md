@@ -9,6 +9,9 @@ I specifically focused on my idea, resisting BMAD's attempts to get me to think 
 What I'm implementing here is a simple word unscrambler, inspired by [Word Unscrambler](https://wordunscrambler.me/).
 It's super simple, accepting 3-7 letters, and unscrambling them against a dictionary.
 
+Also, this time I remembered to use Sonnet for the `/bmad-dev-story` tasks.
+This is based on my conversations with Kevin and with Samuel and Ryan.
+
 ## Questions
 
 This experiment was to answer four questions:
@@ -82,6 +85,11 @@ I suppose some stories could apply to multiple epics, but I've never seen that i
 It noted the inconsistency and offered to move it to the `planning-artifacts` directory.
 So I guess the inconsistency was resolved.
 My guess is that BMAD will fix this in the next version or a subsequent version.
+* Generating the first story (setting up the code base from an exmaple project), it seemed to get confused with the monorepo setup, and then a number of commands failed because it couldn't find files.
+* It created a number of files for the first story, then deleted them for the second.
+This seemed inefficient.
+* Several command lines failed.
+It seemed odd that the AI would struggle to create a command line that works.
 
 ### What would you clean up in the code if you were to ship this project?
 
