@@ -164,6 +164,10 @@ This experiment was to answer four questions:
   inconsistencies in the summary and numbers of stories and epics `in-progress`,
   `ready-for-dev`, etc in the summary at the bottom, which were only fixed after
   I called them out.
+- During Story 3-1 or 3-2, it decided to start committing files to git without
+  being asked. I figured this out when I did the code review and found no
+  changed files. It had silently committed them to git without being directed to
+  do so. This is concerning.
 
 ### What would you clean up in the code if you were to ship this project?
 
@@ -174,6 +178,8 @@ This experiment was to answer four questions:
   keep it focused and simple.
 - Another experiment could be to start with an existing code base and see how it
   handles adding features, fixing defects, etc.
+- While working on this, I learned about a Karpathy `CLAUDE.md` that looks quite
+  promising. I might use it for Epic 4 and Epic 5.
 
 ### What would you do the same if you were to do this again?
 
