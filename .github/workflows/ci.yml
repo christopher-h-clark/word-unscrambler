@@ -72,6 +72,13 @@ jobs:
       - run: npm run test:coverage
       - name: Check coverage threshold
         run: node scripts/check-coverage.js
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: packages/*/coverage
+          retention-days: 30
 
   security:
     name: Security Audit
@@ -109,6 +116,13 @@ jobs:
             if [ $attempt -lt 3 ]; then echo "Retrying..."; sleep 5; fi
           done
       - run: npm run test:e2e
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 30
 
   merge-check:
     name: All Checks Passed
