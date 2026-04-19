@@ -18,6 +18,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run type-check
 
   lint:
@@ -31,6 +33,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run lint
       - run: npm run format:check
 
@@ -45,6 +49,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run build
       - name: Check bundle size
         run: node scripts/check-bundle-size.js
@@ -60,6 +66,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run test:run
       - run: npm run test:coverage
       - name: Check coverage threshold
@@ -76,6 +84,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm audit --audit-level=moderate
 
   e2e:
@@ -89,7 +99,15 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
-      - run: timeout 240 npx playwright install --with-deps || { echo "Playwright install timeout"; exit 1; }
+        env:
+          npm_config_retry: 3
+      - name: Install Playwright (with retry)
+        run: |
+          for attempt in 1 2 3; do
+            echo "Playwright install attempt $attempt/3..."
+            timeout 240 npx playwright install --with-deps && break
+            if [ $attempt -lt 3 ]; then echo "Retrying..."; sleep 5; fi
+          done
       - run: npm run test:e2e
 
   merge-check:
