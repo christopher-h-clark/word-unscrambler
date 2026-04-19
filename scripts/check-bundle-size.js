@@ -33,7 +33,8 @@ if (jsFiles.length === 0) {
   process.exit(1);
 }
 
-// Calculate total size of all JS bundles
+// Calculate size of all JS bundles
+const bundles = [];
 let totalSize = 0;
 try {
   jsFiles.forEach(file => {
@@ -54,19 +55,44 @@ try {
       process.exit(1);
     }
 
+    bundles.push({ name: file, size: gzippedSize });
     totalSize += gzippedSize;
-    console.log(`  ${file}: ${gzippedSize.toFixed(2)} KB (gzipped)`);
   });
 } catch (error) {
   console.error('❌ Unexpected error during bundle size calculation:', error.message);
   process.exit(1);
 }
 
-console.log(`📦 Total bundle size: ${totalSize.toFixed(2)} KB (gzipped)`);
+// Sort bundles by size (largest first)
+bundles.sort((a, b) => b.size - a.size);
+
+console.log(`\n📦 Bundle Size Report (gzipped)\n`);
+console.log(`Limit: ${BUNDLE_LIMIT_KB} KB | Total: ${totalSize.toFixed(2)} KB\n`);
+console.log('File                          | Size (KB) | % of Total');
+console.log('-'.repeat(56));
+
+bundles.forEach(bundle => {
+  const percent = ((bundle.size / totalSize) * 100).toFixed(1);
+  const status = bundle.size > BUNDLE_LIMIT_KB * 0.8 ? '⚠️ ' : '  ';
+  const paddedName = bundle.name.padEnd(28);
+  console.log(
+    `${status}${paddedName} | ${bundle.size.toFixed(2).padStart(8)} | ${percent.padStart(6)}%`
+  );
+});
+
+console.log('-'.repeat(56));
+console.log(`Total                         | ${totalSize.toFixed(2).padStart(8)} | 100.0%\n`);
 
 if (totalSize > BUNDLE_LIMIT_KB) {
-  console.error(`❌ Bundle exceeds limit of ${BUNDLE_LIMIT_KB}KB`);
+  console.error(
+    `❌ Bundle exceeds limit of ${BUNDLE_LIMIT_KB}KB (current: ${totalSize.toFixed(2)}KB)`
+  );
+  console.error(`\nLargest files to optimize:\n`);
+  bundles.slice(0, 3).forEach((bundle, idx) => {
+    console.error(`  ${idx + 1}. ${bundle.name}: ${bundle.size.toFixed(2)} KB`);
+  });
   process.exit(1);
 } else {
-  console.log(`✅ Bundle size OK (limit: ${BUNDLE_LIMIT_KB}KB)`);
+  const remaining = BUNDLE_LIMIT_KB - totalSize;
+  console.log(`✅ Bundle OK (${remaining.toFixed(2)} KB remaining)`);
 }
