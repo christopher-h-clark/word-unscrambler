@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# Environment variable overrides (optional):
+#   BUNDLE_LIMIT_KB: Max bundle size in KB (default: 100)
+#   PLAYWRIGHT_TIMEOUT: E2E test timeout in ms (default: 45000)
+#   PLAYWRIGHT_BASE_URL: E2E test base URL (default: http://localhost:5173)
+
 jobs:
   type-check:
     name: Type Check

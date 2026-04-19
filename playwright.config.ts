@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isCI = process.env.CI === 'true';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173';
+const testTimeout = parseInt(process.env.PLAYWRIGHT_TIMEOUT || '45000', 10);
 
 export default defineConfig({
   testDir: './e2e',
@@ -12,14 +14,14 @@ export default defineConfig({
   // Run tests serially in CI (stable results); parallel locally (faster feedback)
   workers: isCI ? 1 : undefined,
   reporter: 'html',
-  // Test timeout: allow 45s (accounts for slow startup + test execution)
-  timeout: 45000,
+  // Test timeout: configurable via PLAYWRIGHT_TIMEOUT env var (default 45s)
+  timeout: testTimeout,
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL,
   },
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
+    url: baseURL,
     reuseExistingServer: !isCI,
     // Server startup timeout: 120s (npm install + build can be slow)
     timeout: 120000,

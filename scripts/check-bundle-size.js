@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 
-const BUNDLE_LIMIT_KB = 100;
+const BUNDLE_LIMIT_KB = parseInt(process.env.BUNDLE_LIMIT_KB || '100', 10);
 const distPath = path.join(__dirname, '../packages/client/dist');
 const assetsPath = path.join(distPath, 'assets');
 
