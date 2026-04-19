@@ -63,10 +63,7 @@ jobs:
       - run: npm run test:run
       - run: npm run test:coverage
       - name: Check coverage threshold
-        run: |
-          # Verify coverage meets minimum threshold (70%)
-          # Coverage report location may vary; adjust if needed
-          echo "Coverage check: ensure coverage >= 70%"
+        run: node scripts/check-coverage.js
 
   security:
     name: Security Audit
