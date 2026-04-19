@@ -1022,3 +1022,63 @@ Functions 100%, Lines 100%
 code reviewed and approved.
 
 ---
+
+## Code Review Findings
+
+**Review Date:** 2026-04-19  
+**Reviewers:** Blind Hunter, Edge Case Hunter, Acceptance Auditor  
+**All ACs Met:** ✅ Yes (12/12)
+
+### Decision Made & Implemented
+
+- [x] [Review][Decision] Multi-submission guard — **Implemented:** Component now
+      guards with `isSubmitting` state. Button and input disabled while
+      submission pending. Load state shows "Unscrambling..." while Promise
+      resolves.
+
+### Patches Applied
+
+- [x] [Review][Patch] Handle Promise rejection in onSubmit — Wrapped in
+      try/catch; logs error to console on rejection
+- [x] [Review][Patch] Add preventDefault on Enter key — Called
+      `e.preventDefault()` in handleKeyDown to prevent form bubbling
+- [x] [Review][Patch] Add aria-label to Input — Added
+      `aria-label="Enter letters to unscramble"` for accessibility
+- [x] [Review][Patch] Link hint text to Input — Added `id="search-hint"` to hint
+      div and `aria-describedby="search-hint"` to input
+- [x] [Review][Patch] Handle IME composition input — Added `isComposing` state
+      with composition event handlers; Enter key skipped during active
+      composition
+- [x] [Review][Patch] Trim whitespace before validation — Changed validation to
+      use `trimmedInput.length` (where `trimmedInput = input.trim()`)
+- [x] [Review][Patch] Guard auto-clear during pending submission — Added guard
+      in `handleFocus`: only clear if `!isSubmitting`
+
+### Deferred (Pre-existing)
+
+- [x] [Review][Defer] No alphabet-only character validation in component —
+      Backend validates in Story 2.3; frontend accepts all characters for UX
+      fluidity. Not blocking.
+
+### Dismissed as Spec-Compliant
+
+- Auto-clear on focus (AC3.1.9) is explicitly required by spec for "rapid
+  retries" UX pattern. Finding dismissed.
+
+### Test Coverage
+
+**Updated tests to cover new behavior:**
+
+- ✅ 22 unit tests passing (was 12, added 10 new)
+- ✅ Test coverage: Statements 100%, Branches ~95%, Functions 100%, Lines 100%
+- ✅ New tests: Promise rejection handling, IME composition, multi-submit guard,
+  submission state, loading UI, accessibility (aria-label, aria-describedby),
+  trim logic
+
+**Quality checks:**
+
+- ✅ TypeScript: `tsc --noEmit` clean
+- ✅ Linting: ESLint clean, Prettier applied
+- ✅ Tests: All 22 passing
+
+---
