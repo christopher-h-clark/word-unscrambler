@@ -73,6 +73,74 @@ This project uses a three-tier testing strategy:
 - Run `npm run test:coverage` to see HTML reports in `packages/client/coverage/`
   and `packages/server/coverage/`
 
+## Architecture
+
+### System Design
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Browser (User)                            │
+└─────────────────┬───────────────────────────────────────────────┘
+                  │ HTTP/WebSocket
+┌─────────────────▼───────────────────────────────────────────────┐
+│              Frontend (React 19 + Vite)                          │
+│            localhost:5173                                       │
+├─────────────────────────────────────────────────────────────────┤
+│  SearchForm → useWordFetcher → ResultsDisplay                   │
+│  (Input)     (API Client)     (Display grouped by length)       │
+│                       ↓                                          │
+│              ErrorBoundary (Error handling)                      │
+└─────────────────┬───────────────────────────────────────────────┘
+                  │ GET /unscrambler/v1/words?letters=xyz
+┌─────────────────▼───────────────────────────────────────────────┐
+│              Backend (Express 5)                                 │
+│            localhost:3000                                       │
+├─────────────────────────────────────────────────────────────────┤
+│  CORS Middleware → Route Handler → Validation → Service         │
+│                    validateLetters()  DictionaryService          │
+│                                       ├─ canFormWord()           │
+│                                       ├─ findWords()             │
+│                                       └─ Dictionary (Set)        │
+└─────────────────┬───────────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────────┐
+│                 Data Layer                                       │
+│  Dictionary: 1,129 English words (3–10 chars)                   │
+│  Source: SCOWL 2024.11.24 (data/words.txt)                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+1. **Input** — User types letters in SearchForm (e.g., "rst")
+2. **Validation** — validateLetters() checks 3–10 chars, letters + ? only
+3. **Query** — useWordFetcher sends `GET /unscrambler/v1/words?letters=rst`
+4. **Matching** — DictionaryService.findWords() filters dictionary:
+   - `canFormWord()` counts available letters
+   - Supports `?` wildcard for any one letter
+   - Returns sorted array grouped by word length
+5. **Display** — ResultsDisplay renders results grouped and sorted
+6. **Error Handling** — ErrorBoundary catches React errors; useWordFetcher
+   handles API errors
+
+### Component Responsibilities
+
+| Component          | Purpose                                  |
+| ------------------ | ---------------------------------------- |
+| **SearchForm**     | Accept input, validate, handle submit    |
+| **ResultsDisplay** | Group words by length, sort, render      |
+| **ResultCard**     | Display one group with count and styling |
+| **useWordFetcher** | Manage API calls, loading state, errors  |
+| **ErrorBoundary**  | Catch React errors, prevent white screen |
+
+### Key Files
+
+- **Frontend:** `packages/client/src/components/` (SearchForm, ResultsDisplay,
+  ResultCard)
+- **Backend:** `packages/server/src/` (routes, services, validators)
+- **Tests:** `packages/*/src/**/*.test.{ts,tsx}` + `e2e/**/*.spec.ts`
+- **Config:** `playwright.config.ts`, `.github/workflows/ci.yml`
+
 ## Word Dictionary
 
 The word list is sourced from **SCOWL (Spell Checker Oriented Word Lists)**
