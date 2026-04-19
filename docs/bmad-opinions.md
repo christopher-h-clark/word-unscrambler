@@ -155,6 +155,8 @@ This experiment was to answer four questions:
   but the AI allowed me to wait for their results. Seeing nothing happening, I
   asked if they were running, and it told me that they were not. It needs to
   accurately report status.
+- Implementing story 2-5, it carried the confusion on the maximum number of
+  letters forward, even though it had been corrected previously.
 
 ### What would you clean up in the code if you were to ship this project?
 
