@@ -63,6 +63,9 @@ This experiment was to answer four questions:
   I'm fairly impressed that it used this non-standard document to identify and fix actual issues.
 - Implementing Story 2-1, it seemed to do very well.
   The code review surfaced some issues, which it fixed on its own.
+- The GitHub action to build kept failing because the client JS bundle was over 100kB, so I asked Sonnet about it.
+  Sonnet identified that the size check was checking the uncompressed bundle size, but ultimately it created a gzipped bundle at 68kB.
+  It recommended fixing the test, rather than allowing a larger size bundle (which I agree with).
 
 #### Where AI Failed
 
