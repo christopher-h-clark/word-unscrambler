@@ -157,6 +157,13 @@ This experiment was to answer four questions:
   accurately report status.
 - Implementing story 2-5, it carried the confusion on the maximum number of
   letters forward, even though it had been corrected previously.
+- It failed to update `sprint-status.yaml` as it implemented story 2-5, which
+  resulted in inconsistent status information. Story 2-5 was left in the
+  `ready-for-dev` state throughout development and code review and Epic 2 was
+  left in `in-progress`. Even after fixing the story status, there were
+  inconsistencies in the summary and numbers of stories and epics `in-progress`,
+  `ready-for-dev`, etc in the summary at the bottom, which were only fixed after
+  I called them out.
 
 ### What would you clean up in the code if you were to ship this project?
 
