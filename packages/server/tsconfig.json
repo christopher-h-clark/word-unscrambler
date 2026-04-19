@@ -8,9 +8,10 @@
     "lib": ["ES2020", "ES2022.Error"],
     "types": ["node"],
     "noEmit": false,
-    "isolatedModules": false,
     "incremental": true,
-    "declaration": true
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["**/*.test.ts", "dist"]

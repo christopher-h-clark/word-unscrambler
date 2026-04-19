@@ -124,12 +124,14 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
+# dotenv environment variable files (but track .env.example for documentation)
 .env
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+!.env.example
+!packages/*/.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -238,3 +240,11 @@ $RECYCLE.BIN/
 
 # Husky internal files
 .husky/_
+
+# Build caches and incremental compilation
+*.tsbuildinfo
+.vite
+.turbo
+
+# Playwright cache
+.playwright
