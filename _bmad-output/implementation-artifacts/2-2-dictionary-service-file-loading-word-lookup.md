@@ -1,14 +1,15 @@
 ---
 storyId: '2.2'
 storyKey: '2-2-dictionary-service-file-loading-word-lookup'
-status: 'review'
+status: 'done'
 epic: 2
 epicTitle: 'Backend API Implementation'
 title: 'Implement Dictionary Service with File Loading and Word Lookup'
 created: '2026-04-18'
 lastUpdated: '2026-04-18'
 completionStatus: 'Context Analysis Complete'
-contextSource: 'Epic 2.2 + Project Context (Dictionary Service Pattern) + Architecture'
+contextSource:
+  'Epic 2.2 + Project Context (Dictionary Service Pattern) + Architecture'
 devReadyDate: '2026-04-18'
 ---
 
@@ -22,7 +23,9 @@ devReadyDate: '2026-04-18'
 
 **User Story:**
 
-> As a **backend developer**, I want to implement a DictionaryService class that loads a word list from file and performs word lookups, so that the API can quickly return valid words matching user input.
+> As a **backend developer**, I want to implement a DictionaryService class that
+> loads a word list from file and performs word lookups, so that the API can
+> quickly return valid words matching user input.
 
 ---
 
@@ -30,11 +33,14 @@ devReadyDate: '2026-04-18'
 
 ✅ **AC2.1:** DictionaryService class with static methods (singleton pattern)
 
-✅ **AC2.2:** Dictionary loads from packages/server/data/words.txt on server startup
+✅ **AC2.2:** Dictionary loads from packages/server/data/words.txt on server
+startup
 
-✅ **AC2.3:** File missing or corrupted → server exits with error code 1 and clear error message
+✅ **AC2.3:** File missing or corrupted → server exits with error code 1 and
+clear error message
 
-✅ **AC2.4:** DictionaryService.findWords(letters) returns all valid words formable from input letters
+✅ **AC2.4:** DictionaryService.findWords(letters) returns all valid words
+formable from input letters
 
 ✅ **AC2.5:** Wildcard (?) character matches any single letter during lookup
 
@@ -46,7 +52,8 @@ devReadyDate: '2026-04-18'
 
 ✅ **AC2.9:** Lookup completes in < 1 second for typical inputs
 
-✅ **AC2.10:** Dictionary initialization error prevents server startup (fail-loud pattern)
+✅ **AC2.10:** Dictionary initialization error prevents server startup
+(fail-loud pattern)
 
 ---
 
@@ -439,7 +446,8 @@ From project-context.md:
 - ❌ Include words < 3 or > 10 characters in Set
 - ❌ Return duplicates in results
 - ❌ Expose file paths in error messages
-- ❌ Modify input letters (lowercase normalization happens in validation, not here)
+- ❌ Modify input letters (lowercase normalization happens in validation, not
+  here)
 
 ---
 
@@ -459,7 +467,8 @@ From project-context.md:
 
 **Used By:**
 
-- Story 2.4: GET /unscrambler/v1/words endpoint (calls DictionaryService.findWords)
+- Story 2.4: GET /unscrambler/v1/words endpoint (calls
+  DictionaryService.findWords)
 - Story 2.5: OpenAPI Specification (documents DictionaryService behavior)
 - Epic 3 Frontend: All search functionality depends on this
 
@@ -525,9 +534,11 @@ When Story 2.2 is DONE:
 ✅ **All Acceptance Criteria Pass (AC2.1–AC2.10)**
 
 - AC2.1: DictionaryService class with static methods (singleton pattern) ✅
-- AC2.2: Dictionary loads from packages/server/data/words.txt on server startup ✅
+- AC2.2: Dictionary loads from packages/server/data/words.txt on server startup
+  ✅
 - AC2.3: File missing or corrupted → server exits with error code 1 ✅
-- AC2.4: DictionaryService.findWords(letters) returns all valid words formable ✅
+- AC2.4: DictionaryService.findWords(letters) returns all valid words formable
+  ✅
 - AC2.5: Wildcard (?) character matches any single letter ✅
 - AC2.6: Results are sorted alphabetically ✅
 - AC2.7: Results contain no duplicates ✅
@@ -535,20 +546,64 @@ When Story 2.2 is DONE:
 - AC2.9: Lookup completes in < 1 second for typical inputs ✅
 - AC2.10: Dictionary initialization error prevents server startup ✅
 
-**Review Findings:** Zero violations. Implementation fully satisfies specification.
+**Review Findings:** Zero violations. Implementation fully satisfies
+specification.
 
 ---
 
-**Next Action:** After Story 2.1 is complete, run `/bmad-dev-story` for Story 2.2 implementation.
+**Next Action:** After Story 2.1 is complete, run `/bmad-dev-story` for Story
+2.2 implementation.
 
 ---
 
 ## Tasks / Subtasks
 
-- [x] **Task 1:** Create `packages/server/data/words.txt` with 3-10 letter word list (≥100 words)
-- [x] **Task 2:** Create `packages/server/src/services/dictionary.ts` — DictionaryService singleton with `initialize()`, `findWords()`, `canFormWord()`
-- [x] **Task 3:** Update `packages/server/src/index.ts` to initialize DictionaryService before server starts
-- [x] **Task 4:** Create `packages/server/src/services/__tests__/dictionary.test.ts` with full test coverage
+- [x] **Task 1:** Create `packages/server/data/words.txt` with 3-10 letter word
+      list (≥100 words)
+- [x] **Task 2:** Create `packages/server/src/services/dictionary.ts` —
+      DictionaryService singleton with `initialize()`, `findWords()`,
+      `canFormWord()`
+- [x] **Task 3:** Update `packages/server/src/index.ts` to initialize
+      DictionaryService before server starts
+- [x] **Task 4:** Create
+      `packages/server/src/services/__tests__/dictionary.test.ts` with full test
+      coverage
+
+---
+
+## Review Findings
+
+### Critical Issues
+
+None found. All acceptance criteria met, 70 tests passing.
+
+### Patches (Applied)
+
+- [x] [Review][Patch] En-dash in error message — FIXED: Changed to ASCII hyphen
+      "3-10" for consistency
+- [x] [Review][Patch] Performance: Dictionary pre-sorted — FIXED: Pre-sort at
+      initialization, filter results without re-sorting on each request
+- [x] [Review][Patch] Non-null assertion in route — FIXED: Removed assertion,
+      use type narrowing from validation check
+
+### Deferred (Pre-Existing or Design Choice)
+
+- [x] [Review][Defer] Health check doesn't verify dictionary — Health check
+      endpoint returns ok even if dictionary failed to load. By design (health
+      check is shallow).
+- [x] [Review][Defer] CORS origin not validated for URL format — app.ts:14
+      accepts any string from env. Config has default but no URL format
+      validation.
+- [x] [Review][Defer] Production static assets error handling — app.ts:38-42 no
+      check if clientDist directory exists. Error handling deferred to static
+      middleware.
+
+### Dismissed
+
+- Error handling pattern (consistent across codebase)
+- Edge case coverage (comprehensive, 70 tests pass)
+- Wildcard logic (correct: tries exact match, then wildcard fallback)
+- Input validation (complete and correct per spec)
 
 ---
 
@@ -556,22 +611,34 @@ When Story 2.2 is DONE:
 
 ### Implementation Plan
 
-- DictionaryService as static singleton (Set<string> for O(1) membership) with `initialize()`, `findWords()`, `canFormWord()`, and `reset()` (for test isolation)
+- DictionaryService as static singleton (Set<string> for O(1) membership) with
+  `initialize()`, `findWords()`, `canFormWord()`, and `reset()` (for test
+  isolation)
 - Words filtered to 3-10 chars on load (not at query time)
-- Correct wildcard (`?`) logic: letter consumed first, wildcard only as fallback; uses actual counts not key presence
-- `index.ts` initializes dictionary before `app.listen()`; on failure logs and calls `process.exit(1)`
+- Correct wildcard (`?`) logic: letter consumed first, wildcard only as
+  fallback; uses actual counts not key presence
+- `index.ts` initializes dictionary before `app.listen()`; on failure logs and
+  calls `process.exit(1)`
 - `reset()` method added to enable clean test isolation across `afterEach` hooks
 
 ### Debug Log
 
-- Reference implementation's `canFormWord` used key-existence checks (`!letterMap.has(letter)`) which would not correctly detect exhausted letter counts; replaced with count-based checks
-- Reference implementation decremented the letter count even when a wildcard was used; corrected to decrement wildcard count in that branch
-- `catat` test confirmed letter-count accounting works correctly (needs a:2,t:2; blocked by `cat` input a:1,t:1)
-- `filters words longer than 10 characters` test initially used input `'abcdefghijkl'` which doesn't contain `t` so `cat` wasn't returnable; corrected to separate `findWords('cat')` call
+- Reference implementation's `canFormWord` used key-existence checks
+  (`!letterMap.has(letter)`) which would not correctly detect exhausted letter
+  counts; replaced with count-based checks
+- Reference implementation decremented the letter count even when a wildcard was
+  used; corrected to decrement wildcard count in that branch
+- `catat` test confirmed letter-count accounting works correctly (needs a:2,t:2;
+  blocked by `cat` input a:1,t:1)
+- `filters words longer than 10 characters` test initially used input
+  `'abcdefghijkl'` which doesn't contain `t` so `cat` wasn't returnable;
+  corrected to separate `findWords('cat')` call
 
 ### Completion Notes
 
-All 4 tasks complete. 32 tests pass (18 new in dictionary.test.ts + 14 pre-existing). Lint and TypeScript strict mode clean. AC2.1–AC2.10 all satisfied.
+All 4 tasks complete. 32 tests pass (18 new in dictionary.test.ts + 14
+pre-existing). Lint and TypeScript strict mode clean. AC2.1–AC2.10 all
+satisfied.
 
 ---
 
@@ -579,11 +646,14 @@ All 4 tasks complete. 32 tests pass (18 new in dictionary.test.ts + 14 pre-exist
 
 - `packages/server/data/words.txt` (new — word list, ~650+ words, 3-10 chars)
 - `packages/server/src/services/dictionary.ts` (new — DictionaryService class)
-- `packages/server/src/services/__tests__/dictionary.test.ts` (new — 18 unit tests)
-- `packages/server/src/index.ts` (modified — DictionaryService initialization before server listen)
+- `packages/server/src/services/__tests__/dictionary.test.ts` (new — 18 unit
+  tests)
+- `packages/server/src/index.ts` (modified — DictionaryService initialization
+  before server listen)
 
 ---
 
 ## Change Log
 
-- 2026-04-18: Implemented Story 2.2 — DictionaryService with file loading, word lookup, wildcard support, and full unit test coverage
+- 2026-04-18: Implemented Story 2.2 — DictionaryService with file loading, word
+  lookup, wildcard support, and full unit test coverage

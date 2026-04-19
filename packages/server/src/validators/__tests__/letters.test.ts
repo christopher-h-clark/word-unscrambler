@@ -25,13 +25,13 @@ describe('validateLetters', () => {
     test('returns error for input < 3 characters', () => {
       const result = validateLetters('ab');
       expect(result.valid).toBe(false);
-      expect(result.error).toContain('3–10 characters');
+      expect(result.error).toContain('3-10 characters');
     });
 
     test('returns error for input > 10 characters', () => {
       const result = validateLetters('abcdefghijk');
       expect(result.valid).toBe(false);
-      expect(result.error).toContain('3–10 characters');
+      expect(result.error).toContain('3-10 characters');
     });
 
     test('returns error for empty string', () => {

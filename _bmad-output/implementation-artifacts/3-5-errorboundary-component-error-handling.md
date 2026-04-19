@@ -35,22 +35,51 @@ will wrap it)
 ✅ **AC3.5.1:** ErrorBoundary component created at
 `packages/client/src/components/ErrorBoundary.tsx`
 
-✅ **AC3.5.2:** Component is a React class component (error boundaries must be
-class components)
+✅ **AC3.5.2:** Component is a React class component (error boundaries MUST be
+class components, not functional)
+
+- Why: React error boundaries only work with class components using
+  getDerivedStateFromError() or componentDidCatch()
+- Unlike Story 3.1, 3.2, 3.4 which use functional components
 
 ✅ **AC3.5.3:** When a child component throws an error, ErrorBoundary catches it
 
-✅ **AC3.5.4:** ErrorBoundary displays fallback UI with message: "Something went
-wrong. Please try again."
+✅ **AC3.5.4:** ErrorBoundary displays fallback UI with message: "An unexpected
+error occurred. Please reload the page."
 
-✅ **AC3.5.5:** Error is logged for debugging (console.error with details)
+- Message is clearer than "try again" (user knows to reload, not just retry)
+- Fallback UI includes:
+  - Error message text
+  - (Optional) "Reload Page" button that calls `window.location.reload()`
+- Styled consistently with app dark theme (same colors as ResultsDisplay)
 
-✅ **AC3.5.6:** User can still interact with the page (error is isolated, not
-full-page crash)
+✅ **AC3.5.5:** Error is logged for debugging with full details
+
+- Log format:
+  `console.error('ErrorBoundary caught:', error, errorInfo.componentStack)`
+- Include: error message, stack trace, component tree where error occurred
+- Logged to browser console (visible in DevTools → Console tab)
+
+✅ **AC3.5.6:** ErrorBoundary prevents full-page white screen crash
+
+- When component inside ErrorBoundary throws: fallback UI displays instead
+- Without ErrorBoundary: entire app would be unmounted (white screen)
+- With ErrorBoundary: only the failed component is replaced with fallback UI
+- App remains interactive (user can still reload page, navigate away, etc.)
 
 ✅ **AC3.5.7:** Component wraps the entire App component in `main.tsx`
 
+- In main.tsx: `<ErrorBoundary><App /></ErrorBoundary>`
+- This is the top-level wrapper, catches all errors from App and its children
+- Only component-level errors are caught (not network errors or async errors)
+
 ✅ **AC3.5.8:** ErrorBoundary uses TypeScript with proper error typing
+
+- Type signature: `error: Error`, `errorInfo: React.ErrorInfo`
+- errorInfo contains `componentStack` property (shows component tree where error
+  occurred)
+- Use getDerivedStateFromError() and componentDidCatch() lifecycle methods with
+  proper types
 
 ✅ **AC3.5.9:** Comprehensive unit tests verify error catching and fallback UI
 (coverage ≥ 80%)

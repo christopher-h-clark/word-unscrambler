@@ -5,6 +5,7 @@ const WORD_MAX_LENGTH = 10;
 
 export class DictionaryService {
   private static words: Set<string> | undefined;
+  private static sortedWords: string[] | undefined;
 
   static initialize(filePath: string): void {
     try {
@@ -14,6 +15,7 @@ export class DictionaryService {
         .map((w) => w.trim().toLowerCase())
         .filter((w) => w.length >= WORD_MIN_LENGTH && w.length <= WORD_MAX_LENGTH);
       DictionaryService.words = new Set(wordList);
+      DictionaryService.sortedWords = Array.from(DictionaryService.words).sort();
       console.log(`[INFO] Dictionary loaded: ${DictionaryService.words.size} words`);
     } catch (error) {
       throw new Error('Failed to load dictionary', { cause: error });
@@ -21,10 +23,10 @@ export class DictionaryService {
   }
 
   static findWords(letters: string): string[] {
-    if (!DictionaryService.words) throw new Error('Dictionary not initialized');
-    return Array.from(DictionaryService.words)
-      .filter((word) => DictionaryService.canFormWord(word, letters))
-      .sort();
+    if (!DictionaryService.sortedWords) throw new Error('Dictionary not initialized');
+    return DictionaryService.sortedWords.filter((word) =>
+      DictionaryService.canFormWord(word, letters)
+    );
   }
 
   private static canFormWord(word: string, letters: string): boolean {
@@ -50,5 +52,6 @@ export class DictionaryService {
 
   static reset(): void {
     DictionaryService.words = undefined;
+    DictionaryService.sortedWords = undefined;
   }
 }

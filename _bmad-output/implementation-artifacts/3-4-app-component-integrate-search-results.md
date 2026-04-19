@@ -59,19 +59,49 @@ useWordFetcher hook
 
 ✅ **AC3.4.7:** ResultsDisplay receives `words` array to display results
 
-✅ **AC3.4.8:** Loading state displays during API request (optional: spinner or
-message)
+✅ **AC3.4.8:** Loading state displays during API request
+
+- Display: "Searching..." spinner or message above ResultsDisplay
+- Placement: Replace results area while loading (or show above if preferred)
+- Disappears when API response received (success or error)
+- Button disabled while loading (optional, but recommended)
 
 ✅ **AC3.4.9:** Error state displays error message when API fails
+
+- Error display: red or warning-colored text div above ResultsDisplay
+- Example error messages (from useWordFetcher):
+  - Validation: "Supplied text must be 3-10 characters in length."
+  - Server error: "Server error. Please try again later."
+  - Timeout: "Request timed out. Please try again."
+- Error persists until user submits new search (then results or new error shown)
+- SearchForm remains enabled (user can retry immediately)
 
 ✅ **AC3.4.10:** Layout is single-column, centered, responsive to mobile/desktop
 
 ✅ **AC3.4.11:** Styling uses dark theme with gradient hero background
 
+- Gradient: Linear, 45° angle, from dark (#1a1a1a) to slightly lighter (#2d2d2d)
+- Can use Tailwind: `from-slate-950 to-slate-800` or custom CSS
+- Hero section: full width, padding 40px top/bottom, centered text
+
 ✅ **AC3.4.12:** Environment variable `REACT_APP_API_URL` used for API base URL
 
 ✅ **AC3.4.13:** Complete integration tests verify entire flow: form → hook →
-results (coverage ≥ 80%)
+results
+
+- Test: successful search displays results
+- Test: validation error displays error message
+- Test: server error displays error message
+- Test: timeout displays timeout error
+- Test: loading state shows while fetching
+- Coverage ≥ 80%
+
+✅ **AC3.4.14 (NEW):** Rapid submissions handled correctly
+
+- User clicks "Unscramble" while loading (isLoading=true)
+- Button should be disabled (prevent duplicate requests)
+- OR hook should cancel previous request and start new one
+- Either approach acceptable, but prevent race conditions
 
 ---
 
@@ -85,46 +115,55 @@ results (coverage ≥ 80%)
 - ✅ Story 3.2: ResultsDisplay + ResultCard (results display, no API logic)
 - ✅ Story 3.3: useWordFetcher hook (API communication, state management)
 
-**Data Flow Ready:**
+**Error Handling Flow (Critical Clarification):**
 
 ```
-User Types → SearchForm
-    ↓
-User Submits → onSubmit callback
-    ↓
-App calls → useWordFetcher(letters)
-    ↓
-Hook manages → { words, isLoading, error }
-    ↓
-App passes state → ResultsDisplay receives words
-    ↓
-User sees → Results grouped by length
+Three layers of error handling:
+
+1. API ERRORS (handled by useWordFetcher hook):
+   - 400 Bad Request (validation error) → hook returns error message
+   - 500 Server Error → hook returns error message
+   - Network timeout (10s) → hook returns timeout error message
+   - Malformed response → hook returns generic error message
+
+2. APP ERROR DISPLAY (handled by App component):
+   - Hook returns error → App displays in error div above ResultsDisplay
+   - Error is shown instead of results until next successful search
+   - SearchForm stays visible (user can retry)
+
+3. COMPONENT ERRORS (handled by ErrorBoundary):
+   - Unexpected component error (bug, crash) → ErrorBoundary catches
+   - Shows fallback UI: "An unexpected error occurred. Please reload the page."
+   - This is for developer bugs, not user input validation
+
+Data Flow:
+```
+
+User Types → SearchForm (local input state) ↓ User Submits → App.onSubmit
+callback ↓ App calls → useWordFetcher.fetchWords(letters) ↓ Hook manages → {
+words, isLoading, error } ↓ App receives state and displays:
+
+- If isLoading: show "Searching..." spinner
+- If error: show error message
+- If words: show ResultsDisplay with results ↓ User sees → Results grouped by
+  length
+
 ```
 
 ### File Structure
 
 ```
-packages/client/
-├── src/
-│   ├── App.tsx                           ← MAIN ORCHESTRATOR (THIS STORY)
-│   ├── main.tsx                          (entry point - unchanged)
-│   ├── App.css                           (styling - Tailwind imports)
-│   ├── components/
-│   │   ├── SearchForm.tsx                (Story 3.1)
-│   │   ├── ResultsDisplay.tsx            (Story 3.2)
-│   │   └── ResultCard.tsx                (Story 3.2)
-│   ├── hooks/
-│   │   └── useWordFetcher.ts             (Story 3.3)
-│   ├── types/
-│   │   └── index.ts                      (types for all components)
-│   └── __tests__/
-│       └── integration/
-│           └── App.integration.test.tsx  (end-to-end flow tests)
-├── index.html
-├── vite.config.ts
-├── tsconfig.json
-└── package.json
-```
+
+packages/client/ ├── src/ │ ├── App.tsx ← MAIN ORCHESTRATOR (THIS STORY) │ ├──
+main.tsx (entry point - unchanged) │ ├── App.css (styling - Tailwind imports) │
+├── components/ │ │ ├── SearchForm.tsx (Story 3.1) │ │ ├── ResultsDisplay.tsx
+(Story 3.2) │ │ └── ResultCard.tsx (Story 3.2) │ ├── hooks/ │ │ └──
+useWordFetcher.ts (Story 3.3) │ ├── types/ │ │ └── index.ts (types for all
+components) │ └── **tests**/ │ └── integration/ │ └── App.integration.test.tsx
+(end-to-end flow tests) ├── index.html ├── vite.config.ts ├── tsconfig.json └──
+package.json
+
+````
 
 ### UX Flow (From Stories 3.1-3.2)
 
@@ -268,7 +307,7 @@ export const App: React.FC = () => {
 };
 
 export default App;
-```
+````
 
 ### State Management
 
