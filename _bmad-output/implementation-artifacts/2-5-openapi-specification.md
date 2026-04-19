@@ -22,13 +22,15 @@ devReadyDate: '2026-04-18'
 
 **User Story:**
 
-> As a **backend developer**, I want to document the API in OpenAPI 3.1 format, so that the API contract is clear and can be used by tools and clients.
+> As a **backend developer**, I want to document the API in OpenAPI 3.1 format,
+> so that the API contract is clear and can be used by tools and clients.
 
 ---
 
 ## Acceptance Criteria
 
-✅ **AC5.1:** OpenAPI 3.1 specification file created at packages/server/openapi.yaml
+✅ **AC5.1:** OpenAPI 3.1 specification file created at
+packages/server/openapi.yaml
 
 ✅ **AC5.2:** Documents endpoint: GET /unscrambler/v1/words
 
@@ -90,7 +92,8 @@ From api-specification.md and project-context.md:
 
 **Parameters:**
 
-- `letters` (string, query, required): 3-10 characters, letters (a-z) + ? (wildcard)
+- `letters` (string, query, required): 3-10 characters, letters (a-z) + ?
+  (wildcard)
 
 **Success Response (200):**
 
@@ -107,7 +110,9 @@ From api-specification.md and project-context.md:
 **Error Response (400 - INVALID_CHAR):**
 
 ```json
-{ "error": "Supplied text may only include letters (upper or lower case) and question marks." }
+{
+  "error": "Supplied text may only include letters (upper or lower case) and question marks."
+}
 ```
 
 **Error Response (500):**
@@ -130,7 +135,8 @@ From api-specification.md and project-context.md:
 openapi: '3.1.0'
 info:
   title: Word Unscrambler API
-  description: Find all valid English words that can be formed from given letters
+  description:
+    Find all valid English words that can be formed from given letters
   version: '1.0.0'
   contact:
     name: Word Unscrambler Team
@@ -145,7 +151,9 @@ paths:
   /unscrambler/v1/words:
     get:
       summary: Find words that can be formed from letters
-      description: Returns all valid English words (3-10 letters) that can be formed from the provided letters. Supports wildcard (?) matching any single letter.
+      description:
+        Returns all valid English words (3-10 letters) that can be formed from
+        the provided letters. Supports wildcard (?) matching any single letter.
       operationId: getWords
       parameters:
         - name: letters
@@ -163,7 +171,9 @@ paths:
             wildcard:
               value: 'h?llo'
               description: Input with wildcard character
-          description: Letters to search for (3-10 characters, a-z plus optional ? wildcard)
+          description:
+            Letters to search for (3-10 characters, a-z plus optional ?
+            wildcard)
       responses:
         '200':
           description: Success - returns array of matching words
@@ -178,7 +188,8 @@ paths:
                       type: string
                       minLength: 3
                       maxLength: 10
-                    description: Array of valid words that can be formed from input letters
+                    description:
+                      Array of valid words that can be formed from input letters
                 required:
                   - words
               examples:
@@ -189,7 +200,8 @@ paths:
                 noResults:
                   value:
                     words: []
-                  description: No words match the input (still 200, not an error)
+                  description:
+                    No words match the input (still 200, not an error)
         '400':
           description: Bad Request - invalid input
           content:
@@ -213,8 +225,12 @@ paths:
                   description: Input is more than 10 characters
                 invalidChars:
                   value:
-                    error: 'Supplied text may only include letters (upper or lower case) and question marks.'
-                  description: Input contains invalid characters (numbers, special chars, etc.)
+                    error:
+                      'Supplied text may only include letters (upper or lower
+                      case) and question marks.'
+                  description:
+                    Input contains invalid characters (numbers, special chars,
+                    etc.)
         '500':
           description: Internal Server Error
           content:
@@ -231,7 +247,8 @@ paths:
                 serverError:
                   value:
                     error: 'Server error. Please try again later.'
-                  description: Unexpected server error (dictionary corruption, etc.)
+                  description:
+                    Unexpected server error (dictionary corruption, etc.)
 
 components:
   schemas:
@@ -437,11 +454,49 @@ When Story 2.5 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** done  
 **Created:** 2026-04-18  
-**Dev Agent:** (To be assigned)  
+**Dev Agent:** Amelia (claude-sonnet-4-6)  
 **Review Agent:** (To be assigned)  
-**Completed:** (Pending)
+**Completed:** 2026-04-19
+
+---
+
+## Dev Agent Record
+
+### Implementation Summary
+
+Created `packages/server/openapi.yaml` — valid OpenAPI 3.1.0 specification.
+
+**Decisions made:**
+
+- Error messages copied verbatim from `src/validators/letters.ts` (em dash
+  U+2013 preserved in length error)
+- Added `missingParam` example (AC5.7: spec matches implementation exactly —
+  validator handles missing param separately)
+- Word `items.maxLength` set to 7 (matches API spec: returns 3–7 letter words
+  only)
+- Used `$ref` to `components/schemas` for DRY response schemas
+
+**Validation:**
+`npx @apidevtools/swagger-cli validate packages/server/openapi.yaml` → **Valid**
+
+### Files Changed
+
+- `packages/server/openapi.yaml` (NEW)
+
+### Review Findings
+
+**Patches Applied:**
+
+- [x] [Review][Patch] Input trimming behavior documented — added note to
+      `letters` parameter description about leading/trailing whitespace trimming
+- [x] [Review][Patch] Added `uniqueItems: true` to response schema —
+      `components/schemas/WordsResponse/properties/words` now explicitly
+      guarantees no duplicate items
+
+**Acceptance Audit:** ✅ PASS — All 8 acceptance criteria satisfied.
+Specification matches implementation exactly.
 
 ---
 
