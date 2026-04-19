@@ -1,7 +1,7 @@
 ---
 storyId: '2.4'
 storyKey: '2-4-unscrambler-endpoint-complete-logic'
-status: 'ready-for-dev'
+status: 'review'
 epic: 2
 epicTitle: 'Backend API Implementation'
 title: 'Implement GET /unscrambler/v1/words Endpoint with Complete Logic'
@@ -22,7 +22,9 @@ devReadyDate: '2026-04-18'
 
 **User Story:**
 
-> As a **backend developer**, I want to create the GET /unscrambler/v1/words endpoint that validates input and returns word results, so that the frontend can fetch words by making a single API call.
+> As a **backend developer**, I want to create the GET /unscrambler/v1/words
+> endpoint that validates input and returns word results, so that the frontend
+> can fetch words by making a single API call.
 
 ---
 
@@ -30,19 +32,23 @@ devReadyDate: '2026-04-18'
 
 ✅ **AC4.1:** Endpoint: GET /unscrambler/v1/words?letters={letters}
 
-✅ **AC4.2:** Validates letters parameter using validateLetters() function from Story 2.3
+✅ **AC4.2:** Validates letters parameter using validateLetters() function from
+Story 2.3
 
 ✅ **AC4.3:** Calls DictionaryService.findWords() for dictionary lookup
 
-✅ **AC4.4:** Returns 200 OK with response body: { "words": ["abc", "bac", "cab"] }
+✅ **AC4.4:** Returns 200 OK with response body: { "words": ["abc", "bac",
+"cab"] }
 
 ✅ **AC4.5:** Words are sorted alphabetically (DictionaryService handles this)
 
 ✅ **AC4.6:** Empty results return { "words": [] } with 200 OK (not an error)
 
-✅ **AC4.7:** Invalid input returns 400 with appropriate error message from validateLetters()
+✅ **AC4.7:** Invalid input returns 400 with appropriate error message from
+validateLetters()
 
-✅ **AC4.8:** Server errors (dictionary failure, etc.) return 500 with sanitized message
+✅ **AC4.8:** Server errors (dictionary failure, etc.) return 500 with sanitized
+message
 
 ✅ **AC4.9:** Response time < 10 seconds (typical < 1 second)
 
@@ -144,7 +150,8 @@ const router = Router();
 - Extract `letters` from `req.query`
 - Call `validateLetters(letters)`
 - If validation fails: return 400 with error message
-- If validation succeeds: call `DictionaryService.findWords(validation.normalizedLetters)`
+- If validation succeeds: call
+  `DictionaryService.findWords(validation.normalizedLetters)`
 - Return 200 with `{ "words": [...] }`
 - Catch any errors: return 500 with sanitized message
 
@@ -279,7 +286,9 @@ describe('GET /unscrambler/v1/words', () => {
     });
 
     test('returns 400 for input too long (> 10 chars)', async () => {
-      const res = await request(app).get('/unscrambler/v1/words?letters=abcdefghijk');
+      const res = await request(app).get(
+        '/unscrambler/v1/words?letters=abcdefghijk'
+      );
       expect(res.status).toBe(400);
       expect(res.body.error).toContain('3–10');
     });
@@ -291,7 +300,9 @@ describe('GET /unscrambler/v1/words', () => {
     });
 
     test('returns 400 for numbers in input', async () => {
-      const res = await request(app).get('/unscrambler/v1/words?letters=abc123');
+      const res = await request(app).get(
+        '/unscrambler/v1/words?letters=abc123'
+      );
       expect(res.status).toBe(400);
     });
   });
@@ -438,7 +449,8 @@ From project-context.md:
 **DON'T:**
 
 - ❌ Skip validation (security risk)
-- ❌ Return validation error messages directly (might leak implementation details)
+- ❌ Return validation error messages directly (might leak implementation
+  details)
 - ❌ Return different response format for success vs error
 - ❌ Use response.ok check without proper status codes
 - ❌ Forget to normalize input before dictionary lookup
@@ -512,13 +524,127 @@ When Story 2.4 is DONE:
 
 ---
 
+## Dev Agent Record
+
+### Implementation Plan
+
+1. Create `packages/server/src/routes/words.ts` — Express router with GET
+   `/unscrambler/v1/words` handler that calls `validateLetters()` then
+   `DictionaryService.findWords()`.
+2. Create `packages/server/src/routes/index.ts` — Route aggregator exporting a
+   combined router.
+3. Update `packages/server/src/app.ts` — Mount routes after body parsing
+   middleware and before 404 handler.
+4. Create `packages/server/src/routes/__tests__/words.test.ts` — 14 integration
+   tests covering valid input, invalid input, wildcards, response format,
+   case-insensitivity, error messages, and performance.
+
+### Completion Notes
+
+- All 14 integration tests written and passing (70 total across the server
+  package — no regressions).
+- TypeScript strict mode passes with no errors.
+- Routes mounted in correct middleware order: CORS → body parser → routes → 404
+  → error handler.
+- `DictionaryService.initialize()` called in `beforeEach` in tests using real
+  `words.txt` (1128 words loaded).
+- Non-alphabetic error message contains "letters" (satisfies
+  `toContain('letters')` assertion).
+
+---
+
+## File List
+
+- `packages/server/src/routes/words.ts` (new)
+- `packages/server/src/routes/index.ts` (new)
+- `packages/server/src/routes/__tests__/words.test.ts` (new)
+- `packages/server/src/app.ts` (modified — added routes import and
+  `app.use(routes)`)
+
+---
+
+## Change Log
+
+- 2026-04-19: Implemented Story 2.4 — GET /unscrambler/v1/words endpoint with
+  full validation, dictionary lookup, error handling, and 14 integration tests.
+
+---
+
+## Review Findings
+
+### Patch Items (Completed)
+
+- [x] [Review][Patch] Non-null assertion lacks runtime check
+      [packages/server/src/routes/words.ts:8-20] — FIXED: Added defensive
+      check + contract documentation comment.
+
+- [x] [Review][Patch] Comment numbering error [packages/server/src/app.ts:46-51]
+      — FIXED: Corrected comment numbers (5→6, 6→7).
+
+- [x] [Review][Patch] Validation error may contain undefined
+      [packages/server/src/routes/words.ts:12-13] — FIXED: Added defensive check
+      `validation.error || 'Invalid input.'`
+
+- [x] [Review][Patch] Catch-all error handler masks root cause
+      [packages/server/src/routes/words.ts:18-21] — FIXED: Added console.error()
+      logging with error details before sanitized response.
+
+- [x] [Review][Patch] Query parameter whitespace not stripped
+      [packages/server/src/validators/letters.ts:10-28] — FIXED: Added `.trim()`
+      before length check and validation.
+
+- [x] [Review][Patch] CORS configuration documentation
+      [packages/server/src/app.ts:11] — FIXED: Added comment about CORS_ORIGIN
+      env var and default fallback.
+
+- [x] [Review][Patch] validateLetters() contract undocumented
+      [packages/server/src/routes/words.ts:9-11] — FIXED: Added code comment
+      documenting the contract guarantee.
+
+### Deferred Items (Pre-existing, Architectural)
+
+- [x] [Review][Defer] Dictionary may be uninitialized on request during startup
+      [HIGH] — If request arrives before DictionaryService.initialize()
+      completes, returns generic 500. Requires health check endpoint and
+      initialization locking. Pre-existing, not caused by this story.
+
+- [x] [Review][Defer] DictionaryService tightly coupled as static dependency —
+      No dependency injection makes unit testing difficult. Requires refactoring
+      to accept service instance. Pre-existing architectural.
+
+- [x] [Review][Defer] Dictionary search O(n) unbounded on large datasets — Full
+      array scan per request. With 1000+ word datasets, performance acceptable;
+      at 1M+ words, timeout risk. Requires caching layer. Pre-existing
+      architectural.
+
+- [x] [Review][Defer] No rate limiting or request throttling — Unprotected
+      endpoint vulnerable to resource exhaustion. Requires express-rate-limit
+      middleware or reverse proxy rate limiting. Pre-existing, not this story.
+
+- [x] [Review][Defer] Dictionary file load path dependency — Deployment must
+      include packages/server/data/words.txt; no fallback. Ensure in deployment
+      checklist. Pre-existing.
+
+- [x] [Review][Defer] Production static asset fallback swallows errors —
+      sendFile() errors caught broadly, return 404. Not in endpoint code but in
+      app.ts fallback. Pre-existing architectural.
+
+- [x] [Review][Defer] Concurrent state sharing via static DictionaryService —
+      Tests call reset(); production safe but fragile. Refactor to
+      instance-based or immutable state. Pre-existing architectural.
+
+---
+
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** done  
 **Created:** 2026-04-18  
-**Dev Agent:** (To be assigned)  
-**Review Agent:** (To be assigned)  
-**Completed:** (Pending)
+**Dev Agent:** Amelia (claude-sonnet-4-6)  
+**Review Agent:** CR - Code Review (Amelia)  
+**Completed:** 2026-04-19  
+**Code Review Date:** 2026-04-19  
+**Code Review Result:** APPROVED — All 10 ACs met, 7 patches applied & verified
+(70/70 tests pass)
 
 ---
 
@@ -530,4 +656,5 @@ When Story 2.4 is DONE:
 4. Story 2.4 (API Endpoint) → Dev & Code Review (COMBINES 2.2 + 2.3)
 5. Story 2.5 (OpenAPI Documentation) → Dev & Code Review
 
-**Next Action:** After Story 2.3 passes code review, run `/bmad-dev-story` for Story 2.4.
+**Next Action:** After Story 2.3 passes code review, run `/bmad-dev-story` for
+Story 2.4.
