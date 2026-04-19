@@ -10,3 +10,14 @@ export interface ResultCardProps {
   length: number;
   words: string[];
 }
+
+export interface SearchState {
+  words: string[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface UseWordFetcherReturn {
+  state: SearchState;
+  fetchWords: (letters: string) => Promise<void>;
+}

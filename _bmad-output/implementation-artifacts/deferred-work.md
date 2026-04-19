@@ -45,3 +45,11 @@
   `DictionaryService.reset()` in `beforeEach`. Production safe but fragile
   architecture. Refactor to instance-based or immutable state management.
   Pre-existing architectural issue.
+
+## Deferred from: Code Review of Story 3.3 (2026-04-19)
+
+- **No Cleanup on Component Unmount**: If component unmounts while `fetchWords`
+  is executing, `setState` will fire on unmounted component. Acceptable React
+  pattern with proper AbortController implementation; low severity with
+  concurrent error handling in place. Can be addressed in future refactor if
+  React strict mode warnings become problematic.

@@ -866,11 +866,13 @@ When Story 3.3 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** done  
 **Created:** 2026-04-19  
-**Dev Agent:** Amelia (claude-haiku-4-5-20251001)  
+**Reviewed:** 2026-04-19  
+**Dev Agent:** Amelia (claude-sonnet-4-6)  
 **Context Engine:** BMad Create Story  
-**Validation:** Story file meets all critical guardrails
+**Validation:** Story file meets all critical guardrails. Code review complete,
+all patches applied and verified.
 
 ---
 
@@ -891,23 +893,83 @@ This story file has been prepared with complete context:
 
 ### Files to Create
 
-- [ ] `packages/client/src/hooks/useWordFetcher.ts`
-- [ ] `packages/client/src/hooks/useWordFetcher.test.ts`
+- [x] `packages/client/src/hooks/useWordFetcher.ts`
+- [x] `packages/client/src/hooks/useWordFetcher.test.ts`
 
 ### Files to Update
 
-- [ ] `packages/client/src/types/index.ts` — Export hook types
+- [x] `packages/client/src/types/index.ts` — Export hook types
 
-### Next Steps for Dev Agent
+### Implementation Notes (2026-04-19)
 
-1. Implement useWordFetcher.ts with all error handling paths
-2. Write comprehensive unit tests (≥ 80% coverage)
-3. Verify all tests pass: `npm run test -w packages/client`
-4. Verify no TypeScript errors: `npm run type-check -w packages/client`
-5. Verify ESLint passes: `npm run lint -w packages/client`
-6. Commit changes with proper message
-7. Mark story as `in-progress` in sprint-status.yaml
-8. Upon completion, run code-review workflow
+**Agent:** Amelia (claude-sonnet-4-6)
+
+**Implemented:**
+
+- `useWordFetcher.ts`: Custom React hook with `useState` + `useCallback`. Single
+  state object `{ words, isLoading, error }`. AbortController timeout (10s).
+  Handles: 200 success, 400 validation error, 500 server error, AbortError
+  (timeout), network errors, malformed JSON. URL built from
+  `import.meta.env.VITE_API_URL` (empty string default — Vite dev proxy handles
+  routing). Uses relative path `/unscrambler/v1/words`.
+- `types/index.ts`: Added `SearchState` and `UseWordFetcherReturn` exports.
+
+**Key decision:** `instanceof Error && err.name === 'AbortError'` failed in
+jsdom (DOMException may not extend Error). Changed to
+`(err as { name?: string }).name === 'AbortError'` which works across
+environments.
+
+**Tests:**
+
+- `useWordFetcher.test.ts`: 16 tests — initial state, loading state, 200
+  success, 200 empty (not an error), 400 error, 500 error, AbortError timeout,
+  AbortSignal wired up, network error, error cleared on next request, words
+  cleared on new request, URL encoding, endpoint path, sequential requests,
+  malformed JSON, fallback error message.
+- Coverage: all code paths hit.
+- 59/59 total client tests pass, zero regressions.
+
+### Completion Notes
+
+All 14 ACs satisfied. 59/59 tests passing. TypeScript strict: clean.
+ESLint/Prettier: clean.
+
+### Review Findings (Code Review: 2026-04-19)
+
+- [x] [Review][Patch] AC3.3.3: Environment Variable Mismatch — Changed
+      `VITE_API_URL` to `REACT_APP_API_URL`, default now `http://localhost:3000`
+      [packages/client/src/hooks/useWordFetcher.ts:14]
+- [x] [Review][Patch] Missing Runtime Validation on API Response — Added
+      validation: `Array.isArray(body.words)` and
+      `.every(w => typeof w === 'string')`
+      [packages/client/src/hooks/useWordFetcher.ts:45-50]
+- [x] [Review][Patch] Duplicate Type Definitions — Removed local definitions,
+      imported from @/types, re-exported for convenience
+      [packages/client/src/hooks/useWordFetcher.ts:2-4]
+- [x] [Review][Defer] No Cleanup on Component Unmount — setState called on
+      unmounted component if fetch pending during unmount
+      [packages/client/src/hooks/useWordFetcher.ts:26-71] — deferred, acceptable
+      React pattern with AbortController
+
+---
+
+---
+
+## File List
+
+- `packages/client/src/hooks/useWordFetcher.ts` (NEW)
+- `packages/client/src/hooks/useWordFetcher.test.ts` (NEW)
+- `packages/client/src/types/index.ts` (UPDATED)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (UPDATED)
+- `_bmad-output/implementation-artifacts/3-3-usewordtfetcher-custom-hook-api.md`
+  (UPDATED)
+
+---
+
+## Change Log
+
+- 2026-04-19: Implemented Story 3.3 — useWordFetcher custom hook with
+  AbortController timeout, full error handling, and 16 unit tests.
 
 ---
 
