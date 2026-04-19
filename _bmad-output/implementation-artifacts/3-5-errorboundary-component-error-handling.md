@@ -765,11 +765,12 @@ When Story 3.5 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** done  
 **Created:** 2026-04-19  
-**Dev Agent:** Amelia (claude-haiku-4-5-20251001)  
+**Dev Agent:** Amelia (claude-sonnet-4-6)  
 **Context Engine:** BMad Create Story  
-**Validation:** Story file meets all critical guardrails
+**Validation:** Story file meets all critical guardrails **Code Review:**
+Complete — 6 patches applied, 5 deferred, all tests passing
 
 ---
 
@@ -790,12 +791,62 @@ This story file provides complete error handling context:
 
 ### Files to Create
 
-- [ ] `packages/client/src/components/ErrorBoundary.tsx`
-- [ ] `packages/client/src/components/ErrorBoundary.test.tsx`
+- [x] `packages/client/src/components/ErrorBoundary.tsx`
+- [x] `packages/client/src/components/ErrorBoundary.test.tsx`
 
 ### Files to Update
 
-- [ ] `packages/client/src/main.tsx` — Import and wrap App with ErrorBoundary
+- [x] `packages/client/src/main.tsx` — Import and wrap App with ErrorBoundary
+
+### File List
+
+- `packages/client/src/components/ErrorBoundary.tsx` — Class component with
+  getDerivedStateFromError, componentDidCatch, fallback UI (CREATED)
+- `packages/client/src/components/ErrorBoundary.test.tsx` — 13 unit tests
+  covering all code paths (CREATED)
+- `packages/client/src/main.tsx` — Wrapped `<App />` with `<ErrorBoundary>`
+  (MODIFIED)
+
+### Implementation Notes
+
+- Class component required (error boundaries cannot be functional in React)
+- `getDerivedStateFromError`: returns `{ hasError: true, error }` to trigger
+  fallback render
+- `componentDidCatch`: logs
+  `console.error('ErrorBoundary caught:', error, errorInfo.componentStack)` per
+  AC3.5.5
+- Fallback UI: "Something went wrong" heading + "Please try again." + "Try
+  Again" button that calls `setState({hasError: false, error: null})`
+- Dark gradient background matching app theme
+  (`from-gray-900 via-blue-900 to-gray-900`)
+- Imports use `import type { ErrorInfo, ReactNode }` to satisfy ESLint
+  `consistent-type-imports` rule
+- Tests use mutable `controlThrow` flag (not props) to avoid re-throw on
+  ErrorBoundary reset — props-based approach causes immediate re-throw when
+  boundary resets and re-renders children with old props
+- 13 tests; 89/89 total client tests pass. Type-check: clean. Lint: clean.
+
+### Completion Notes
+
+All acceptance criteria satisfied:
+
+- AC3.5.1: ErrorBoundary.tsx created ✅
+- AC3.5.2: Class component ✅
+- AC3.5.3: Catches child errors via getDerivedStateFromError ✅
+- AC3.5.4: Fallback UI with "Something went wrong / Please try again." + Try
+  Again button ✅
+- AC3.5.5: Logs with
+  `console.error('ErrorBoundary caught:', error, errorInfo.componentStack)` ✅
+- AC3.5.6: Prevents white-screen crash ✅
+- AC3.5.7: Wraps App in main.tsx ✅
+- AC3.5.8: TypeScript strict types (ErrorBoundaryProps, ErrorBoundaryState,
+  Error, ErrorInfo) ✅
+- AC3.5.9: 13 unit tests ≥ 80% coverage ✅
+
+### Change Log
+
+- 2026-04-19: Implemented Story 3.5 — ErrorBoundary component (Amelia /
+  claude-sonnet-4-6). Epic 3 complete.
 
 ### Next Steps for Dev Agent
 
@@ -816,6 +867,56 @@ This story file provides complete error handling context:
 
 **Development Complete When:** All acceptance criteria met, tests pass 100%,
 code reviewed, Epic 3 finished.
+
+---
+
+## Review Findings (Code Review 2026-04-19)
+
+### Patch Findings (Fix Required)
+
+- [x] [Review][Patch] Test isolation: `controlThrow` global state leaks between
+      test runs [ErrorBoundary.test.tsx:25] — Reset `controlThrow = false` in
+      `afterEach()`. FIXED.
+
+- [x] [Review][Patch] Non-Error objects thrown bypass type safety
+      [ErrorBoundary.tsx:19] — `getDerivedStateFromError` now accepts `unknown`
+      and normalizes to Error. FIXED.
+
+- [x] [Review][Patch] `console.error` call unguarded [ErrorBoundary.tsx:24] —
+      Use optional chaining `console.error?.()`. FIXED.
+
+- [x] [Review][Patch] Null check missing on DOM access
+      [ErrorBoundary.test.tsx:157] — Added null guard before accessing
+      `.className`. FIXED.
+
+- [x] [Review][Patch] Test mock assertion too weak
+      [ErrorBoundary.test.tsx:107-118] — Enhanced assertion to verify error and
+      componentStack are logged. FIXED.
+
+- [x] [Review][Patch] Missing test coverage [ErrorBoundary.test.tsx:169-183] —
+      Added test for rapid "Try Again" button clicks. FIXED (90 tests pass).
+
+### Deferred Findings (Out of Scope)
+
+- [x] [Review][Defer] ErrorBoundary itself throws (no outer boundary)
+      [packages/client/src/main.tsx:15] — Deferred: architectural limitation;
+      document that ErrorBoundary errors are fatal and unrecoverable.
+
+- [x] [Review][Defer] Try Again resets state but children retain stale lifecycle
+      [ErrorBoundary.tsx:35] — Deferred: depends on child component design; spec
+      doesn't require auto-recovery, only reset button.
+
+- [x] [Review][Defer] No async error handling (Promise/setTimeout errors bypass)
+      [ErrorBoundary.tsx] — Deferred: error boundaries don't catch async errors;
+      future enhancement outside current scope.
+
+- [x] [Review][Defer] componentDidCatch only logs to console (no prod
+      monitoring) [ErrorBoundary.tsx:24] — Deferred: dev logging sufficient for
+      MVP; error tracking (Sentry, etc.) is future integration.
+
+- [x] [Review][Defer] errorInfo.componentStack not exposed in fallback UI
+      [ErrorBoundary.tsx:30-42] — Deferred: UX improvement; stack visible in
+      console only; not required by spec.
 
 ---
 
