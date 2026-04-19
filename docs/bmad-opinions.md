@@ -2,15 +2,19 @@
 
 ## Overview
 
-After excessive scope creep on my first BMAD experiment, I started a much simpler BMAD experiment.
-I see a lot of value in the brainstorming and advanced elicitation features of BMAD, _but_ they must be employed judiciously, as it's easy for them to lead to unanticipated increase in scope.
-I specifically focused on my idea, resisting BMAD's attempts to get me to think through features to differentiate my project from the many similar sites already available.
+After excessive scope creep on my first BMAD experiment, I started a much
+simpler BMAD experiment. I see a lot of value in the brainstorming and advanced
+elicitation features of BMAD, _but_ they must be employed judiciously, as it's
+easy for them to lead to unanticipated increase in scope. I specifically focused
+on my idea, resisting BMAD's attempts to get me to think through features to
+differentiate my project from the many similar sites already available.
 
-What I'm implementing here is a simple word unscrambler, inspired by [Word Unscrambler](https://wordunscrambler.me/).
-It's super simple, accepting 3-7 letters, and unscrambling them against a dictionary.
+What I'm implementing here is a simple word unscrambler, inspired by
+[Word Unscrambler](https://wordunscrambler.me/). It's super simple, accepting
+3-7 letters, and unscrambling them against a dictionary.
 
-Also, this time I remembered to use Sonnet for the `/bmad-dev-story` tasks.
-This is based on my conversations with Kevin and with Samuel and Ryan.
+Also, this time I remembered to use Sonnet for the `/bmad-dev-story` tasks. This
+is based on my conversations with Kevin and with Samuel and Ryan.
 
 ## Questions
 
@@ -25,61 +29,99 @@ This experiment was to answer four questions:
 
 #### What I Liked
 
-- This time, it seemed to move quite a bit faster than the first time, in part because I wasn't trying to use all of the advanced elicitation methods at each step.
-- Things seemed to go smoother this time, perhaps because of the simplicity.
-  I think that simplicity may be the key to getting good results at this point.
-- From a management perspective, I think AI forces us to be very specific, and helps us to incrementally generate the needed specificity.
-  I once had the manager ask 3 engineers to estimate a project, but didn't tell them that he was going to farm it out to the entire team (8–10 engineers).
-  They went through and made user story titles that made sense to them, but didn't fill out the details, because they had done the initial investigation and implicitly understood the details, and expected to be doing all of the work themselves.
-  The timelines didn't account for the need to communicate the specifics to other engineers who weren't as familiar with the code base.
-  The manager was not happy to receive push-back regarding the lack of definition in the user stories and unwillingness to commit to timelines that the newer engineers couldn't assess.
-  Using the brainstorming and advanced elicitation techniques from BMAD could have helped the manager and 3 senior engineers to be more complete and specific.
-  I find it somewhat ironic that the specificity required by AI may ultimately improve human interaction in the workplace because people will have become more accustomed to greater precision in expressing their requests.
-  Experience with some of the advanced elicitation techniques in BMAD could also enable someone receiving a vague request to guide the person making the request to define and express missing details.
+- This time, it seemed to move quite a bit faster than the first time, in part
+  because I wasn't trying to use all of the advanced elicitation methods at each
+  step.
+- Things seemed to go smoother this time, perhaps because of the simplicity. I
+  think that simplicity may be the key to getting good results at this point.
+- From a management perspective, I think AI forces us to be very specific, and
+  helps us to incrementally generate the needed specificity. I once had the
+  manager ask 3 engineers to estimate a project, but didn't tell them that he
+  was going to farm it out to the entire team (8–10 engineers). They went
+  through and made user story titles that made sense to them, but didn't fill
+  out the details, because they had done the initial investigation and
+  implicitly understood the details, and expected to be doing all of the work
+  themselves. The timelines didn't account for the need to communicate the
+  specifics to other engineers who weren't as familiar with the code base. The
+  manager was not happy to receive push-back regarding the lack of definition in
+  the user stories and unwillingness to commit to timelines that the newer
+  engineers couldn't assess. Using the brainstorming and advanced elicitation
+  techniques from BMAD could have helped the manager and 3 senior engineers to
+  be more complete and specific. I find it somewhat ironic that the specificity
+  required by AI may ultimately improve human interaction in the workplace
+  because people will have become more accustomed to greater precision in
+  expressing their requests. Experience with some of the advanced elicitation
+  techniques in BMAD could also enable someone receiving a vague request to
+  guide the person making the request to define and express missing details.
 
 #### What I Disliked
 
-- The BMAD method seemed a bit optimistic.
-  In the architecture document, after step 5, it said, "**[C]** Continue – Save these patterns and finalize the architecture" but then added another 258 lines and said, "**[C]** Continue – Save this structure and validate the complete architecture" which seems like we have more steps and weren't finished at step 5.
-  The architecture document seemed to take 7 steps.
-  Similarly the PRD would vary between estimating 11 or 13 total steps and sometimes wouldn't indicate how far along we were.
-  I think this is something the BMAD method could adjust in subsequent versions.
-  It's not intrinsic to the methodology, just status reporting and expectation management.
+- The BMAD method seemed a bit optimistic. In the architecture document, after
+  step 5, it said, "**[C]** Continue – Save these patterns and finalize the
+  architecture" but then added another 258 lines and said, "**[C]** Continue –
+  Save this structure and validate the complete architecture" which seems like
+  we have more steps and weren't finished at step 5. The architecture document
+  seemed to take 7 steps. Similarly the PRD would vary between estimating 11 or
+  13 total steps and sometimes wouldn't indicate how far along we were. I think
+  this is something the BMAD method could adjust in subsequent versions. It's
+  not intrinsic to the methodology, just status reporting and expectation
+  management.
 
 ### What did AI do well, and where did it fail?
 
 #### What AI Did Well
 
-- It respected my wishes to keep things simple, even generating its own statements to that effect.
-- I was surprised at the quality of the UX examples the AI generated.
-  Typography was extremely simple and the most sophisticated background was a gradient, but it looked far better than I expected.
-  I was envisioning a left-aligned layout with some sort of image to the right, but went with a centered layout with a gradient because I didn't want to spend extra time generating a background image.
-- The implementation readiness analysis discovered the inconsistent placement of the `prd.md` file (see below under "Where AI Failed") and offered to automatically move it to the correct location.
-- The AI model surfaced options for the word list that I hadn't considered.
-  I saw a list of 3-letter words on Wiktionary, but they didn't have similar lists for longer words.
-  In addition to Wiktionary, it suggested SCOWL, which I'd never heard of before, but it looked like a great choice!
-- It eventually (during implementation of story 1-4) detected and offered to correct the discrepancey between allowing 3–7 vs 3–10 letters, the discrepancy between 18 and 24 stories, and the discrepancy between 23 and 24 stories.
-  It actually credited me with calling out the issues in this document!
-  I'm fairly impressed that it used this non-standard document to identify and fix actual issues.
-- Implementing Story 2-1, it seemed to do very well.
-  The code review surfaced some issues, which it fixed on its own.
-- The GitHub action to build kept failing because the client JS bundle was over 100kB, so I asked Sonnet about it.
-  Sonnet identified that the size check was checking the uncompressed bundle size, but ultimately it created a gzipped bundle at 68kB.
-  It recommended fixing the test, rather than allowing a larger size bundle (which I agree with).
+- It respected my wishes to keep things simple, even generating its own
+  statements to that effect.
+- I was surprised at the quality of the UX examples the AI generated. Typography
+  was extremely simple and the most sophisticated background was a gradient, but
+  it looked far better than I expected. I was envisioning a left-aligned layout
+  with some sort of image to the right, but went with a centered layout with a
+  gradient because I didn't want to spend extra time generating a background
+  image.
+- The implementation readiness analysis discovered the inconsistent placement of
+  the `prd.md` file (see below under "Where AI Failed") and offered to
+  automatically move it to the correct location.
+- The AI model surfaced options for the word list that I hadn't considered. I
+  saw a list of 3-letter words on Wiktionary, but they didn't have similar lists
+  for longer words. In addition to Wiktionary, it suggested SCOWL, which I'd
+  never heard of before, but it looked like a great choice!
+- It eventually (during implementation of story 1-4) detected and offered to
+  correct the discrepancey between allowing 3–7 vs 3–10 letters, the discrepancy
+  between 18 and 24 stories, and the discrepancy between 23 and 24 stories. It
+  actually credited me with calling out the issues in this document! I'm fairly
+  impressed that it used this non-standard document to identify and fix actual
+  issues.
+- Implementing Story 2-1, it seemed to do very well. The code review surfaced
+  some issues, which it fixed on its own.
+- The GitHub action to build kept failing because the client JS bundle was over
+  100kB, so I asked Sonnet about it. Sonnet identified that the size check was
+  checking the uncompressed bundle size, but ultimately it created a gzipped
+  bundle at 68kB. It recommended fixing the test, rather than allowing a larger
+  size bundle (which I agree with).
 
 #### Where AI Failed
 
-- Context built quickly.
-  I saw something about keeping context below 20%, but it hit 20% in the first step of writing a document.
-  It seemed to forget things I told it previously, so it either failed to write it down in the Project Context or PRD, or it got lost in the context.
-- I changed my mind about the word length, switching from 3-10 letters to 3-7 letters, but the API specification wasn't updated to reflect that.
-  It would have been good for the AI to flag the inconsistency and ask if I wanted to stick with 3-10 letters or update the existing documents to indicate 3-7 letters.
-- It put the `prd.md` document in the `planning_artifacts` directory but the `ux-design-directions.html` and `ux-design-specification.md` documents in the `planning-artifacts` directory.
-  I assume that the BMAD method will fix this inconsistency in a future update.
-  For now, I think it would still find them all even if I moved the PRD into the `planning-artifacs` directory (it found this document, so I explicitly excluded it).
-- It calculated 5 epics with 18 stories, but epics 1–4 have 5 stories each and epic 5 has 4 stories, which looks like 24 stories to me (and ultimately claimed to write 23 stories, but wrote 24!).
-  It's somewhat amusing given that computers were initially built to do math accurately.
-  I suppose some stories could apply to multiple epics, but I've never seen that in practice.
+- Context built quickly. I saw something about keeping context below 20%, but it
+  hit 20% in the first step of writing a document. It seemed to forget things I
+  told it previously, so it either failed to write it down in the Project
+  Context or PRD, or it got lost in the context.
+- I changed my mind about the word length, switching from 3-10 letters to 3-7
+  letters, but the API specification wasn't updated to reflect that. It would
+  have been good for the AI to flag the inconsistency and ask if I wanted to
+  stick with 3-10 letters or update the existing documents to indicate 3-7
+  letters.
+- It put the `prd.md` document in the `planning_artifacts` directory but the
+  `ux-design-directions.html` and `ux-design-specification.md` documents in the
+  `planning-artifacts` directory. I assume that the BMAD method will fix this
+  inconsistency in a future update. For now, I think it would still find them
+  all even if I moved the PRD into the `planning-artifacs` directory (it found
+  this document, so I explicitly excluded it).
+- It calculated 5 epics with 18 stories, but epics 1–4 have 5 stories each and
+  epic 5 has 4 stories, which looks like 24 stories to me (and ultimately
+  claimed to write 23 stories, but wrote 24!). It's somewhat amusing given that
+  computers were initially built to do math accurately. I suppose some stories
+  could apply to multiple epics, but I've never seen that in practice.
 
 ```
     📋 Epic Structure Created
@@ -91,32 +133,53 @@ This experiment was to answer four questions:
     5. Epic 5: Deployment & Documentation (4 stories)
 ```
 
-- The implementation readiness assessment couldn't find the PRD, so I had to tell it that it was located in the `planning_artifacts` directory (which is where the earlier process put it!).
-  It noted the inconsistency and offered to move it to the `planning-artifacts` directory.
-  So I guess the inconsistency was resolved.
-  My guess is that BMAD will fix this in the next version or a subsequent version.
-- Generating the first story (setting up the code base from an exmaple project), it seemed to get confused with the monorepo setup, and then a number of commands failed because it couldn't find files.
-- It created a number of files for the first story, then deleted them for the second.
-  This seemed inefficient.
-- Several command lines failed.
-  It seemed odd that the AI would struggle to create a command line that works.
-- Performing code reviews would often land on the AI identifying a clear next step, but not offering something for me to select (like almost every other BMAD skill).
-  So I'd essentially re-type the last line of what it told me to get it to proceed with the action it suggested.
-  Sort of odd.
-  I suppose BMAD will address this in future versions.
+- The implementation readiness assessment couldn't find the PRD, so I had to
+  tell it that it was located in the `planning_artifacts` directory (which is
+  where the earlier process put it!). It noted the inconsistency and offered to
+  move it to the `planning-artifacts` directory. So I guess the inconsistency
+  was resolved. My guess is that BMAD will fix this in the next version or a
+  subsequent version.
+- Generating the first story (setting up the code base from an exmaple project),
+  it seemed to get confused with the monorepo setup, and then a number of
+  commands failed because it couldn't find files.
+- It created a number of files for the first story, then deleted them for the
+  second. This seemed inefficient.
+- Several command lines failed. It seemed odd that the AI would struggle to
+  create a command line that works.
+- Performing code reviews would often land on the AI identifying a clear next
+  step, but not offering something for me to select (like almost every other
+  BMAD skill). So I'd essentially re-type the last line of what it told me to
+  get it to proceed with the action it suggested. Sort of odd. I suppose BMAD
+  will address this in future versions.
+- Reviewing story 2-3, Blind Hunter and Edge Case Hunter failed to do anything,
+  but the AI allowed me to wait for their results. Seeing nothing happening, I
+  asked if they were running, and it told me that they were not. It needs to
+  accurately report status.
 
 ### What would you clean up in the code if you were to ship this project?
 
 ### What would you do differently if you were to do this again?
 
-- This time around, I minimized use of brainstorming and advanced elicitation features because I already had an idea that was well-developed and I wanted to keep it focused and simple.
-- Another experiment could be to start with an existing code base and see how it handles adding features, fixing defects, etc.
+- This time around, I minimized use of brainstorming and advanced elicitation
+  features because I already had an idea that was well-developed and I wanted to
+  keep it focused and simple.
+- Another experiment could be to start with an existing code base and see how it
+  handles adding features, fixing defects, etc.
 
 ### What would you do the same if you were to do this again?
 
-- I would definitely try to keep the amount of work being done in a single cycle of architecture, planning, and implementation as simple as possible.
-  I understand that more complex projects probably require a lot more analysis work up front to define the MVP and align some follow-on work.
-  Just like with human-driven processes, it takes a lot of time (and in this case, tokens) to do the planning stages.
-  Just like with human-driven processes, it makes sense to defer the analysis and definition of anything not pertaining to MVP or a current effort (possibly covering multiple sprints) until it's time to implement that portion, because the risk of the work being invalidated or becoming irrelevant is moderate and it doesn't contribute to the immediate goal.
-  Just like with human-driven processes, I think we want to do enough analysis and planning to avoid painting ourselves into a corner, but place our primary focus on the immediate goal and address the future in the future.
-  I think I need to do a brownfield BMAD experiment to clarify my thoughts on this.
+- I would definitely try to keep the amount of work being done in a single cycle
+  of architecture, planning, and implementation as simple as possible. I
+  understand that more complex projects probably require a lot more analysis
+  work up front to define the MVP and align some follow-on work. Just like with
+  human-driven processes, it takes a lot of time (and in this case, tokens) to
+  do the planning stages. Just like with human-driven processes, it makes sense
+  to defer the analysis and definition of anything not pertaining to MVP or a
+  current effort (possibly covering multiple sprints) until it's time to
+  implement that portion, because the risk of the work being invalidated or
+  becoming irrelevant is moderate and it doesn't contribute to the immediate
+  goal. Just like with human-driven processes, I think we want to do enough
+  analysis and planning to avoid painting ourselves into a corner, but place our
+  primary focus on the immediate goal and address the future in the future. I
+  think I need to do a brownfield BMAD experiment to clarify my thoughts on
+  this.
