@@ -15,14 +15,16 @@ export function validateLetters(input: unknown): ValidationResult {
     };
   }
 
-  if (input.length < LETTER_MIN_LENGTH || input.length > LETTER_MAX_LENGTH) {
+  const trimmed = input.trim();
+
+  if (trimmed.length < LETTER_MIN_LENGTH || trimmed.length > LETTER_MAX_LENGTH) {
     return {
       valid: false,
       error: 'Supplied text must be 3\u201310 characters in length.',
     };
   }
 
-  if (!/^[a-z?]+$/i.test(input)) {
+  if (!/^[a-z?]+$/i.test(trimmed)) {
     return {
       valid: false,
       error: 'Supplied text may only include letters (upper or lower case) and question marks.',
@@ -31,6 +33,6 @@ export function validateLetters(input: unknown): ValidationResult {
 
   return {
     valid: true,
-    normalizedLetters: input.toLowerCase(),
+    normalizedLetters: trimmed.toLowerCase(),
   };
 }
