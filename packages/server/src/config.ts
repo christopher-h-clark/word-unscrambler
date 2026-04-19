@@ -16,6 +16,15 @@ if (IS_DEV) {
 }
 
 const SERVER_PORT = parseInt(process.env.PORT || '3000', 10);
-const CORS_ORIGIN = process.env.CORS_ORIGIN?.trim() || 'http://localhost:5173';
 
-export { CORS_ORIGIN, IS_DEV, SERVER_PORT };
+const DEFAULT_CORS_ORIGIN = 'http://localhost:5173';
+const CORS_ORIGIN = process.env.CORS_ORIGIN?.trim() || DEFAULT_CORS_ORIGIN;
+
+const IS_PROD = !IS_DEV;
+if (IS_PROD && process.env.CORS_ORIGIN?.trim() === undefined) {
+  console.warn(
+    '[WARN] CORS_ORIGIN not set; using default (localhost:5173). Set CORS_ORIGIN env var for production.'
+  );
+}
+
+export { CORS_ORIGIN, IS_DEV, IS_PROD, SERVER_PORT };

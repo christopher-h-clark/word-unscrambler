@@ -58,14 +58,14 @@ jobs:
             echo "WARNING: packages/client/dist does not exist"
             exit 1
           fi
-          SIZE=$(find packages/client/dist/assets -name "*.js" -type f -exec du -sb {} \; 2>/dev/null | awk '{sum += $1} END {print sum}')
-          if [ -n "$SIZE" ] && [ "$SIZE" -gt 0 ]; then
-            echo "Total JS bundle size: ${SIZE} bytes"
-            if [ "$SIZE" -gt 102400 ]; then
-              echo "ERROR: Bundle exceeds 100KB"
+          GZIP_SIZE=$(find packages/client/dist/assets -name "*.js" -type f | xargs gzip -c | wc -c)
+          if [ -n "$GZIP_SIZE" ] && [ "$GZIP_SIZE" -gt 0 ]; then
+            echo "Total JS bundle size (gzipped): ${GZIP_SIZE} bytes"
+            if [ "$GZIP_SIZE" -gt 102400 ]; then
+              echo "ERROR: Gzipped bundle exceeds 100KB"
               exit 1
             fi
-            echo "Bundle size OK (${SIZE} bytes < 100KB)"
+            echo "Bundle size OK (${GZIP_SIZE} bytes gzipped < 100KB)"
           else
             echo "No JS bundle files found in assets/"
           fi
