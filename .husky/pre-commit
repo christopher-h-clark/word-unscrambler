@@ -3,13 +3,11 @@ set -e
 
 echo "Running pre-commit checks..."
 
-echo "1/3: Linting and formatting staged files..."
+echo "1/2: Linting and formatting staged files..."
 npx lint-staged || { echo "❌ Lint-staged failed. Fix issues and retry."; exit 1; }
 
-echo "2/3: Type checking..."
-npm run type-check || { echo "❌ Type check failed. Fix TypeScript errors and retry."; exit 1; }
-
-echo "3/3: Running tests (this may take a minute)..."
+echo "2/2: Running tests (this may take a minute)..."
 npm run test:run || { echo "❌ Tests failed. Fix failing tests and retry."; exit 1; }
 
 echo "✅ All pre-commit checks passed!"
+echo "Note: Type checking will be validated in CI pipeline."

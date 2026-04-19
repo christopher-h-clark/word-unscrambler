@@ -15,8 +15,9 @@ router.get('/unscrambler/v1/words', (req: Request, res: Response): void => {
       res.status(400).json({ error: validation.error || 'Invalid input.' });
       return;
     }
-    // Safe: validation.valid=true guarantees normalizedLetters is set
-    const words = DictionaryService.findWords(validation.normalizedLetters!);
+    // Type narrowing: validation.valid=true guarantees normalizedLetters is set
+    const normalizedLetters = validation.normalizedLetters || '';
+    const words = DictionaryService.findWords(normalizedLetters);
     res.status(200).json({ words });
   } catch (error) {
     // Log error details server-side for debugging; return sanitized message to client

@@ -39,8 +39,9 @@ component)
 
 ✅ **AC3.3.2:** Hook accepts `letters` parameter (string: 3-10 characters)
 
-✅ **AC3.3.3:** Hook makes GET request to
-`/unscrambler/v1/words?letters={letters}`
+✅ **AC3.3.3:** Hook makes GET request to backend API endpoint:
+`${REACT_APP_API_URL}/unscrambler/v1/words?letters={letters}` (REACT_APP_API_URL
+from environment, defaults to `http://localhost:3000`)
 
 ✅ **AC3.3.4:** Fetch request includes 10-second timeout using AbortController
 
@@ -57,11 +58,33 @@ message: "Request timed out. Please try again."
 ✅ **AC3.3.9:** Hook manages state:
 `{ words: string[], isLoading: boolean, error: string | null }`
 
-✅ **AC3.3.10:** Hook returns state object and async function to trigger new
-searches: `(letters: string) => Promise<void>`
+✅ **AC3.3.10:** Hook returns object with state and trigger function:
+
+```typescript
+{
+  words: string[];
+  isLoading: boolean;
+  error: string | null;
+  fetchWords: (letters: string) => Promise<void>;
+}
+```
+
+Example usage:
+`const { words, isLoading, error, fetchWords } = useWordFetcher();`
 
 ✅ **AC3.3.11:** Hook handles all error cases gracefully (no unhandled promise
 rejections)
+
+- isLoading set to false after response received (success or error)
+- error field populated with message string, or null on success
+- No thrown exceptions from hook (all errors captured in state)
+
+✅ **AC3.3.12 (NEW):** Hook handles malformed API responses gracefully
+
+- If response is not valid JSON: error = "Failed to parse response"
+- If response status is unexpected (not 200/400/500): error = "Server error.
+  Please try again later."
+- Hook never crashes on unexpected response format
 
 ✅ **AC3.3.12:** Comprehensive unit tests verify fetch calls, timeout handling,
 error parsing, state updates (coverage ≥ 80%)

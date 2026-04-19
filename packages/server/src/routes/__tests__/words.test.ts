@@ -44,13 +44,13 @@ describe('GET /unscrambler/v1/words', () => {
     test('returns 400 for input too short (< 3 chars)', async () => {
       const res = await request(app).get('/unscrambler/v1/words?letters=ab');
       expect(res.status).toBe(400);
-      expect(res.body.error).toContain('3\u201310');
+      expect(res.body.error).toContain('3-10');
     });
 
     test('returns 400 for input too long (> 10 chars)', async () => {
       const res = await request(app).get('/unscrambler/v1/words?letters=abcdefghijk');
       expect(res.status).toBe(400);
-      expect(res.body.error).toContain('3\u201310');
+      expect(res.body.error).toContain('3-10');
     });
 
     test('returns 400 for non-alphabetic input (except ?)', async () => {
@@ -110,7 +110,7 @@ describe('GET /unscrambler/v1/words', () => {
       const res = await request(app).get('/unscrambler/v1/words?letters=ab');
       expect(res.body.error).not.toContain('regex');
       expect(res.body.error).not.toContain('validation');
-      expect(res.body.error).toContain('3\u201310');
+      expect(res.body.error).toContain('3-10');
     });
   });
 

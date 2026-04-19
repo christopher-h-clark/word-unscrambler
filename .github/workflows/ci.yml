@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# Environment variable overrides (optional):
+#   BUNDLE_LIMIT_KB: Max bundle size in KB (default: 100)
+#   PLAYWRIGHT_TIMEOUT: E2E test timeout in ms (default: 45000)
+#   PLAYWRIGHT_BASE_URL: E2E test base URL (default: http://localhost:5173)
+
 jobs:
   type-check:
     name: Type Check
@@ -18,6 +23,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run type-check
 
   lint:
@@ -31,6 +38,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run lint
       - run: npm run format:check
 
@@ -45,6 +54,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run build
       - name: Check bundle size
         run: node scripts/check-bundle-size.js
@@ -60,13 +71,19 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm run test:run
       - run: npm run test:coverage
       - name: Check coverage threshold
-        run: |
-          # Verify coverage meets minimum threshold (70%)
-          # Coverage report location may vary; adjust if needed
-          echo "Coverage check: ensure coverage >= 70%"
+        run: node scripts/check-coverage.js
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: packages/*/coverage
+          retention-days: 30
 
   security:
     name: Security Audit
@@ -79,6 +96,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+        env:
+          npm_config_retry: 3
       - run: npm audit --audit-level=moderate
 
   e2e:
@@ -92,8 +111,23 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
-      - run: timeout 240 npx playwright install --with-deps || { echo "Playwright install timeout"; exit 1; }
+        env:
+          npm_config_retry: 3
+      - name: Install Playwright (with retry)
+        run: |
+          for attempt in 1 2 3; do
+            echo "Playwright install attempt $attempt/3..."
+            timeout 240 npx playwright install --with-deps && break
+            if [ $attempt -lt 3 ]; then echo "Retrying..."; sleep 5; fi
+          done
       - run: npm run test:e2e
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 30
 
   merge-check:
     name: All Checks Passed

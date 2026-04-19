@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const getPort = (): number => {
@@ -10,7 +11,8 @@ const getPort = (): number => {
   if (!portEnv) return 5173;
   const port = parseInt(portEnv, 10);
   if (isNaN(port)) {
-    console.warn(`⚠️ Invalid VITE_PORT="${portEnv}", using default 5173`);
+    const msg = `Invalid VITE_PORT="${portEnv}", using default 5173`;
+    if (process.env.CI !== 'true') console.warn(`⚠️ ${msg}`);
     return 5173;
   }
   return port;
@@ -22,7 +24,8 @@ const getApiUrl = (): string => {
     new URL(url);
     return url;
   } catch {
-    console.warn(`⚠️ Invalid VITE_API_URL="${url}", using default http://localhost:3000`);
+    const msg = `Invalid VITE_API_URL="${url}", using default http://localhost:3000`;
+    if (process.env.CI !== 'true') console.warn(`⚠️ ${msg}`);
     return 'http://localhost:3000';
   }
 };
@@ -38,15 +41,18 @@ export default defineConfig({
     port: getPort(),
     strictPort: false,
     proxy: {
-      '/api': getApiUrl(),
+      '/unscrambler': getApiUrl(),
     },
   },
   build: {
     outDir: 'dist',
     manifest: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
       },
     },
   },

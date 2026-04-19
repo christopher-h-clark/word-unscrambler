@@ -6,7 +6,7 @@ epicTitle: 'Frontend UI Implementation'
 title: 'Implement ResultsDisplay Component with Grouping and Sorting'
 created: '2026-04-19'
 lastUpdated: '2026-04-19'
-completionStatus: 'ready-for-dev'
+completionStatus: 'done'
 contextSource:
   'Epic 3.2 + UX Specification + Architecture Document + Project Context + Story
   3.1 Learnings'
@@ -907,11 +907,49 @@ When Story 3.2 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** review  
 **Created:** 2026-04-19  
-**Dev Agent:** Amelia (claude-haiku-4-5-20251001)  
+**Dev Agent:** Amelia (claude-sonnet-4-6)  
 **Context Engine:** BMad Create Story  
 **Validation:** Story file meets all critical guardrails
+
+---
+
+## Review Findings
+
+### Decision Needed (Resolved)
+
+- [x] [Review][Decision] Empty state styling — RESOLVED: No card shown when
+      empty (correct). Supportive message displays instead of result cards. ✅
+
+### Patches (Applied)
+
+- [x] [Review][Patch] Interface duplication — FIXED: Removed ResultsDisplayProps
+      from ResultsDisplay.tsx, imported from types/index.ts
+- [x] [Review][Patch] React key type mismatch — FIXED: Changed
+      key={group.length} to key={String(group.length)}
+- [x] [Review][Patch] Tailwind border width — FIXED: Changed border-l-4 to
+      border-l-[3px] for spec-compliant 3px width
+- [x] [Review][Patch] Missing ErrorBoundary documentation — FIXED: Added comment
+      documenting ErrorBoundary dependency
+
+### Deferred (Pre-Existing or Project-Wide)
+
+- [x] [Review][Defer] Accessibility (ARIA/semantic markup) — WCAG AA requirement
+      deferred to Story 4.4 (Accessibility Audit). Story 3.1 (SearchForm)
+      established no ARIA pattern yet.
+- [x] [Review][Defer] React.FC pattern — React.FC<Props> matches Story 3.1
+      convention. Project-wide decision, not specific to this story.
+- [x] [Review][Defer] Word length validation not enforced — By design: backend
+      enforces, parent validates. Component assumes clean input per project
+      pattern.
+
+### Dismissed as Noise or By-Design
+
+- useMemo for grouping — Explicitly deferred in story (line 408): "Skip for MVP,
+  add if profiling shows need"
+- Injection via word content — Intentional per project pattern (line 805):
+  "parent validates, backend enforces"
 
 ---
 
@@ -933,27 +971,71 @@ engine. All critical information has been extracted:
 
 ### Files to Create
 
-- [ ] `packages/client/src/components/ResultsDisplay.tsx`
-- [ ] `packages/client/src/components/ResultsDisplay.test.tsx`
-- [ ] `packages/client/src/components/ResultCard.tsx`
-- [ ] `packages/client/src/components/ResultCard.test.tsx`
+- [x] `packages/client/src/components/ResultsDisplay.tsx`
+- [x] `packages/client/src/components/ResultsDisplay.test.tsx`
+- [x] `packages/client/src/components/ResultCard.tsx`
+- [x] `packages/client/src/components/ResultCard.test.tsx`
 
 ### Files to Update
 
-- [ ] `packages/client/src/types/index.ts` — Add
+- [x] `packages/client/src/types/index.ts` — Add
       `export interface ResultsDisplayProps`, `export interface ResultCardProps`
 
-### Next Steps for Dev Agent
+### Implementation Notes (2026-04-19)
 
-1. Implement ResultsDisplay.tsx with grouping and sorting logic
-2. Implement ResultCard.tsx as separate component
-3. Write comprehensive unit tests (≥ 80% coverage)
-4. Verify all tests pass: `npm run test -w packages/client`
-5. Verify no TypeScript errors: `npm run type-check -w packages/client`
-6. Verify ESLint passes: `npm run lint -w packages/client`
-7. Commit changes with proper message
-8. Mark story as `in-progress` in sprint-status.yaml
-9. Upon completion, run code-review workflow
+**Agent:** Amelia (claude-sonnet-4-6)
+
+**Implemented:**
+
+- `ResultCard.tsx`: Stateless presentational component. Renders `<section>` with
+  `h3` header (`{length}-Letter Words`) and space-joined words. Tailwind
+  classes: `bg-gray-700 p-5 rounded border-l-4 border-blue-500 mb-4`.
+- `ResultsDisplay.tsx`: Container component with `groupWordsByLength` helper —
+  uses `Map<number, string[]>`, sorts words alphabetically within groups, sorts
+  groups by length ascending. Empty state renders supportive message. No
+  loading/error state (parent responsibility).
+- `types/index.ts`: Added `ResultsDisplayProps` and `ResultCardProps` exports.
+
+**Tests:**
+
+- `ResultCard.test.tsx`: 9 tests — header text, words display, styling classes,
+  h3 role, many words.
+- `ResultsDisplay.test.tsx`: 12 tests — empty state, grouping, sorting, group
+  ordering, omit empty groups, 100+ words.
+- Coverage: 100% statements/branches/functions/lines across both components.
+- All 43 client tests pass, zero regressions.
+
+**Decisions:**
+
+- Skipped `useMemo` per story spec (< 100 words typical for MVP).
+- Used `.toBeTruthy()` assertions (no `@testing-library/jest-dom` in setup).
+
+### Completion Notes
+
+All ACs satisfied. 43/43 tests passing. TypeScript strict: clean. ESLint: clean.
+Coverage: 100%.
+
+---
+
+---
+
+## File List
+
+- `packages/client/src/components/ResultCard.tsx` (NEW)
+- `packages/client/src/components/ResultCard.test.tsx` (NEW)
+- `packages/client/src/components/ResultsDisplay.tsx` (NEW)
+- `packages/client/src/components/ResultsDisplay.test.tsx` (NEW)
+- `packages/client/src/types/index.ts` (UPDATED)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (UPDATED)
+- `_bmad-output/implementation-artifacts/3-2-resultsdisplay-component-grouping-sorting.md`
+  (UPDATED)
+
+---
+
+## Change Log
+
+- 2026-04-19: Implemented Story 3.2 — ResultsDisplay and ResultCard components
+  with grouping, sorting, and empty state. 21 unit tests, 100% coverage.
 
 ---
 

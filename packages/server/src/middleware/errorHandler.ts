@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 
 export function errorHandler(
   error: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
   _next: NextFunction
 ): void {

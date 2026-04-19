@@ -20,7 +20,7 @@ export function validateLetters(input: unknown): ValidationResult {
   if (trimmed.length < LETTER_MIN_LENGTH || trimmed.length > LETTER_MAX_LENGTH) {
     return {
       valid: false,
-      error: 'Supplied text must be 3\u201310 characters in length.',
+      error: 'Supplied text must be 3-10 characters in length.',
     };
   }
 
