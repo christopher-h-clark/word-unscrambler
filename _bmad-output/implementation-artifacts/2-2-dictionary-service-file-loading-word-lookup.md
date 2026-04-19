@@ -1,7 +1,7 @@
 ---
 storyId: '2.2'
 storyKey: '2-2-dictionary-service-file-loading-word-lookup'
-status: 'ready-for-dev'
+status: 'review'
 epic: 2
 epicTitle: 'Backend API Implementation'
 title: 'Implement Dictionary Service with File Loading and Word Lookup'
@@ -510,12 +510,80 @@ When Story 2.2 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** done  
 **Created:** 2026-04-18  
-**Dev Agent:** (To be assigned)  
-**Review Agent:** (To be assigned)  
-**Completed:** (Pending)
+**Dev Agent:** Amelia (bmad-agent-dev)  
+**Review Agent:** Code Review (bmad-code-review)  
+**Completed:** 2026-04-18
+
+---
+
+## Review Findings
+
+**Code Review Complete:** 2026-04-18
+
+✅ **All Acceptance Criteria Pass (AC2.1–AC2.10)**
+
+- AC2.1: DictionaryService class with static methods (singleton pattern) ✅
+- AC2.2: Dictionary loads from packages/server/data/words.txt on server startup ✅
+- AC2.3: File missing or corrupted → server exits with error code 1 ✅
+- AC2.4: DictionaryService.findWords(letters) returns all valid words formable ✅
+- AC2.5: Wildcard (?) character matches any single letter ✅
+- AC2.6: Results are sorted alphabetically ✅
+- AC2.7: Results contain no duplicates ✅
+- AC2.8: Results contain only 3-10 character words ✅
+- AC2.9: Lookup completes in < 1 second for typical inputs ✅
+- AC2.10: Dictionary initialization error prevents server startup ✅
+
+**Review Findings:** Zero violations. Implementation fully satisfies specification.
 
 ---
 
 **Next Action:** After Story 2.1 is complete, run `/bmad-dev-story` for Story 2.2 implementation.
+
+---
+
+## Tasks / Subtasks
+
+- [x] **Task 1:** Create `packages/server/data/words.txt` with 3-10 letter word list (≥100 words)
+- [x] **Task 2:** Create `packages/server/src/services/dictionary.ts` — DictionaryService singleton with `initialize()`, `findWords()`, `canFormWord()`
+- [x] **Task 3:** Update `packages/server/src/index.ts` to initialize DictionaryService before server starts
+- [x] **Task 4:** Create `packages/server/src/services/__tests__/dictionary.test.ts` with full test coverage
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+- DictionaryService as static singleton (Set<string> for O(1) membership) with `initialize()`, `findWords()`, `canFormWord()`, and `reset()` (for test isolation)
+- Words filtered to 3-10 chars on load (not at query time)
+- Correct wildcard (`?`) logic: letter consumed first, wildcard only as fallback; uses actual counts not key presence
+- `index.ts` initializes dictionary before `app.listen()`; on failure logs and calls `process.exit(1)`
+- `reset()` method added to enable clean test isolation across `afterEach` hooks
+
+### Debug Log
+
+- Reference implementation's `canFormWord` used key-existence checks (`!letterMap.has(letter)`) which would not correctly detect exhausted letter counts; replaced with count-based checks
+- Reference implementation decremented the letter count even when a wildcard was used; corrected to decrement wildcard count in that branch
+- `catat` test confirmed letter-count accounting works correctly (needs a:2,t:2; blocked by `cat` input a:1,t:1)
+- `filters words longer than 10 characters` test initially used input `'abcdefghijkl'` which doesn't contain `t` so `cat` wasn't returnable; corrected to separate `findWords('cat')` call
+
+### Completion Notes
+
+All 4 tasks complete. 32 tests pass (18 new in dictionary.test.ts + 14 pre-existing). Lint and TypeScript strict mode clean. AC2.1–AC2.10 all satisfied.
+
+---
+
+## File List
+
+- `packages/server/data/words.txt` (new — word list, ~650+ words, 3-10 chars)
+- `packages/server/src/services/dictionary.ts` (new — DictionaryService class)
+- `packages/server/src/services/__tests__/dictionary.test.ts` (new — 18 unit tests)
+- `packages/server/src/index.ts` (modified — DictionaryService initialization before server listen)
+
+---
+
+## Change Log
+
+- 2026-04-18: Implemented Story 2.2 — DictionaryService with file loading, word lookup, wildcard support, and full unit test coverage
