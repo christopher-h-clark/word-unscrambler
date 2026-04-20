@@ -179,6 +179,12 @@ This experiment was to answer four questions:
   Epic 4. With humans, this makes sense, but I'm not sure whether it makes sense
   on an AI-built project. Would completing Epic 4 make a significant difference
   in the scope of work for Epic 5?
+- Code reviews kept getting stuck. For example, it would churn for awhile, show
+  some text, ending with "Proceeding to step-03-triage for findings
+  consolidation," and then just stop, rather than showing a choice that allows
+  me to hit Enter to continue to the findings consolidation, so I'd have to
+  prompt it with "Can we proceed to step-03-triage?" and then it would keep
+  going.
 
 ### What would you clean up in the code if you were to ship this project?
 
