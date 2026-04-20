@@ -168,6 +168,17 @@ This experiment was to answer four questions:
   being asked. I figured this out when I did the code review and found no
   changed files. It had silently committed them to git without being directed to
   do so. This is concerning.
+- After I planned Epic 4, I was over 90% tokens, with reset coming in over 1.5
+  hours. I decided to try planning Epic 5. At first, it couldn't find the
+  `sprint-status.yaml` file, which was concerning, so I did `/bmad-help` and it
+  told me that Epic 3 was only partially done (3-1 and 3-2 done, but the others
+  not), which conflicted with the `sprint-status.yml` file. It's been making
+  basic math errors and losing track of status, which is concerning, given that
+  this is a computer and should be essentially perfect at calculations.
+- BMAD seems to block me from planning Epic 5 until I finish implementing
+  Epic 4. With humans, this makes sense, but I'm not sure whether it makes sense
+  on an AI-built project. Would completing Epic 4 make a significant difference
+  in the scope of work for Epic 5?
 
 ### What would you clean up in the code if you were to ship this project?
 
