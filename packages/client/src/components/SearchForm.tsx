@@ -60,6 +60,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
     <div className="flex flex-col gap-4">
       <Input
         id="search-input"
+        type="text"
         autoFocus
         placeholder="Enter 3-10 letters"
         value={input}
