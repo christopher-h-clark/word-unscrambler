@@ -248,3 +248,6 @@ $RECYCLE.BIN/
 
 # Playwright cache
 .playwright
+
+# Test results folder
+test-results/

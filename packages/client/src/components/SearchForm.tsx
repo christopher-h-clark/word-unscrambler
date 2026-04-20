@@ -14,7 +14,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
   const isValid = trimmedInput.length >= 3 && trimmedInput.length <= 10;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setInput(e.currentTarget.value);
+    setInput(e.currentTarget.value.replace(/[^a-zA-Z?]/g, ''));
   };
 
   const handleSubmit = async (): Promise<void> => {

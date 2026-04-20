@@ -10,9 +10,7 @@ console.log(`*******************************************`);
 
 // Initialize dictionary BEFORE starting server — fail loudly if missing
 try {
-  const dictPath =
-    process.env.WORD_LIST_PATH ||
-    path.join(process.cwd(), 'packages', 'server', 'data', 'words.txt');
+  const dictPath = process.env.WORD_LIST_PATH || path.join(__dirname, '..', 'data', 'words.txt');
   DictionaryService.initialize(dictPath);
 } catch (error) {
   console.error(
