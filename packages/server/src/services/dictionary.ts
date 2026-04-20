@@ -1,15 +1,24 @@
-import fs from 'fs';
+import { promises as fsPromises } from 'fs';
 
 const WORD_MIN_LENGTH = 3;
 const WORD_MAX_LENGTH = 10;
+const DICTIONARY_LOAD_TIMEOUT_MS = 5000;
 
 export class DictionaryService {
   private static words: Set<string> | undefined;
   private static sortedWords: string[] | undefined;
 
-  static initialize(filePath: string): void {
+  static async initialize(filePath: string): Promise<void> {
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`Dictionary load timeout (${DICTIONARY_LOAD_TIMEOUT_MS}ms)`)),
+          DICTIONARY_LOAD_TIMEOUT_MS
+        )
+      );
+
+      const content = await Promise.race([fsPromises.readFile(filePath, 'utf-8'), timeoutPromise]);
+
       const wordList = content
         .split('\n')
         .map((w) => w.trim().toLowerCase())

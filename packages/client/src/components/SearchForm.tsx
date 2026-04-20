@@ -5,16 +5,37 @@ import type { SearchFormProps } from '@/types';
 
 export { type SearchFormProps };
 
+const MAX_WILDCARDS = 3;
+
 export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
   const [input, setInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const trimmedInput = input.trim();
-  const isValid = trimmedInput.length >= 3 && trimmedInput.length <= 10;
+  const wildcardCount = (trimmedInput.match(/\?/g) || []).length;
+  const isValid =
+    trimmedInput.length >= 3 && trimmedInput.length <= 10 && wildcardCount <= MAX_WILDCARDS;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setInput(e.currentTarget.value.replace(/[^a-zA-Z?]/g, ''));
+    let newValue = e.currentTarget.value.replace(/[^a-zA-Z?]/g, '');
+    let wildcardCount = 0;
+    newValue = newValue
+      .split('')
+      .filter((char) => {
+        if (char === '?') {
+          if (wildcardCount < MAX_WILDCARDS) {
+            wildcardCount++;
+            return true;
+          }
+          return false;
+        }
+        return true;
+      })
+      .join('');
+    setInput(newValue);
+    setHasSearched(false);
   };
 
   const handleSubmit = async (): Promise<void> => {
@@ -25,6 +46,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
     setIsSubmitting(true);
     try {
       await onSubmit(trimmedInput);
+      setHasSearched(true);
     } catch (error) {
       console.error(
         'Form submission failed:',
@@ -43,7 +65,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
   };
 
   const handleFocus = (): void => {
-    if (!isSubmitting) {
+    if (hasSearched && !isSubmitting) {
       setInput('');
     }
   };
@@ -74,7 +96,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
         disabled={isSubmitting}
       />
       <div id="search-hint" className="text-sm text-gray-400">
-        3-10 letters accepted
+        3-10 letters accepted, max 3 wildcards (?)
       </div>
       <Button onClick={handleSubmit} disabled={!isValid || isSubmitting} className="w-full">
         {isSubmitting ? 'Unscrambling...' : 'Unscramble!'}

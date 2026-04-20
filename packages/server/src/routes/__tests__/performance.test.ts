@@ -6,9 +6,9 @@ import path from 'path';
 
 const WORDS_FILE = path.resolve(__dirname, '../../../data/words.txt');
 
-beforeEach(() => {
+beforeEach(async () => {
   DictionaryService.reset();
-  DictionaryService.initialize(WORDS_FILE);
+  await DictionaryService.initialize(WORDS_FILE);
 });
 
 describe('API Performance', () => {
@@ -48,13 +48,13 @@ describe('API Performance', () => {
     expect(elapsed).toBeLessThan(1000);
   });
 
-  test('complex wildcard query (?????????) completes in < 10 seconds', async () => {
+  test('excessive wildcard query (?????????) is rejected quickly', async () => {
     const start = Date.now();
     const res = await request(app).get('/unscrambler/v1/words?letters=?????????');
     const elapsed = Date.now() - start;
 
-    expect(res.status).toBe(200);
-    expect(elapsed).toBeLessThan(10000);
+    expect(res.status).toBe(400);
+    expect(elapsed).toBeLessThan(1000);
   });
 
   test('P99 response time is < 5 seconds (100 queries)', async () => {

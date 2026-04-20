@@ -85,7 +85,7 @@ describe('useWordFetcher', () => {
 
   test('captures error message on 400 validation error', async () => {
     mockFetch.mockResolvedValueOnce(
-      makeResponse({ error: 'LENGTH', message: 'Supplied text must be 3–7 characters.' }, 400)
+      makeResponse({ error: 'Supplied text must be 3–7 characters.' }, 400)
     );
 
     const { result } = renderHook(() => useWordFetcher());
@@ -103,7 +103,7 @@ describe('useWordFetcher', () => {
 
   test('captures error message on 500 server error', async () => {
     mockFetch.mockResolvedValueOnce(
-      makeResponse({ error: 'SERVER_ERROR', message: 'Server error. Please try again later.' }, 500)
+      makeResponse({ error: 'Server error. Please try again later.' }, 500)
     );
 
     const { result } = renderHook(() => useWordFetcher());
@@ -166,7 +166,7 @@ describe('useWordFetcher', () => {
   });
 
   test('clears previous error on new successful request', async () => {
-    mockFetch.mockResolvedValueOnce(makeResponse({ error: 'LENGTH', message: 'Too short.' }, 400));
+    mockFetch.mockResolvedValueOnce(makeResponse({ error: 'Too short.' }, 400));
     mockFetch.mockResolvedValueOnce(makeResponse({ words: ['abc'] }, 200));
 
     const { result } = renderHook(() => useWordFetcher());

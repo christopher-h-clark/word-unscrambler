@@ -215,3 +215,78 @@ This experiment was to answer four questions:
   primary focus on the immediate goal and address the future in the future. I
   think I need to do a brownfield BMAD experiment to clarify my thoughts on
   this.
+
+## Other Insights
+
+### Understanding vs Production
+
+One thing that I've observed in this exercise is that the process of writing
+code brings with it a significant level of understanding of that code. When AI
+generates code, the human(s) responsible for the code do not gain that benefit.
+Instead, we must explicitly seek to understand the code that the AI wrote in
+order to be able to intelligently discuss strategies to maintain it going
+forward. Traditionally, we would only see the cost to gain this understanding as
+a distinct activity when adding a new developer to an existing team. With
+AI-assisted software development, _all_ developers are now always in the mode of
+understanding the code that someone else wrote.
+
+With this particular project, I'm moving quickly to understand what the
+AI-assisted software development process can do—in particular as a force
+multiplier—and therefore focusing on having the model do most of the work. While
+I have observed closely enough to be able to flag a number of errors and
+inconsistency, building a maintainable software project would require a far
+greater level of comprehension. AI is an accelerator: I don't need to write
+boilerplate code like getters and setters; I can leave the details of using a
+new library to a model that knows the library better than I do. Working with
+production code, I cannot get away without understanding the code in depth so
+that I can address the benefits, shortcomings, the best strategies to enhance
+it, and the drawbacks to certain approaches or features. The big advantage to
+AI-assisted software development is that I can _understand_ code before I can
+write that same code, even in languages or frameworks that are new to me, at
+least to a degree. The disadvantage is that I must take the time to more fully
+understand the code separate from generating it. Where that understanding came
+for free as part of writing the code myself, it is no longer free. Fred Brooks
+talked about this cost when bringing a new developer onto a project, but now it
+applies to everyone all the time, and we must account for that in planning. AI
+might make us 5–10x faster at generating the code, but a non-trivial portion of
+that gain is consumed by building understanding of something we didnt' write
+ourselves.
+
+### Assembly Language to High Level Languages to Natural Language
+
+One thing that I realized fairly early on in my explorations of AI, AI-assisted
+software development, and BMAD, is that where we are today is much like where
+the industry was in the 60's or 70's with the transition from assembly language
+to high-level languages. But it's an even more dramatic change today. Moving
+from assembly language to a high level language, there are details we no longer
+need to know about.
+
+(Continue)
+
+### The Bar
+
+The bar for quality production code has not changed. It is still challenging to
+develop software products that are secure, stable, scalable, maintainable, and
+all of the other qualities we associated with solid production code. What has
+changed significantly is the bar for entry.
+
+Consider the music industry. To build the skills with an instrument or voice to
+be able to create truly excellent music takes years. One can argue that
+contemporary styles may be less demanding of performers than more traditional
+styles, and I don't entirely disagree. Playing a 4-chord groove with a band is
+_far_ simpler than playing the third movement of Beethoven‘s _Moonlight Sonata_.
+But that's secondary. 50 years ago, the cost to record an album was high, and
+record companies only signed top talent to do so. Today, it's possible to
+assemble a recording studio in your basement for under $1,000. The bar for
+producing an audio recording is far lower than it was 50 years ago. Anyone can
+do it today. But can anyone produce a great album in that $1,000 studio?
+Certainly, a great song is a great song, even when recorded on very basic
+equipment. But a great album contains several great songs, arranged and
+performed with great skill, recorded with great equipment, and produced by
+greatly skilled engineers. And _that_ is still a costly process, both in each of
+those people mastering their craft and paying them to apply that skill to a
+particular project.
+
+Software development seems to be a lot like that. In some ways, AI will make
+software development easier. In many ways, nothing changes when we need to
+produce excellent software.

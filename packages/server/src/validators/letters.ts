@@ -1,5 +1,6 @@
 const LETTER_MIN_LENGTH = 3;
 const LETTER_MAX_LENGTH = 10;
+const MAX_WILDCARDS = 3;
 
 interface ValidationResult {
   valid: boolean;
@@ -28,6 +29,14 @@ export function validateLetters(input: unknown): ValidationResult {
     return {
       valid: false,
       error: 'Supplied text may only include letters (upper or lower case) and question marks.',
+    };
+  }
+
+  const wildcardCount = (trimmed.match(/\?/g) || []).length;
+  if (wildcardCount > MAX_WILDCARDS) {
+    return {
+      valid: false,
+      error: `Supplied text may contain at most ${MAX_WILDCARDS} wildcard characters (?)`,
     };
   }
 
