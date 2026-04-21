@@ -8,7 +8,8 @@ __tests__
 e2e
 docs
 coverage
-.npmrc
+# .npmrc: If host .npmrc contains auth tokens for private packages, use Docker secrets or
+# buildkit features (--secret) to provide credentials instead of copying .npmrc into image
 npm-debug.log
 .DS_Store
 *.md

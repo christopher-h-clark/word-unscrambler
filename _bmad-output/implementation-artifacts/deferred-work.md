@@ -26,4 +26,11 @@ deviation was corrected.)
   5.2.1. Pre-existing; runtime compatibility not explicitly verified but implied
   by dev agent record passing tests.
 
+## Deferred from: Code Review of Story 5-2 (2026-04-21)
+
+- **--legacy-peer-deps used unconditionally** [Dockerfile:7,27] — Suppresses
+  peer dependency warnings in both build and runtime stages. Pre-existing
+  pattern from Story 5-1; unclear if temporary npm workaround or permanent
+  design choice for this project.
+
 ---

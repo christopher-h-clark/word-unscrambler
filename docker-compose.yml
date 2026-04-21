@@ -10,7 +10,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       WORD_LIST_PATH: ./packages/server/data/words.txt
-      CORS_ORIGIN: 'http://localhost:3000'
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'sh', '-c', 'curl -f http://localhost:3000/api/health || exit 1']
