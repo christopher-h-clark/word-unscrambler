@@ -6,7 +6,7 @@ COPY packages/client/package*.json ./packages/client/
 COPY tsconfig.base.json ./
 RUN npm ci --legacy-peer-deps
 COPY packages/client ./packages/client
-RUN npm run build -w packages/client
+RUN npm run build -w packages/client && test -f packages/client/dist/index.html || (echo "Frontend build failed: index.html not found" && exit 1)
 
 # Stage 2: Build backend
 FROM node:22-alpine AS backend-build
@@ -43,7 +43,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV WORD_LIST_PATH=./packages/server/data/words.txt
-ENV CORS_ORIGIN=*
+ENV CORS_ORIGIN=http://localhost:3000
 
 # Start server
 CMD ["node", "packages/server/dist/index.js"]

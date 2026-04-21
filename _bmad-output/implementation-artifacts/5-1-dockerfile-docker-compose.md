@@ -5,7 +5,7 @@ epic: 5
 epicTitle: 'Deployment & Documentation'
 title: 'Create Dockerfile and Docker Compose for Full-Stack Deployment'
 created: '2026-04-20'
-status: 'review'
+status: 'done'
 contextSource: 'Epic 5.1 + Architecture + Project Context'
 devReadyDate: '2026-04-20'
 devCompletedDate: '2026-04-21'
@@ -747,6 +747,47 @@ Apply these same patterns to this story.
 - [x] Test API endpoint at http://localhost:3000/unscrambler/v1/words
 - [x] Verify frontend loads at http://localhost:3000
 - [x] Stop container and clean up properly
+
+---
+
+## Review Findings
+
+### Decision Resolved
+
+- [x] [Review][Decision] CORS_ORIGIN security posture — Resolved: Default to
+      `http://localhost:3000` with runtime override. Dockerfile ENV changed to
+      `http://localhost:3000`; users can override via `-e` flag at deployment.
+
+### Patches Applied
+
+- [x] [Review][Patch] sendFile() error handling fixed
+      [packages/server/src/app.ts:38-42] — Added error callback to
+      res.sendFile() to properly catch and handle async errors. Response will
+      send 404 JSON if index.html is missing.
+- [x] [Review][Patch] index.html validation added [Dockerfile:9] — Added
+      `test -f packages/client/dist/index.html` check after build. Build fails
+      with clear error if frontend build doesn't produce index.html.
+- [x] [Review][Patch] Health endpoint moved to /api/health
+      [packages/server/src/app.ts:26] — Moved health check under /api/ namespace
+      so it bypasses SPA fallback regex. Docker healthcheck now queries
+      /api/health.
+- [x] [Review][Patch] Health check uses curl instead of wget
+      [docker-compose.yml:16] — Replaced `wget` with `curl` command (more likely
+      available in Alpine). Health check now:
+      `curl -f http://localhost:3000/api/health`.
+
+### Deferred (Pre-Existing)
+
+- [x] [Review][Defer] Dictionary path uses relative paths [Dockerfile:37] —
+      deferred, pre-existing pattern, works but fragile
+- [x] [Review][Defer] --ignore-scripts skips postinstall scripts [Dockerfile:27]
+      — deferred, intentional design choice for image size
+- [x] [Review][Defer] Environment variable documentation missing [README] —
+      deferred, docs-only issue not code issue
+- [x] [Review][Defer] Node.js version mismatch (18 vs 22) [engines field] —
+      deferred, pre-existing dependency, not caused by this change
+- [x] [Review][Defer] Express 5.x compatibility with --legacy-peer-deps
+      [Dockerfile:7] — deferred, pre-existing peer dependency conflict
 
 ---
 

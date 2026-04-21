@@ -22,8 +22,8 @@ app.use(
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 
-// 3. Health check
-app.get('/health', (_req: Request, res: Response): void => {
+// 3. Health check (under /api/ so it bypasses SPA fallback)
+app.get('/api/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'ok' });
 });
 
@@ -36,11 +36,9 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(clientDist));
   // SPA fallback: serve index.html for all unmatched routes (client-side routing)
   app.all(/^(?!\/api\/)/, (_req: Request, res: Response): void => {
-    try {
-      res.sendFile(path.join(clientDist, 'index.html'));
-    } catch {
-      res.status(404).json({ error: 'Not found' });
-    }
+    res.sendFile(path.join(clientDist, 'index.html'), (err) => {
+      if (err) res.status(404).json({ error: 'Not found' });
+    });
   });
 }
 
