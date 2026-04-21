@@ -18,9 +18,9 @@ app.use(
   })
 );
 
-// 2. Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// 2. Body parsing (with size limits to prevent large payload attacks)
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 
 // 3. Health check
 app.get('/health', (_req: Request, res: Response): void => {

@@ -15,9 +15,16 @@ describe('SearchForm', () => {
     expect(screen.getByPlaceholderText('Enter 3-10 letters')).toBeTruthy();
   });
 
-  test('renders hint text "3-10 letters accepted"', () => {
+  test('renders hint text with wildcard limit', () => {
     render(<SearchForm onSubmit={mockOnSubmit} />);
-    expect(screen.getByText('3-10 letters accepted')).toBeTruthy();
+    expect(screen.getByText('3-10 letters accepted, max 3 wildcards (?)')).toBeTruthy();
+  });
+
+  test('hint text is associated via aria-describedby', () => {
+    render(<SearchForm onSubmit={mockOnSubmit} />);
+    const input = screen.getByPlaceholderText('Enter 3-10 letters');
+    const hint = screen.getByText('3-10 letters accepted, max 3 wildcards (?)');
+    expect(input.getAttribute('aria-describedby')).toBe(hint.id);
   });
 
   test('renders button labeled "Unscramble!"', () => {
@@ -99,14 +106,27 @@ describe('SearchForm', () => {
     expect(input.value).toBe('abc');
   });
 
-  test('auto-clears input value when input gains focus (not submitting)', async () => {
+  test('auto-clears input value when input gains focus after successful search', async () => {
     render(<SearchForm onSubmit={mockOnSubmit} />);
     const input = screen.getByPlaceholderText('Enter 3-10 letters') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'abc' } });
+    await userEvent.click(screen.getByRole('button', { name: /unscramble!/i }));
     expect(input.value).toBe('abc');
     fireEvent.blur(input);
     fireEvent.focus(input);
     expect(input.value).toBe('');
+  });
+
+  test('does not clear input on focus when user has typed new input after search', async () => {
+    render(<SearchForm onSubmit={mockOnSubmit} />);
+    const input = screen.getByPlaceholderText('Enter 3-10 letters') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'abc' } });
+    await userEvent.click(screen.getByRole('button', { name: /unscramble!/i }));
+    fireEvent.change(input, { target: { value: 'def' } });
+    expect(input.value).toBe('def');
+    fireEvent.blur(input);
+    fireEvent.focus(input);
+    expect(input.value).toBe('def');
   });
 
   test('does not call onSubmit when a non-Enter key is pressed', () => {
@@ -194,7 +214,7 @@ describe('SearchForm', () => {
   test('hint text is associated via aria-describedby', () => {
     render(<SearchForm onSubmit={mockOnSubmit} />);
     const input = screen.getByPlaceholderText('Enter 3-10 letters') as HTMLInputElement;
-    const hint = screen.getByText('3-10 letters accepted') as HTMLDivElement;
+    const hint = screen.getByText('3-10 letters accepted, max 3 wildcards (?)') as HTMLDivElement;
     expect(input.getAttribute('aria-describedby')).toBe('search-hint');
     expect(hint.getAttribute('id')).toBe('search-hint');
   });

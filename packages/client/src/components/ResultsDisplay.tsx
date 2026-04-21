@@ -43,7 +43,11 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ words }) => {
   return (
     <div className="mt-8 space-y-4">
       {groupedWords.map((group) => (
-        <ResultCard key={String(group.length)} length={group.length} words={group.words} />
+        <ResultCard
+          key={`${group.length}-${group.words.join(',')}`}
+          length={group.length}
+          words={group.words}
+        />
       ))}
     </div>
   );

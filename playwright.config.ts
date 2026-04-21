@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const isCI = process.env.CI === 'true';
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173';
+const serverURL = process.env.PLAYWRIGHT_SERVER_URL || 'http://localhost:3000';
 const testTimeout = parseInt(process.env.PLAYWRIGHT_TIMEOUT || '30000', 10);
 
 export default defineConfig({
@@ -22,15 +23,15 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run dev:server',
-      url: 'http://localhost:3000/health',
+      url: `${serverURL}/health`,
       reuseExistingServer: !isCI,
-      timeout: 120000,
+      timeout: 60000,
     },
     {
       command: 'npm run dev:client',
       url: baseURL,
       reuseExistingServer: !isCI,
-      timeout: 120000,
+      timeout: 60000,
     },
   ],
   projects: [

@@ -6,9 +6,9 @@ import path from 'path';
 
 const WORDS_FILE = path.resolve(__dirname, '../../../data/words.txt');
 
-beforeEach(() => {
+beforeEach(async () => {
   DictionaryService.reset();
-  DictionaryService.initialize(WORDS_FILE);
+  await DictionaryService.initialize(WORDS_FILE);
 });
 
 afterEach(() => {
@@ -145,14 +145,10 @@ describe('GET /unscrambler/v1/words', () => {
       expect(Array.isArray(res.body.words)).toBe(true);
     });
 
-    test('handles multiple letters parameters in query string', async () => {
+    test('returns 400 for multiple letters parameters in query string', async () => {
       const res = await request(app).get('/unscrambler/v1/words?letters=abc&letters=xyz');
-      expect(res.status).toBeDefined();
-      if (res.status === 200) {
-        expect(Array.isArray(res.body.words)).toBe(true);
-      } else {
-        expect(res.body).toHaveProperty('error');
-      }
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('exactly once');
     });
   });
 

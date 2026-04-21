@@ -19,25 +19,25 @@ if (!fs.existsSync(assetsPath)) {
   process.exit(1);
 }
 
-// Find all .js files in assets
-let jsFiles;
+// Find all .js and .css files in assets
+let bundleFiles;
 try {
-  jsFiles = fs.readdirSync(assetsPath).filter(file => file.endsWith('.js'));
+  bundleFiles = fs.readdirSync(assetsPath).filter(file => file.endsWith('.js') || file.endsWith('.css'));
 } catch (error) {
   console.error('❌ Failed to read assets directory:', error.message);
   process.exit(1);
 }
 
-if (jsFiles.length === 0) {
-  console.error('❌ No .js bundle files found in', assetsPath);
+if (bundleFiles.length === 0) {
+  console.error('❌ No .js or .css bundle files found in', assetsPath);
   process.exit(1);
 }
 
-// Calculate size of all JS bundles
+// Calculate size of all bundles (JS and CSS)
 const bundles = [];
 let totalSize = 0;
 try {
-  jsFiles.forEach(file => {
+  bundleFiles.forEach(file => {
     const filePath = path.join(assetsPath, file);
     let bundleBuffer;
     try {
