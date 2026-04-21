@@ -1,5 +1,5 @@
 # Stage 1: Build frontend
-FROM node:18-alpine AS frontend-build
+FROM node:22-alpine AS frontend-build
 WORKDIR /app
 COPY package*.json ./
 COPY packages/client/package*.json ./packages/client/
@@ -9,7 +9,7 @@ COPY packages/client ./packages/client
 RUN npm run build -w packages/client
 
 # Stage 2: Build backend
-FROM node:18-alpine AS backend-build
+FROM node:22-alpine AS backend-build
 WORKDIR /app
 COPY package*.json ./
 COPY packages/server/package*.json ./packages/server/
@@ -19,7 +19,7 @@ COPY packages/server ./packages/server
 RUN npm cache clean --force && npm run build -w packages/server
 
 # Stage 3: Runtime
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Install runtime dependencies only (skip dev scripts like husky)
