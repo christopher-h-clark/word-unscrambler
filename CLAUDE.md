@@ -74,3 +74,5 @@ work") require constant clarification.
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer
 rewrites due to overcomplication, and clarifying questions come before
 implementation rather than after mistakes.
+
+**Do NOT** invoke git operations unless specifically authorized.
