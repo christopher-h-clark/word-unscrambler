@@ -1,108 +1,33 @@
+---
+review_layer: acceptance_auditor
+review_target: Documentation (Group 1) - Branch 5-4-mvp-release-production-ready
+spec_file: 5-4-mvp-release-production-ready.md
+relevant_acs:
+  AC5.4.11 (docs complete/accurate), AC5.4.12 (release notes scope), AC5.4.13
+  (post-MVP documented)
+---
+
 # Acceptance Auditor Review Prompt
 
-**Role:** Spec compliance auditor
+**Role:** Verify documentation against Story 5.4 acceptance criteria.
 
-**Task:** Review documentation diff against Story 5-3 acceptance criteria and
-spec.
+**Relevant ACs:**
 
-**Output:** Markdown findings. Format: AC violated + evidence + impact
+- AC5.4.11: Documentation is complete and accurate
+- AC5.4.12: Release notes document scope and features
+- AC5.4.13: Post-MVP enhancements documented as future work
 
----
+**Content:** DEPLOYMENT.md, DEVELOPMENT.md, README.md, RELEASE_NOTES.md
 
-## Acceptance Criteria to Verify
+**Check For:**
 
-From Story 5-3:
-
-✅ **AC5.3.1:** Create README.md with project overview, quick start, usage, tech
-stack  
-✅ **AC5.3.2:** Create DEVELOPMENT.md with local setup, workspace structure,
-workflow  
-✅ **AC5.3.3:** Create DEPLOYMENT.md with production deployment, environment
-config, health checks  
-✅ **AC5.3.4:** Create or reference ARCHITECTURE.md explaining technology
-choices  
-✅ **AC5.3.5:** Create API.md documenting REST API endpoint with examples  
-✅ **AC5.3.6:** Verify openapi.yaml exists at packages/server/openapi.yaml  
-✅ **AC5.3.7:** All documentation links are correct and files exist  
-✅ **AC5.3.8:** Documentation includes setup time estimates and
-troubleshooting  
-✅ **AC5.3.9:** No dead links or missing references  
-✅ **AC5.3.10:** Documentation is clear to developers unfamiliar with project
+- Accuracy of deployment instructions vs. actual Docker/Compose setup
+- Accuracy of development setup vs. actual project structure/commands
+- Alignment between README features and actual implementation
+- RELEASE_NOTES clarity on MVP vs. post-MVP scope
+- Dead links, unresolved TODOs, placeholders
+- Consistency across all documentation files
 
 ---
 
-## Spec Requirements from Story
-
-### README.md Requirements
-
-- Project overview and purpose
-- Quick start (git clone, npm install, npm run dev)
-- Usage examples
-- Tech stack
-
-### DEVELOPMENT.md Requirements
-
-- Local setup instructions
-- Workspace structure explanation
-- Development workflow (npm commands)
-- Testing approach (how to run tests)
-- Building (npm run build)
-- Git workflow
-
-### DEPLOYMENT.md Requirements
-
-- Production deployment steps
-- Environment variable configuration
-- Dictionary management
-- Health checks and monitoring
-- Rollback procedures
-
-### ARCHITECTURE.md Requirements
-
-- Technology choices and rationale
-- Component structure
-- API contract
-- Testing strategy
-
-### API.md Requirements
-
-- REST API endpoint documentation
-- Request/response examples
-- Error handling examples
-
-### openapi.yaml Requirements
-
-- Must exist at packages/server/openapi.yaml
-- OpenAPI 3.1 specification
-- Complete endpoint specifications
-
----
-
-## Spec Intent & Constraints
-
-**Core Intent:** Enable new developers and operators to work with project
-independently
-
-**Key Constraints:**
-
-- Setup should be learnable in < 5 minutes
-- No secrets or hardcoded internal URLs
-- Documentation clear to unfamiliar readers
-- All examples tested and accurate
-- Troubleshooting covers common issues
-
----
-
-## Violations to Check
-
-For each AC, verify:
-
-1. Does the documentation implement it fully?
-2. Is the content accurate and complete?
-3. Are there gaps that violate the spec intent?
-4. Do examples contradict the actual system?
-5. Is tone appropriate for unfamiliar developers?
-
----
-
-**When done:** Reply with findings as markdown list.
+**Return your findings as a Markdown list below this line:**

@@ -17,6 +17,9 @@ Complete guide for deploying word-unscrambler to production.
 - Docker installed and running
 - Docker Compose (usually comes with Docker)
 - Production domain and SSL certificate (if using HTTPS)
+  - **For HTTPS:** Use Let's Encrypt (recommended), self-signed cert, or
+    certificate from your cloud provider
+  - See your hosting platform's docs for certificate installation
 - GitHub Secrets configured for CI/CD
 
 ## Local Docker Testing
@@ -65,13 +68,19 @@ Replace `<your-registry>` with your registry URL (e.g., `ghcr.io/yourusername`,
    docker build -t <your-registry>/word-unscrambler:v1.0.0 .
    ```
 
-2. **Push to registry:**
+2. **Authenticate with registry (if required):**
+
+   ```bash
+   docker login <your-registry>
+   ```
+
+3. **Push to registry:**
 
    ```bash
    docker push <your-registry>/word-unscrambler:v1.0.0
    ```
 
-3. **Deploy to production:**
+4. **Deploy to production:**
 
    ```bash
    docker run \
@@ -126,7 +135,14 @@ CORS_ORIGIN=https://yourdomain.com
 REACT_APP_API_URL=https://api.yourdomain.com
 ```
 
+**Critical:** `WORD_LIST_PATH` must point to a valid file. If missing or
+invalid, the server will fail loudly at startup with an error. Verify the
+dictionary file exists before deploying.
+
 ### Set Variables
+
+**Precedence:** If the same variable is set in multiple places, the priority is:
+runtime env vars (`-e` flag) > docker-compose.yml > GitHub Secrets defaults.
 
 **Via Docker:**
 
@@ -161,11 +177,21 @@ services:
 
 Docker compose includes HTTP health check:
 
+**Frontend Check:**
+
 ```bash
 curl http://localhost:3000
 ```
 
 Should return HTML (frontend page).
+
+**API Check (more thorough):**
+
+```bash
+curl "http://localhost:3000/unscrambler/v1/words?letters=abc"
+```
+
+Should return JSON with words array: `{"words": ["abc", "bac", "cab"]}`
 
 ### Monitor Logs
 
@@ -214,13 +240,22 @@ Expected:
 
 ### Docker Rollback
 
+**Before deploying a new version, backup the current image:**
+
 ```bash
-# If new deployment has issues, use previous image
+# Tag current image as backup before updating
+docker tag <current-image-id> your-registry/word-unscrambler:v1.0.0-backup
+docker push your-registry/word-unscrambler:v1.0.0-backup
+```
+
+**If new deployment has issues, restore the previous version:**
+
+```bash
 docker-compose down
 docker run \
   -d \
   --name word-unscrambler \
-  your-registry/word-unscrambler:v1.0.0  # Previous version
+  your-registry/word-unscrambler:v1.0.0-backup
 ```
 
 ### Git Rollback
@@ -309,16 +344,24 @@ CORS_ORIGIN=https://yourdomain.com
 
 ### API Returns Empty Results for All Inputs
 
-**Problem:** Dictionary file not loaded properly
+**Problem:** Dictionary file not loaded properly or missing
+
+**Critical:** The `packages/server/data/words.txt` file is essential. If deleted
+or corrupted, the app will start but all word lookups return empty results.
 
 **Solution:**
 
 ```bash
 # Verify file exists in container
-docker exec word-unscrambler ls -la /app/packages/server/data/
+docker exec word-unscrambler ls -la /app/packages/server/data/words.txt
 
-# Check logs
+# Check file size (should be > 10KB)
+docker exec word-unscrambler wc -l /app/packages/server/data/words.txt
+
+# Check logs for dictionary load errors
 docker logs word-unscrambler | grep -i dictionary
+
+# If file missing, rebuild and redeploy the Docker image
 ```
 
 ## Monitoring & Alerts

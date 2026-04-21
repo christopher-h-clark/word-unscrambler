@@ -12,5 +12,6 @@ coverage
 # buildkit features (--secret) to provide credentials instead of copying .npmrc into image
 npm-debug.log
 .DS_Store
+# Exclude markdown and git files to keep image lean. Reference docs available at deployment time.
 *.md
 .gitignore

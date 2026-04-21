@@ -64,10 +64,12 @@ test.describe('Word Lookup - Happy Path', () => {
     const firstSection = page.locator('section').first();
     const content = await firstSection.textContent();
     expect(content).toBeTruthy();
-    // Verify section contains words (e.g., "abc", "cab", "bac")
-    const wordElements = firstSection.locator('span');
-    const count = await wordElements.count();
-    expect(count).toBeGreaterThan(0);
+    // Verify section contains words (words joined by space, e.g., "abc cab")
+    // The structure is: section > h3 (title) + div (words)
+    const wordsDivs = firstSection.locator('div');
+    const wordsText = await wordsDivs.last().textContent();
+    expect(wordsText).toBeTruthy();
+    expect(wordsText?.trim().length).toBeGreaterThan(0);
   });
 
   // Button is enabled with valid input

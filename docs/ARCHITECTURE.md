@@ -33,7 +33,7 @@ application.
                   │
 ┌─────────────────▼───────────────────────────────────────────────┐
 │              File System (Words Dictionary)                     │
-│            data/words.txt (3-7 letter words)                    │
+│            data/words.txt (3-10 letter words)                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -293,6 +293,8 @@ Docker Container (Multi-stage Build)
    - Image pushed to registry
    - Deployed via kubectl
    - Auto-scaling, rolling updates
+   - _Note: Requires Kubernetes cluster setup and knowledge of kubectl,
+     deployments, services, and persistent volumes_
 
 2. **Cloud Platform (Heroku, Vercel, etc.)**
    - Git-based deployment
@@ -314,6 +316,8 @@ For high traffic:
 - Load balancer (Nginx, HAProxy)
 - Shared state not required (stateless)
 - Dictionary loaded once per instance
+- **No synchronization issues:** Each instance loads the dictionary
+  independently; no shared mutable state
 
 ### Vertical Scaling
 
@@ -323,11 +327,15 @@ For resource bottlenecks:
 - Increase CPU allocation
 - No database to scale separately
 
-### Caching
+### Caching & Dictionary Updates
 
 - No client-side caching (dictionary changes rarely)
 - No server-side caching (API stateless)
 - Browser caches static assets
+
+**Important:** The dictionary is loaded into memory once at server startup. If
+the `words.txt` file is modified while the server is running, those changes will
+NOT be reflected in API responses until the server is restarted.
 
 ## Current Capabilities
 

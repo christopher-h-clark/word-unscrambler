@@ -6,10 +6,11 @@ you can form from a set of letters.
 ## Features
 
 - 🔤 **Quick Lookup** - Enter 3-10 letters and get instant results
-- 🎯 **Organized Results** - Words grouped by length, alphabetically sorted
+- 🎯 **Organized Results** - Words grouped by length (3-10 characters),
+  alphabetically sorted
 - 🌙 **Dark Theme** - Modern, easy-on-the-eyes interface
 - ♿ **Accessible** - WCAG AA compliance, keyboard and screen reader friendly
-- ⚡ **Fast** - Response times < 1 second typical, < 10 seconds maximum
+- ⚡ **Fast** - Response times < 10 seconds maximum (typical < 1 second)
 - 📦 **Lightweight** - Frontend bundle < 100KB gzipped
 
 ## Quick Start
@@ -34,21 +35,24 @@ you can form from a set of letters.
 git clone <repo-url>
 cd word-unscrambler
 
-# 2. Install dependencies (all workspaces)
-npm install
-
-# 3. Configure environment
+# 2. Configure frontend environment (REQUIRED before npm install)
 cd packages/client
 cp .env.example .env.local
+# Edit if needed, but defaults usually work
 
+# 3. Configure backend environment (REQUIRED before npm install)
 cd ../server
 cp .env.example .env.local
+# Edit if needed, but defaults usually work
 
-# 4. Start development servers
+# 4. Return to root and install dependencies
 cd ../..
+npm install
+
+# 5. Start development servers
 npm run dev
 
-# 5. Open in browser
+# 6. Open in browser
 # Frontend: http://localhost:5173
 # API: http://localhost:3000
 ```
@@ -72,11 +76,19 @@ VITE v5.0.0  ready in 234 ms
 
 ## Usage
 
+The app finds all valid English words (3-10 letters) that can be formed from
+your input letters.
+
 1. **Enter Letters**: Type 3-10 letters in the input field (a-z,
    case-insensitive)
-2. **Optional Wildcard**: Use `?` to match any single letter (e.g., `h?llo`)
+   - Only letters a-z are accepted; numbers and special characters are ignored
+   - Results limited to words 3-10 characters long (shorter and longer words not
+     in dictionary)
+2. **Optional Wildcard**: Use `?` to match any single letter (e.g., `h?llo`
+   matches "hello" and "hullo")
 3. **Submit**: Press Enter or click "Unscramble!" button
 4. **View Results**: Words appear grouped by length, sorted alphabetically
+   - If no words found: "No words match your letters. Try different letters!"
 5. **Try Again**: Click the input field to clear and start a new search
 
 ### Example
