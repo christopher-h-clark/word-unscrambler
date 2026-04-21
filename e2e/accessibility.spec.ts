@@ -36,7 +36,9 @@ test.describe('Accessibility - WCAG AA Compliance', () => {
   test('input has aria-describedby pointing to visible hint text', async ({ page }) => {
     const input = page.locator('input[type="text"]');
     await expect(input).toHaveAttribute('aria-describedby', 'search-hint');
-    await expect(page.locator('#search-hint')).toHaveText('3-10 letters accepted');
+    await expect(page.locator('#search-hint')).toHaveText(
+      '3-10 letters accepted, max 3 wildcards (?)'
+    );
   });
 
   // AC4.4.2: Semantic HTML
