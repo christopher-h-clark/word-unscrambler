@@ -18,6 +18,8 @@ const getPort = (): number => {
   return port;
 };
 
+// Note: Uses REACT_APP_* prefix (Create React App convention) rather than VITE_*
+// to match frontend/.env.example for consistency across the monorepo
 const getApiUrl = (): string => {
   const url = process.env.REACT_APP_API_URL || 'http://localhost:3000';
   try {

@@ -4,8 +4,8 @@ import app from '../../app';
 
 describe('Express app middleware', () => {
   describe('Health check', () => {
-    test('GET /health returns 200 with status ok', async () => {
-      const res = await request(app).get('/health');
+    test('GET /api/health returns 200 with status ok', async () => {
+      const res = await request(app).get('/api/health');
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ status: 'ok' });
     });
@@ -13,13 +13,13 @@ describe('Express app middleware', () => {
 
   describe('CORS', () => {
     test('allows requests from configured frontend origin', async () => {
-      const res = await request(app).get('/health').set('Origin', 'http://localhost:5173');
+      const res = await request(app).get('/api/health').set('Origin', 'http://localhost:5173');
       expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5173');
     });
 
     test('OPTIONS preflight returns 204', async () => {
       const res = await request(app)
-        .options('/health')
+        .options('/api/health')
         .set('Origin', 'http://localhost:5173')
         .set('Access-Control-Request-Method', 'GET');
       expect(res.status).toBe(204);
@@ -27,7 +27,7 @@ describe('Express app middleware', () => {
 
     test('CORS allows GET method', async () => {
       const res = await request(app)
-        .options('/health')
+        .options('/api/health')
         .set('Origin', 'http://localhost:5173')
         .set('Access-Control-Request-Method', 'GET');
       expect(res.headers['access-control-allow-methods']).toContain('GET');
@@ -53,14 +53,14 @@ describe('Express app middleware', () => {
     });
 
     test('error responses never expose stack traces', async () => {
-      const res = await request(app).get('/health');
+      const res = await request(app).get('/api/health');
       expect(res.body).not.toHaveProperty('stack');
     });
   });
 
   describe('JSON body parsing', () => {
     test('parses JSON request bodies', async () => {
-      const res = await request(app).get('/health').set('Content-Type', 'application/json');
+      const res = await request(app).get('/api/health').set('Content-Type', 'application/json');
       expect(res.status).toBe(200);
     });
   });

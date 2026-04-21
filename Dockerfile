@@ -1,5 +1,5 @@
 # Stage 1: Build frontend
-FROM node:22-alpine AS frontend-build
+FROM node:20-alpine AS frontend-build
 WORKDIR /app
 COPY package*.json ./
 COPY packages/client/package*.json ./packages/client/
@@ -9,17 +9,17 @@ COPY packages/client ./packages/client
 RUN npm run build -w packages/client && test -f packages/client/dist/index.html || (echo "Frontend build failed: index.html not found" && exit 1)
 
 # Stage 2: Build backend
-FROM node:22-alpine AS backend-build
+FROM node:20-alpine AS backend-build
 WORKDIR /app
 COPY package*.json ./
 COPY packages/server/package*.json ./packages/server/
 COPY tsconfig.base.json ./
 RUN npm ci --legacy-peer-deps
 COPY packages/server ./packages/server
-RUN npm cache clean --force && npm run build -w packages/server
+RUN npm cache clean --force && npm run build -w packages/server && test -f packages/server/dist/index.js || (echo "Backend build failed: index.js not found" && exit 1)
 
 # Stage 3: Runtime
-FROM node:22-alpine
+FROM node:20-alpine
 WORKDIR /app
 
 # Install runtime dependencies only (skip dev scripts like husky)
@@ -39,7 +39,7 @@ COPY packages/server/data ./packages/server/data
 # Expose port
 EXPOSE 3000
 
-# Environment defaults (can be overridden)
+# Environment defaults (can be overridden at runtime with -e flag or docker-compose environment)
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV WORD_LIST_PATH=./packages/server/data/words.txt

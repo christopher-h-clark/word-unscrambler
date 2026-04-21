@@ -59,6 +59,23 @@ async function startServer(): Promise<void> {
         process.exit(1);
       }
     });
+
+    // Graceful shutdown handlers (important when running as PID 1 in Docker)
+    const gracefulShutdown = (): void => {
+      console.log('[INFO] Shutting down gracefully...');
+      server.close(() => {
+        console.log('[INFO] Server closed');
+        process.exit(0);
+      });
+      // Force exit after 30 seconds if graceful shutdown hangs
+      setTimeout(() => {
+        console.error('[ERROR] Forced shutdown after 30s timeout');
+        process.exit(1);
+      }, 30000);
+    };
+
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
   }
 
   tryListen(port);

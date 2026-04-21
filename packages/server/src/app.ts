@@ -32,12 +32,21 @@ app.use(routes);
 
 // 5. Static assets (production only)
 if (process.env.NODE_ENV === 'production') {
+  // Note: __dirname resolves relative to compiled output (dist/app.js).
+  // Path depends on exact directory layout at build time.
+  // In Docker: resolves to /app/client/dist. If structure changes, update path.
   const clientDist = path.resolve(__dirname, '../../client/dist');
   app.use(express.static(clientDist));
   // SPA fallback: serve index.html for all unmatched routes (client-side routing)
+  // Regex /^(?!\/api\/)/ excludes /api/* routes; actual API routes (/unscrambler/v1/*) match first in route handler order
   app.all(/^(?!\/api\/)/, (_req: Request, res: Response): void => {
     res.sendFile(path.join(clientDist, 'index.html'), (err) => {
-      if (err) res.status(404).json({ error: 'Not found' });
+      if (err) {
+        console.error(
+          `[ERROR] Failed to serve index.html: ${err instanceof Error ? err.message : String(err)}`
+        );
+        res.status(404).json({ error: 'Not found' });
+      }
     });
   });
 }
