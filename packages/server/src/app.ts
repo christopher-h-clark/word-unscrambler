@@ -34,7 +34,14 @@ app.use(routes);
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.resolve(__dirname, '../../client/dist');
   app.use(express.static(clientDist));
-  // Frontend served via express.static; SPA routing handled by index.html served from static
+  // SPA fallback: serve index.html for all unmatched routes (client-side routing)
+  app.all(/^(?!\/api\/)/, (_req: Request, res: Response): void => {
+    try {
+      res.sendFile(path.join(clientDist, 'index.html'));
+    } catch {
+      res.status(404).json({ error: 'Not found' });
+    }
+  });
 }
 
 // 6. 404 handler for undefined routes (JSON response, non-production)
