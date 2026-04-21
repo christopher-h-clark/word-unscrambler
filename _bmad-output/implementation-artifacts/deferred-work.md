@@ -33,4 +33,13 @@ deviation was corrected.)
   pattern from Story 5-1; unclear if temporary npm workaround or permanent
   design choice for this project.
 
+## Deferred from: Code Review of Story 5-3 (2026-04-21)
+
+- **GitHub Secrets env var names unvalidated** [DEPLOYMENT.md:160-166] —
+  Documentation references GitHub Secrets (`BACKEND_NODE_ENV`,
+  `BACKEND_CORS_ORIGIN`, `FRONTEND_API_URL`) but doesn't verify these match
+  actual CI/CD config in `.github/workflows/`. Pre-existing issue: CI/CD
+  pipeline setup is separate from documentation story. Should be validated when
+  CI/CD configuration is created.
+
 ---
