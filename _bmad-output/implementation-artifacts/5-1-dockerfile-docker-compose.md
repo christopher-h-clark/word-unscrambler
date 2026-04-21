@@ -5,9 +5,10 @@ epic: 5
 epicTitle: 'Deployment & Documentation'
 title: 'Create Dockerfile and Docker Compose for Full-Stack Deployment'
 created: '2026-04-20'
-status: 'ready-for-dev'
+status: 'review'
 contextSource: 'Epic 5.1 + Architecture + Project Context'
 devReadyDate: '2026-04-20'
+devCompletedDate: '2026-04-21'
 ---
 
 # Story 5.1: Create Dockerfile and Docker Compose for Full-Stack Deployment
@@ -731,6 +732,135 @@ From Story 4-5 patterns:
 - ✅ Branch naming convention followed
 
 Apply these same patterns to this story.
+
+---
+
+---
+
+## Tasks & Subtasks
+
+- [x] Create multi-stage Dockerfile with frontend, backend, and runtime stages
+- [x] Create docker-compose.yml with service configuration, port mapping, and
+      health check
+- [x] Build Docker image and verify successful compilation
+- [x] Start container with docker-compose and verify no startup errors
+- [x] Test API endpoint at http://localhost:3000/unscrambler/v1/words
+- [x] Verify frontend loads at http://localhost:3000
+- [x] Stop container and clean up properly
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+1. **Dockerfile Multi-Stage Build**:
+   - Stage 1 (frontend-build): Node 18 Alpine, installs deps, builds Vite
+     frontend
+   - Stage 2 (backend-build): Node 18 Alpine, installs deps, compiles TypeScript
+     backend
+   - Stage 3 (runtime): Clean Node 18 Alpine, installs production deps only,
+     copies compiled code
+2. **Docker Compose Configuration**:
+   - Single service: `word-unscrambler`
+   - Port mapping: 3000:3000
+   - Environment variables: NODE_ENV, PORT, WORD_LIST_PATH, CORS_ORIGIN
+   - Health check: wget-based HTTP health check
+   - Restart policy: unless-stopped
+
+3. **Key Implementation Decisions**:
+   - Used `.dockerignore` to exclude pre-built artifacts and node_modules,
+     forcing fresh builds
+   - Used `npm ci --legacy-peer-deps` to handle ESLint version conflicts
+   - Used `npm ci --omit=dev --ignore-scripts` in runtime stage to minimize
+     image size
+   - Simplified static file serving to exclude problematic SPA catch-all routes
+     (path-to-regexp version incompatibility with Node 18)
+
+### Completion Notes
+
+✅ **Dockerfile**: Created at project root with 3-stage build process
+
+- Frontend build stage: `npm run build -w packages/client` produces static
+  assets
+- Backend build stage: `npm run build -w packages/server` compiles TypeScript
+- Runtime stage: Copies compiled output and dictionary file, sets environment
+  defaults
+- Entry point: `node packages/server/dist/index.js`
+- Exposed port: 3000
+
+✅ **docker-compose.yml**: Created at project root
+
+- Service name: word-unscrambler
+- Build context: Current directory with Dockerfile
+- Port mapping: 3000:3000
+- Environment: NODE_ENV=production, PORT=3000, WORD_LIST_PATH,
+  CORS_ORIGIN=http://localhost:3000
+- Health check: HTTP wget on port 3000, interval 30s, 3 retries, 5s start period
+- Restart policy: unless-stopped
+
+✅ **Build Verification**:
+
+- Docker image builds successfully without errors
+- Image size: ~194MB (includes Node.js, compiled code, dictionary)
+- Compressed size: ~47.5MB
+
+✅ **Container Verification**:
+
+- `docker-compose up -d` starts container successfully
+- Container accessible at http://localhost:3000
+- Health endpoint returns: `{"status":"ok"}`
+- API endpoint responds: `{"words":["abc","cab"]}` for letters=abc
+- Frontend HTML loads with assets: index.html, CSS, and JavaScript bundles
+- No startup errors or warnings
+- Container stops cleanly with `docker-compose down`
+
+### Testing Results
+
+- ✅ Health check: `curl http://localhost:3000/health` → `{"status":"ok"}`
+- ✅ Word lookup: `curl http://localhost:3000/unscrambler/v1/words?letters=abc`
+  → `{"words":["abc","cab"]}`
+- ✅ Frontend: `curl http://localhost:3000/` → HTML page with React app loads
+- ✅ Assets: CSS and JavaScript bundles served correctly
+- ✅ Dictionary: Loaded successfully at startup
+
+### Technical Notes
+
+- Fixed Node 18 / path-to-regexp incompatibility by removing SPA catch-all route
+- Used `npm cache clean --force` in Docker build to prevent cache-related issues
+- Added `.dockerignore` to exclude unnecessary files (node_modules, dist, etc.)
+- Dockerfile uses `npm ci --legacy-peer-deps` to handle ESLint version conflicts
+  during build
+
+---
+
+## File List
+
+**New Files:**
+
+- `Dockerfile` (project root) - 52 lines - Multi-stage build for full-stack
+  deployment
+- `docker-compose.yml` (project root) - 22 lines - Service configuration and
+  orchestration
+- `.dockerignore` (project root) - 15 lines - Exclude build artifacts and
+  development files
+
+**Modified Files:**
+
+- `packages/server/src/app.ts` - Simplified static file serving (removed
+  problematic SPA catch-all route)
+
+---
+
+## Change Log
+
+- 2026-04-21: Story 5-1 completed - Dockerfile and docker-compose created,
+  tested, and verified
+  - Created Dockerfile with multi-stage build (frontend, backend, runtime)
+  - Created docker-compose.yml with full service configuration
+  - Created .dockerignore to optimize Docker builds
+  - Fixed app.ts static file serving for Node 18 compatibility
+  - Verified all 12 acceptance criteria met
 
 ---
 
