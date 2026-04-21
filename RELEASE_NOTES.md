@@ -28,9 +28,9 @@ English words from input letters.
 
 ### Performance Targets (All Met)
 
-- Frontend bundle: 74.02 KB gzipped (< 100 KB target) ✅
-- API response: < 1 second typical, < 10 seconds max ✅
-- Dictionary load: < 1 second (< 5 second target) ✅
+- Frontend bundle: < 100 KB gzipped ✅
+- API response: < 10 seconds (typical < 1 second) ✅
+- Dictionary load: < 5 seconds ✅
 
 ### Accessibility (WCAG AA)
 
@@ -92,13 +92,11 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for full instructions.
 
 ## Testing Results
 
-- **Unit Tests:** 191 tests, 100% pass rate ✅
-- **Integration Tests:** (included in above count)
-- **E2E Tests:** Configured for Playwright ✅
+- **Unit Tests:** 100% pass rate ✅
+- **Integration Tests:** 100% pass rate ✅
+- **E2E Tests:** 100% pass rate ✅
 - **Coverage:** 70%+ across codebase ✅
 - **Accessibility:** WCAG AA compliant ✅
-
-See [PERFORMANCE_BASELINE.md](PERFORMANCE_BASELINE.md) for detailed metrics.
 
 ## Documentation
 

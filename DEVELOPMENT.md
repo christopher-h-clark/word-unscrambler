@@ -72,6 +72,38 @@ npm --version
 npm list --depth=0
 ```
 
+### Troubleshoot Installation Issues
+
+**If npm install fails with timeout or network errors:**
+
+```bash
+# Increase npm fetch timeout (default 60s)
+npm config set fetch-timeout 120000
+
+# Clear npm cache and retry
+npm cache clean --force
+npm install
+
+# If still failing, try legacy-peer-deps flag
+npm install --legacy-peer-deps
+```
+
+**If you see "ERR! code ERR_SOCKET_TIMEOUT":**
+
+- Your network is slow or npm registry is temporarily unavailable
+- Wait a moment and retry: `npm install`
+- Or configure a higher timeout and retry
+
+**If node_modules is corrupted:**
+
+```bash
+# Clean slate: remove node_modules and package-lock.json
+rm -rf node_modules package-lock.json
+
+# Reinstall
+npm install
+```
+
 ## Workspace Structure
 
 Monorepo with two independent workspaces:

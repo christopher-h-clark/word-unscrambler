@@ -167,9 +167,16 @@ curl "http://localhost:3000/unscrambler/v1/words"
 - **Maximum Response Time:** < 10 seconds
 - **P99 Response Time:** < 5 seconds
 
+_See [PERFORMANCE_BASELINE.md](../PERFORMANCE_BASELINE.md) for detailed test
+results and benchmarks._
+
 ## Rate Limiting
 
-No rate limiting (MVP version). For production, consider implementing:
+**Current Status:** No rate limiting is implemented in the MVP version. All
+requests are accepted without limit.
+
+**For production deployments**, consider implementing rate limiting to prevent
+abuse:
 
 ```typescript
 const rateLimit = require('express-rate-limit');
@@ -205,6 +212,28 @@ CORS_ORIGIN: https://yourdomain.com
 | LENGTH       | 400    | Input not 3–10 characters                |
 | INVALID_CHAR | 400    | Contains characters other than a-z and ? |
 | SERVER_ERROR | 500    | Internal server error                    |
+
+### 500 Server Error Response
+
+If the server encounters an unexpected error:
+
+```json
+{
+  "error": "Server error. Please try again later."
+}
+```
+
+**Common causes:**
+
+- Dictionary file missing or corrupted
+- Unexpected exception in word lookup logic
+- System resource exhaustion
+
+**What to do:**
+
+- Check server logs: `docker logs <container-id>`
+- Verify dictionary file exists: `WORD_LIST_PATH` environment variable
+- Restart the server or container
 
 ---
 

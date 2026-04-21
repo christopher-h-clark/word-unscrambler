@@ -16,12 +16,12 @@ variables as GitHub Secrets.
 1. Go to your repository **Settings** → **Secrets and variables** → **Actions**
 2. Click **New repository secret** for each variable:
 
-| Secret Name      | Value                                 | Notes                                              |
-| ---------------- | ------------------------------------- | -------------------------------------------------- |
-| `CORS_ORIGIN`    | `https://yourdomain.com`              | Frontend domain for CORS. Required for production. |
-| `WORD_LIST_PATH` | `/app/packages/server/data/words.txt` | Dictionary file path. Default works in Docker.     |
-| `NODE_ENV`       | `production`                          | Always `production` for production deployments.    |
-| `PORT`           | `3000`                                | Container port. Usually `3000`.                    |
+| Secret Name      | Value                                 | Notes                                                                     |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| `CORS_ORIGIN`    | `https://yourdomain.com`              | Frontend domain for CORS. Required for production.                        |
+| `WORD_LIST_PATH` | `/app/packages/server/data/words.txt` | Dictionary file path in Docker container. (Local dev: `./data/words.txt`) |
+| `NODE_ENV`       | `production`                          | Always `production` for production deployments.                           |
+| `PORT`           | `3000`                                | Container port. Usually `3000`.                                           |
 
 ### 2. Reference Secrets in CI/CD Workflow
 
@@ -99,10 +99,10 @@ curl http://localhost:3000/api/health
 
 ### Optional (Defaults Provided)
 
-| Variable         | Default                            | Purpose                                                                     |
-| ---------------- | ---------------------------------- | --------------------------------------------------------------------------- |
-| `PORT`           | `3000`                             | Server port. Change if port 3000 is unavailable.                            |
-| `WORD_LIST_PATH` | `./packages/server/data/words.txt` | Dictionary file location. In Docker: `/app/packages/server/data/words.txt`. |
+| Variable         | Default                            | Purpose                                                                                                                        |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `PORT`           | `3000`                             | Server port. Change if port 3000 is unavailable.                                                                               |
+| `WORD_LIST_PATH` | `./packages/server/data/words.txt` | Dictionary file location. **Host (local): `./packages/server/data/words.txt`. Docker: `/app/packages/server/data/words.txt`.** |
 
 ## Deployment Checklist
 
