@@ -79,11 +79,11 @@ development_status:
   # ========================================
   # EPIC 5: Deployment & Documentation
   # ========================================
-  epic-5: backlog
-  5-1-dockerfile-docker-compose: backlog
-  5-2-environment-configuration: backlog
-  5-3-deployment-documentation: backlog
-  5-4-mvp-release-production-ready: backlog
+  epic-5: in-progress
+  5-1-dockerfile-docker-compose: in-progress
+  5-2-environment-configuration: ready-for-dev
+  5-3-deployment-documentation: ready-for-dev
+  5-4-mvp-release-production-ready: ready-for-dev
   epic-5-retrospective: optional
 
 # SUMMARY
