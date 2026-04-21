@@ -34,7 +34,8 @@ app.use(routes);
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.resolve(__dirname, '../../client/dist');
   app.use(express.static(clientDist));
-  app.get('*', (_req: Request, res: Response): void => {
+  // SPA fallback: serve index.html for all unmatched routes (client-side routing)
+  app.all(/^(?!\/api\/)/, (_req: Request, res: Response): void => {
     try {
       res.sendFile(path.join(clientDist, 'index.html'));
     } catch {

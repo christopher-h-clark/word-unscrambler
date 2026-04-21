@@ -185,6 +185,13 @@ This experiment was to answer four questions:
   me to hit Enter to continue to the findings consolidation, so I'd have to
   prompt it with "Can we proceed to step-03-triage?" and then it would keep
   going.
+- During implementation of story 5-1, it chose to commit files to git, even
+  though I twice previously had to remind it that I will perform all git
+  operations.
+- During story 5-1, it chose very old versions of Node.js in the `Dockerfile`
+  and started the `docker-compose.yml` file with a `version` statement, which
+  has been obsolete for years. It fixed these when I prodded it, but I feel like
+  it should have known better.
 
 ### What would you clean up in the code if you were to ship this project?
 
@@ -259,9 +266,17 @@ software development, and BMAD, is that where we are today is much like where
 the industry was in the 60's or 70's with the transition from assembly language
 to high-level languages. But it's an even more dramatic change today. Moving
 from assembly language to a high level language, there are details we no longer
-need to know about.
+need to know about. For a while, it was necessary and even useful to drop into
+assembly language for some specific high-performance operations. However, today
+with architecture-independent runtime environments like Java and JavaScript,
+assembly language is more of an obstacle to portability than a benefit to
+performance.
 
-(Continue)
+AI is a similar type of abstraction, but a much larger step. For now,
+understanding the underlying code is essential, but eventually it may be
+unnecessary. With the current pace of development, the day when the AI models
+allow us to program computers exclusively in human language without having to
+understand the underlying implementation is rapidly approaching.
 
 ### The Bar
 
@@ -290,3 +305,5 @@ particular project.
 Software development seems to be a lot like that. In some ways, AI will make
 software development easier. In many ways, nothing changes when we need to
 produce excellent software.
+
+### Back to the Future
