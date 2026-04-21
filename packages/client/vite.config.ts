@@ -19,12 +19,12 @@ const getPort = (): number => {
 };
 
 const getApiUrl = (): string => {
-  const url = process.env.VITE_API_URL || 'http://localhost:3000';
+  const url = process.env.REACT_APP_API_URL || 'http://localhost:3000';
   try {
     new URL(url);
     return url;
   } catch {
-    const msg = `Invalid VITE_API_URL="${url}", using default http://localhost:3000`;
+    const msg = `Invalid REACT_APP_API_URL="${url}", using default http://localhost:3000`;
     if (process.env.CI !== 'true') console.warn(`⚠️ ${msg}`);
     return 'http://localhost:3000';
   }
