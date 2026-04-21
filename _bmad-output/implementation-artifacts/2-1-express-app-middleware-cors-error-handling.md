@@ -1,13 +1,13 @@
 ---
 storyId: '2.1'
 storyKey: '2-1-express-app-middleware-cors-error-handling'
-status: 'review'
+status: 'done'
 epic: 2
 epicTitle: 'Backend API Implementation'
 title: 'Set Up Express App with Middleware, CORS, and Error Handling'
 created: '2026-04-18'
-lastUpdated: '2026-04-18'
-completionStatus: 'Context Analysis Complete'
+lastUpdated: '2026-04-20'
+completionStatus: 'done'
 contextSource: 'Epic 2.1 + Project Context + Architecture + API Spec'
 devReadyDate: '2026-04-18'
 ---
@@ -20,27 +20,35 @@ devReadyDate: '2026-04-18'
 **Story ID:** 2.1  
 **User Story:**
 
-> As a **backend developer**, I want to initialize Express with CORS, error handling middleware, and static file serving, so that the backend can handle requests from the frontend and serve static assets in production.
+> As a **backend developer**, I want to initialize Express with CORS, error
+> handling middleware, and static file serving, so that the backend can handle
+> requests from the frontend and serve static assets in production.
 
 ---
 
 ## Acceptance Criteria
 
-✅ **AC1.1:** Express app configured with middleware stack (CORS → body parser → routes → error handler)
+✅ **AC1.1:** Express app configured with middleware stack (CORS → body parser →
+routes → error handler)
 
-✅ **AC1.2:** CORS middleware allows GET requests with Content-Type header from frontend origin
+✅ **AC1.2:** CORS middleware allows GET requests with Content-Type header from
+frontend origin
 
-✅ **AC1.3:** Centralized error handler middleware catches all errors and returns sanitized responses
+✅ **AC1.3:** Centralized error handler middleware catches all errors and
+returns sanitized responses
 
 ✅ **AC1.4:** No stack traces or file paths exposed in error responses
 
-✅ **AC1.5:** Express serves static frontend assets from ../client/dist in production mode
+✅ **AC1.5:** Express serves static frontend assets from ../client/dist in
+production mode
 
-✅ **AC1.6:** Server starts on configurable PORT environment variable (default 3000)
+✅ **AC1.6:** Server starts on configurable PORT environment variable
+(default 3000)
 
 ✅ **AC1.7:** src/app.ts exports Express application instance
 
-✅ **AC1.8:** src/index.ts starts the server with error handling for startup failures
+✅ **AC1.8:** src/index.ts starts the server with error handling for startup
+failures
 
 ---
 
@@ -132,12 +140,15 @@ router.get('/unscrambler/v1/words', (req: Request, res: Response): void => {
 **Must Include:**
 
 - Central error handler middleware function
-- Type signature: `(error: unknown, req: Request, res: Response, next: NextFunction): void`
+- Type signature:
+  `(error: unknown, req: Request, res: Response, next: NextFunction): void`
 - Log errors server-side (console.error is acceptable during development)
-- Return 500 with generic message: `{ error: 'Server error. Please try again later.' }`
+- Return 500 with generic message:
+  `{ error: 'Server error. Please try again later.' }`
 - Set appropriate HTTP status codes
 
-**Key Decision:** Use centralized error handler as last middleware (after routes)
+**Key Decision:** Use centralized error handler as last middleware (after
+routes)
 
 ### 2. Create src/app.ts
 
@@ -230,7 +241,8 @@ From project-context.md:
 
 ✅ **Express Server Patterns:**
 
-- [ ] Route organization: routes by feature (future stories will use routes/words.ts)
+- [ ] Route organization: routes by feature (future stories will use
+      routes/words.ts)
 - [ ] Middleware order: CORS → validation → routes → error handler (last)
 - [ ] TypeScript handlers: `(req: Request, res: Response): void`
 - [ ] Error handling: All routes wrap in try/catch
@@ -419,17 +431,28 @@ When Story 2.1 is DONE:
 ### Implementation Notes
 
 - Installed `cors@2.8.6` and `@types/cors` packages in `packages/server`
-- Created `src/middleware/errorHandler.ts`: centralized error handler as last middleware; catches `unknown` errors, logs to stderr, returns generic 500 JSON response — never exposes stack traces or error internals
-- Rewrote `src/app.ts` from scratch: CORS → JSON body parser → URL-encoded body parser → health check → static assets (production only) → error handler
-- CORS configured via `CORS_ORIGIN` env var (default `http://localhost:5173`), GET-only, no credentials
-- Static file serving in production mode serves `../../client/dist` and falls back to `index.html` for SPA routing
-- Removed template starter files: `src/db.ts`, `src/routes/api-router.ts`, `src/types/shared.ts` — none referenced by project code
-- `src/index.ts` and `src/config.ts` unchanged; already compliant with AC1.6 and AC1.8
+- Created `src/middleware/errorHandler.ts`: centralized error handler as last
+  middleware; catches `unknown` errors, logs to stderr, returns generic 500 JSON
+  response — never exposes stack traces or error internals
+- Rewrote `src/app.ts` from scratch: CORS → JSON body parser → URL-encoded body
+  parser → health check → static assets (production only) → error handler
+- CORS configured via `CORS_ORIGIN` env var (default `http://localhost:5173`),
+  GET-only, no credentials
+- Static file serving in production mode serves `../../client/dist` and falls
+  back to `index.html` for SPA routing
+- Removed template starter files: `src/db.ts`, `src/routes/api-router.ts`,
+  `src/types/shared.ts` — none referenced by project code
+- `src/index.ts` and `src/config.ts` unchanged; already compliant with AC1.6 and
+  AC1.8
 
 ### Test Coverage
 
-- `src/__tests__/middleware/app.test.ts` (7 tests): health check, CORS origin header, CORS preflight, GET allowed, 404 without stack trace, no stack on success, JSON content-type
-- `src/__tests__/middleware/errorHandler.test.ts` (4 tests): returns 500 with generic message, does not expose error message, no stack trace in response, handles non-Error thrown values
+- `src/__tests__/middleware/app.test.ts` (7 tests): health check, CORS origin
+  header, CORS preflight, GET allowed, 404 without stack trace, no stack on
+  success, JSON content-type
+- `src/__tests__/middleware/errorHandler.test.ts` (4 tests): returns 500 with
+  generic message, does not expose error message, no stack trace in response,
+  handles non-Error thrown values
 - All 11 tests pass; TypeScript strict mode passes (`tsc --noEmit` clean)
 
 ---
@@ -458,7 +481,9 @@ When Story 2.1 is DONE:
 
 ## Change Log
 
-- 2026-04-18: Story 2.1 implemented — Express app initialized with CORS, centralized error handling, health check, and production static file serving. Template starter files removed. 11 integration tests added covering all ACs.
+- 2026-04-18: Story 2.1 implemented — Express app initialized with CORS,
+  centralized error handling, health check, and production static file serving.
+  Template starter files removed. 11 integration tests added covering all ACs.
 
 ---
 
@@ -466,20 +491,39 @@ When Story 2.1 is DONE:
 
 ### Decision Resolved
 
-- [x] [Review][Resolved] AC1.2: Content-Type header allowlist — **FIXED**: Added `allowedHeaders: ['Content-Type']` to CORS config in `app.ts:10` for explicit spec compliance.
+- [x] [Review][Resolved] AC1.2: Content-Type header allowlist — **FIXED**: Added
+      `allowedHeaders: ['Content-Type']` to CORS config in `app.ts:10` for
+      explicit spec compliance.
 
 ### Patches Applied ✅
 
-- [x] [Review][Fixed] CORS defaults to localhost:5173 (production risk) [config.ts] — **FIXED**: Added production warning if `CORS_ORIGIN` env var not set. Logs: `[WARN] CORS_ORIGIN not set; using default (localhost:5173)...`
+- [x] [Review][Fixed] CORS defaults to localhost:5173 (production risk)
+      [config.ts] — **FIXED**: Added production warning if `CORS_ORIGIN` env var
+      not set. Logs:
+      `[WARN] CORS_ORIGIN not set; using default (localhost:5173)...`
 
-- [x] [Review][Fixed] 404 responses return HTML instead of JSON (client integration failure) [app.ts] — **FIXED**: Added explicit 404 handler (line ~22) that returns JSON `{ error: 'Not found' }` for undefined routes. Verified in tests: 404 responses are JSON, not HTML.
+- [x] [Review][Fixed] 404 responses return HTML instead of JSON (client
+      integration failure) [app.ts] — **FIXED**: Added explicit 404 handler
+      (line ~22) that returns JSON `{ error: 'Not found' }` for undefined
+      routes. Verified in tests: 404 responses are JSON, not HTML.
 
-- [x] [Review][Fixed] Error handler can be bypassed by earlier middleware errors [app.ts] — **FIXED**: Added test `catches errors from body-parser middleware (malformed JSON)` to verify error handler catches body-parser errors. Test passes; error handler properly invoked for malformed JSON.
+- [x] [Review][Fixed] Error handler can be bypassed by earlier middleware errors
+      [app.ts] — **FIXED**: Added test
+      `catches errors from body-parser middleware (malformed JSON)` to verify
+      error handler catches body-parser errors. Test passes; error handler
+      properly invoked for malformed JSON.
 
-- [x] [Review][Fixed] Static file serving index.html without 404 handling (crash on missing artifact) [app.ts:~25] — **FIXED**: Wrapped `sendFile()` in try/catch that returns JSON 404 on error. Prevents server crash if client build missing.
+- [x] [Review][Fixed] Static file serving index.html without 404 handling (crash
+      on missing artifact) [app.ts:~25] — **FIXED**: Wrapped `sendFile()` in
+      try/catch that returns JSON 404 on error. Prevents server crash if client
+      build missing.
 
 ### Deferred
 
-- [x] [Review][Defer] No API routes defined [scope] — deferred, story 2-1 is foundation (middleware, CORS, error handling); API routes come in story 2-4.
+- [x] [Review][Defer] No API routes defined [scope] — deferred, story 2-1 is
+      foundation (middleware, CORS, error handling); API routes come in story
+      2-4.
 
-- [x] [Review][Defer] Environment variable loading only in dev mode [config.ts:4-15] — deferred, pre-existing in config.ts; not caused by story 2-1 changes.
+- [x] [Review][Defer] Environment variable loading only in dev mode
+      [config.ts:4-15] — deferred, pre-existing in config.ts; not caused by
+      story 2-1 changes.

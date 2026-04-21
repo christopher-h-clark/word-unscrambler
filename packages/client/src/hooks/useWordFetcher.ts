@@ -14,7 +14,20 @@ const initialState: SearchState = {
 function getApiBase(): string {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const env = (import.meta as any).env;
-  return env && env.REACT_APP_API_URL ? env.REACT_APP_API_URL : 'http://localhost:3000';
+  const base = env && env.REACT_APP_API_URL ? env.REACT_APP_API_URL : 'http://localhost:3000';
+
+  if (
+    typeof window !== 'undefined' &&
+    window.location.protocol === 'https:' &&
+    base.startsWith('http://')
+  ) {
+    console.warn(
+      '[WARN] Mixed content detected: frontend is served over HTTPS but API URL is HTTP. ' +
+        'This will be blocked by the browser. Configure REACT_APP_API_URL to use HTTPS.'
+    );
+  }
+
+  return base;
 }
 
 export function useWordFetcher(): UseWordFetcherReturn {
@@ -51,8 +64,8 @@ export function useWordFetcher(): UseWordFetcherReturn {
         return;
       }
 
-      const errorBody = data as { message?: string };
-      const errorMessage = errorBody.message ?? 'An error occurred. Please try again.';
+      const errorBody = data as { error?: string };
+      const errorMessage = errorBody.error ?? 'An error occurred. Please try again.';
       setState({ words: [], isLoading: false, error: errorMessage });
     } catch (err) {
       clearTimeout(timeoutId);

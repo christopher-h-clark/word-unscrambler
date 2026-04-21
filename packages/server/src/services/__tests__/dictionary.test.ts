@@ -17,36 +17,36 @@ describe('DictionaryService', () => {
   });
 
   describe('initialize', () => {
-    test('loads dictionary from file and reports word count', () => {
+    test('loads dictionary from file and reports word count', async () => {
       const tmpFile = writeTempWords(['cat', 'dog', 'bat']);
-      expect(() => DictionaryService.initialize(tmpFile)).not.toThrow();
+      await expect(DictionaryService.initialize(tmpFile)).resolves.toBeUndefined();
       fs.unlinkSync(tmpFile);
     });
 
-    test('throws error if file not found', () => {
-      expect(() => DictionaryService.initialize('/nonexistent/path/words.txt')).toThrow();
+    test('throws error if file not found', async () => {
+      await expect(DictionaryService.initialize('/nonexistent/path/words.txt')).rejects.toThrow();
     });
 
-    test('normalizes words to lowercase on load', () => {
+    test('normalizes words to lowercase on load', async () => {
       const tmpFile = writeTempWords(['CAT', 'Dog', 'BAT']);
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('cat');
       expect(results).toContain('cat');
       fs.unlinkSync(tmpFile);
     });
 
-    test('filters empty lines', () => {
+    test('filters empty lines', async () => {
       const tmpFile = writeTempWords(['cat', '', '   ', 'dog', '']);
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('catdog');
       expect(results).toContain('cat');
       expect(results).toContain('dog');
       fs.unlinkSync(tmpFile);
     });
 
-    test('filters words shorter than 3 characters', () => {
+    test('filters words shorter than 3 characters', async () => {
       const tmpFile = writeTempWords(['a', 'ab', 'cat', 'dog']);
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('abcatdog');
       expect(results).not.toContain('a');
       expect(results).not.toContain('ab');
@@ -54,9 +54,9 @@ describe('DictionaryService', () => {
       fs.unlinkSync(tmpFile);
     });
 
-    test('filters words longer than 10 characters', () => {
+    test('filters words longer than 10 characters', async () => {
       const tmpFile = writeTempWords(['cat', 'abcdefghijk', 'abcdefghijkl']);
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       // Use letters that form 'cat'; long words should be excluded from dictionary
       const results = DictionaryService.findWords('cat');
       expect(results).toContain('cat');
@@ -69,7 +69,7 @@ describe('DictionaryService', () => {
   });
 
   describe('findWords', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const tmpFile = writeTempWords([
         'cat',
         'bat',
@@ -87,7 +87,7 @@ describe('DictionaryService', () => {
         'god',
         'fog',
       ]);
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       fs.unlinkSync(tmpFile);
     });
 
@@ -128,11 +128,11 @@ describe('DictionaryService', () => {
       expect(results).toContain('hallo');
     });
 
-    test('wildcard (?) accounts for only one letter per usage', () => {
+    test('wildcard (?) accounts for only one letter per usage', async () => {
       // 'cat' with input 'c?t' (? replaces a) — should match
       const tmpFile = writeTempWords(['cat', 'cot', 'cut', 'bat']);
       DictionaryService.reset();
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('c?t');
       expect(results).toContain('cat');
       expect(results).toContain('cot');
@@ -141,13 +141,13 @@ describe('DictionaryService', () => {
       fs.unlinkSync(tmpFile);
     });
 
-    test('multiple wildcards each replace one letter', () => {
+    test('multiple wildcards each replace one letter', async () => {
       // '?og' matches dog, fog, god — wait, god doesn't match ?og
       // '?o?' matches dog, fog, god (no: god=g,o,d — ?o? needs pos1=any,pos2=o,pos3=any)
       // Let's test: 'd?g' should match 'dog' (? = o)
       const tmpFile = writeTempWords(['dog', 'dig', 'dug', 'dag']);
       DictionaryService.reset();
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('d?g');
       expect(results.length).toBeGreaterThanOrEqual(1);
       // one ? can match one letter
@@ -175,14 +175,14 @@ describe('DictionaryService', () => {
       });
     });
 
-    test('correctly uses available letter counts (not just presence)', () => {
+    test('correctly uses available letter counts (not just presence)', async () => {
       // 'cat' requires c:1,a:1,t:1 — 'cat' can be formed from 'cat'
       // but 'tac' also requires t:1,a:1,c:1 — same letters
       // 'act' requires a:1,c:1,t:1 — same
       // 'catat' would require c:1,a:2,t:2 — NOT formable from 'cat'
       const tmpFile = writeTempWords(['cat', 'catat']);
       DictionaryService.reset();
-      DictionaryService.initialize(tmpFile);
+      await DictionaryService.initialize(tmpFile);
       const results = DictionaryService.findWords('cat');
       expect(results).toContain('cat');
       expect(results).not.toContain('catat');

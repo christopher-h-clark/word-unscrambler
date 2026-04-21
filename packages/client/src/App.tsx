@@ -24,18 +24,18 @@ export const App: React.FC = () => {
 
       <main className="flex justify-center px-4 pb-16">
         <div className="w-full max-w-2xl">
-          {state.isLoading && (
-            <div className="text-center text-blue-400">
-              <p>Searching...</p>
-            </div>
-          )}
-
-          {state.error && !state.isLoading && (
+          {state.error && (
             <div
               className={`text-center ${isTimeout ? 'text-yellow-400' : 'text-red-400'}`}
               role="alert"
             >
               <p>{state.error}</p>
+            </div>
+          )}
+
+          {state.isLoading && (
+            <div className="text-center text-blue-400" role="status" aria-live="polite">
+              <p>Searching...</p>
             </div>
           )}
 

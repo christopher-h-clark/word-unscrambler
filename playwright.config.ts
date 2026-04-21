@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 const isCI = process.env.CI === 'true';
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173';
-const testTimeout = parseInt(process.env.PLAYWRIGHT_TIMEOUT || '45000', 10);
+const serverURL = process.env.PLAYWRIGHT_SERVER_URL || 'http://localhost:3000';
+const testTimeout = parseInt(process.env.PLAYWRIGHT_TIMEOUT || '30000', 10);
 
 export default defineConfig({
   testDir: './e2e',
@@ -19,13 +20,20 @@ export default defineConfig({
   use: {
     baseURL,
   },
-  webServer: {
-    command: 'npm run dev',
-    url: baseURL,
-    reuseExistingServer: !isCI,
-    // Server startup timeout: 120s (npm install + build can be slow)
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command: 'npm run dev:server',
+      url: `${serverURL}/health`,
+      reuseExistingServer: !isCI,
+      timeout: 60000,
+    },
+    {
+      command: 'npm run dev:client',
+      url: baseURL,
+      reuseExistingServer: !isCI,
+      timeout: 60000,
+    },
+  ],
   projects: [
     {
       name: 'chromium',

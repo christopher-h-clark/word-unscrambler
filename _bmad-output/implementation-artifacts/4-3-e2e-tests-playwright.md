@@ -5,8 +5,8 @@ epic: 4
 epicTitle: 'Testing & Quality Assurance'
 title: 'Write E2E Tests with Playwright (Happy Path and Error Paths)'
 created: '2026-04-19'
-lastUpdated: '2026-04-19'
-completionStatus: 'ready-for-dev'
+lastUpdated: '2026-04-20'
+completionStatus: 'done'
 contextSource: 'Epic 4.3 + Project Context + Stories 3.1-3.5 + Stories 4.1-4.2'
 devReadyDate: '2026-04-19'
 ---
@@ -953,7 +953,7 @@ When Story 4.3 is DONE:
 
 ## Story Completion Tracking
 
-**Status:** ready-for-dev  
+**Status:** review  
 **Created:** 2026-04-19  
 **Previous Stories:** 4.1, 4.2 (unit & integration tests)  
 **Next Story:** 4.4 (Accessibility audit)  
@@ -962,6 +962,32 @@ When Story 4.3 is DONE:
 ---
 
 ## Dev Agent Record
+
+### Implementation Summary (2026-04-20)
+
+**Implemented:** 4 E2E spec files, 81 total tests (27 per browser × 3 browsers).
+All pass.
+
+**Bugs fixed during implementation:**
+
+1. `packages/server/src/index.ts` — default dict path used
+   `process.cwd() + 'packages/server'` which fails when npm workspaces sets CWD
+   to `packages/server`. Fixed to
+   `path.join(__dirname, '..', 'data', 'words.txt')`.
+2. `playwright.config.ts` — `webServer` was a single entry waiting only for
+   port 5173. Backend on port 3000 could be unready causing "Failed to fetch".
+   Fixed to array with separate `dev:server` and `dev:client` entries, waiting
+   for `/health` endpoint.
+3. `packages/client/src/components/SearchForm.tsx` — input didn't filter special
+   characters. Added `.replace(/[^a-zA-Z?]/g, '')` in `handleChange` so
+   non-alphabetic input is silently rejected (story AC: "silently rejects
+   special characters in input").
+
+**Tests confirmed passing:**
+
+- 81/81 E2E tests (Chromium, Firefox, WebKit)
+- 90/90 client unit tests (no regressions)
+- 93/93 server unit tests (no regressions)
 
 ### Ready for Implementation
 
@@ -980,10 +1006,10 @@ This story file provides complete E2E testing context:
 
 ### Files to Create
 
-- [ ] `e2e/word-lookup.spec.ts`
-- [ ] `e2e/error-handling.spec.ts`
-- [ ] `e2e/multiple-lookups.spec.ts`
-- [ ] `e2e/cross-browser.spec.ts`
+- [x] `e2e/word-lookup.spec.ts`
+- [x] `e2e/error-handling.spec.ts`
+- [x] `e2e/multiple-lookups.spec.ts`
+- [x] `e2e/cross-browser.spec.ts`
 
 ### Files to Reference
 
@@ -1039,6 +1065,65 @@ This story file provides complete E2E testing context:
 - Story 4.3: E2E tests (10%) ← YOU ARE HERE
 
 ---
+
+## File List
+
+- `e2e/word-lookup.spec.ts` (NEW)
+- `e2e/error-handling.spec.ts` (NEW)
+- `e2e/multiple-lookups.spec.ts` (NEW)
+- `e2e/cross-browser.spec.ts` (NEW)
+- `playwright.config.ts` (MODIFIED — webServer changed from single to array for
+  both servers)
+- `packages/server/src/index.ts` (MODIFIED — fixed default dict path to use
+  `__dirname`)
+- `packages/client/src/components/SearchForm.tsx` (MODIFIED — added special char
+  filtering in handleChange)
+- `package.json` (MODIFIED — removed `--pass-with-no-tests` from test:e2e
+  script)
+
+## Change Log
+
+- 2026-04-20: Implemented Story 4.3 — 81 E2E tests across 4 spec files
+  (Chromium, Firefox, WebKit). Fixed 3 pre-existing bugs uncovered during
+  implementation: server dict path, webServer race condition, missing input
+  character filtering.
+
+## Code Review Findings (2026-04-20)
+
+### Patches (6 findings) — ALL APPLIED ✅
+
+- [x] [Review][Patch] SearchForm.tsx special character filter
+      [packages/client/src/components/SearchForm.tsx:17] — ALREADY IMPLEMENTED:
+      code correctly filters via `.replace(/[^a-zA-Z?]/g, '')`
+- [x] [Review][Patch] E2E tests regex pattern fixes [all E2E files] — FIXED:
+      Updated all `text=/-Letter Words/` to `text=/\\d+-Letter Words/i` in
+      word-lookup, error-handling, multiple-lookups, cross-browser
+- [x] [Review][Patch] packages/server/src/index.ts monorepo path
+      [packages/server/src/index.ts:14] — ALREADY IMPLEMENTED: correctly uses
+      `path.join(__dirname, '..', 'data', 'words.txt')`
+- [x] [Review][Patch] playwright.config.ts timeout (30s spec)
+      [playwright.config.ts:5] — FIXED: Changed testTimeout default from 45000
+      to 30000
+- [x] [Review][Patch] multiple-lookups.spec.ts deterministic waits
+      [e2e/multiple-lookups.spec.ts:72-80] — FIXED: Removed hardcoded
+      `page.waitForTimeout(500)`, replaced with explicit wait assertions
+- [x] [Review][Patch] word-lookup.spec.ts results grouping depth
+      [e2e/word-lookup.spec.ts:55-67] — ENHANCED: Added validation for word
+      count and improved test coverage
+- [x] [Review][Patch] cross-browser.spec.ts browser identification
+      [e2e/cross-browser.spec.ts:7] — ENHANCED: Added `browserName` parameter
+      and console log to identify which browser is running
+
+### Dismissed (3 findings)
+
+- [x] [Review][Dismiss] playwright.config.ts webServer strategy — Already
+      properly implemented with array, separate dev:server/dev:client commands,
+      and /health endpoint
+- [x] [Review][Dismiss] error-handling.spec.ts special character test assumes
+      filtering works [e2e/error-handling.spec.ts:54-60] — Dependent on
+      SearchForm filter patch; will pass once that's fixed
+- [x] [Review][Dismiss] Backend /health endpoint missing — Already implemented
+      in packages/server/src/app.ts with full test coverage
 
 ## Testing Checklist (Before Completing)
 
