@@ -34,6 +34,8 @@ This experiment was to answer four questions:
   step.
 - Things seemed to go smoother this time, perhaps because of the simplicity. I
   think that simplicity may be the key to getting good results at this point.
+- The AI model generated working code with minimal coding effort on my behalf.
+  It did things differently than I would have, but different is OK.
 - From a management perspective, I think AI forces us to be very specific, and
   helps us to incrementally generate the needed specificity. I once had the
   manager ask 3 engineers to estimate a project, but didn't tell them that he
@@ -80,14 +82,14 @@ This experiment was to answer four questions:
   gradient because I didn't want to spend extra time generating a background
   image.
 - The implementation readiness analysis discovered the inconsistent placement of
-  the `prd.md` file (see below under "Where AI Failed") and offered to
-  automatically move it to the correct location.
+  the `prd.md` file in `planning_artifacts` instead of `planning-artifacts` and
+  offered to automatically move it to the correct location.
 - The AI model surfaced options for the word list that I hadn't considered. I
   saw a list of 3-letter words on Wiktionary, but they didn't have similar lists
   for longer words. In addition to Wiktionary, it suggested SCOWL, which I'd
   never heard of before, but it looked like a great choice!
 - It eventually (during implementation of story 1-4) detected and offered to
-  correct the discrepancey between allowing 3–7 vs 3–10 letters, the discrepancy
+  correct the discrepancy between allowing 3–7 vs 3–10 letters, the discrepancy
   between 18 and 24 stories, and the discrepancy between 23 and 24 stories. It
   actually credited me with calling out the issues in this document! I'm fairly
   impressed that it used this non-standard document to identify and fix actual
@@ -163,7 +165,7 @@ This experiment was to answer four questions:
   left in `in-progress`. Even after fixing the story status, there were
   inconsistencies in the summary and numbers of stories and epics `in-progress`,
   `ready-for-dev`, etc in the summary at the bottom, which were only fixed after
-  I called them out.
+  I called them out. It failed in this way several times.
 - During Story 3-1 or 3-2, it decided to start committing files to git without
   being asked. I figured this out when I did the code review and found no
   changed files. It had silently committed them to git without being directed to
@@ -192,8 +194,151 @@ This experiment was to answer four questions:
   and started the `docker-compose.yml` file with a `version` statement, which
   has been obsolete for years. It fixed these when I prodded it, but I feel like
   it should have known better.
+- After I specifically told it not to execute git commands on my behalf without
+  specific authorization, and even added that to the `CLAUDE.md`, it continued
+  to try to do git add and git commit, even creating a tag. When I called it
+  out, it agreed that it had violated its boundaries. It felt like the sheriff
+  talking to Mater in "Cars":
+  > **Sheriff** (sternly): Mater! What did I tell you about ~~talking to the
+  > accused~~ invoking git?
+  >
+  > **Mater** (sheepishly): To not to.
+- I got rate limited multiple times. I kept hitting the 5-hour limit, and
+  finished above 90% to my 7-day limit (which would have imposed a 3-day
+  delay!). This didn't happen on my first project where I used Haiku for
+  everything, but on this project I used Sonnet for all of the `/bmad-dev-story`
+  commands in epics 1–4 and Haiku for everything else and it seemed to use
+  tokens at an alarming rate. I have been unable to make Claude Code work
+  successfully with a local model, but I need to work that out. Even switching
+  to OpenCode (I believe it works with BMAD) or Pi (I assume BMAD support is
+  coming) to use a local model or alternate model would let me keep going during
+  a rate limit delay.
 
 ### What would you clean up in the code if you were to ship this project?
+
+This is so trivial and redundant with existing services that I'd probably never
+ship it. There's no justification. If I were to do so, then I'd probably only
+address the word list and deployment (infrastructure-as-code).
+
+User Experience
+
+- **Layout**: Both the input text field and the Unscramble! button should be
+  considerably narrower. They currently takes up the entire width of the window.
+- **Typography**: The fonts are very basic and seem to betray that it's
+  AI-generated. Typography is powerful and can make a difference in how the app
+  is perceived, even wih a UI this simple. I'd use a tall, narrow serif font for
+  the title and a slightly smaller version of the same font, but in one of the
+  supporting colors for the subtitle. It looks fine as-is, but some typography
+  changes could make it look great. Perhaps making the "Simple, fast, and easy"
+  subtitle a bit longer would improve balance better the "Word Unscrambler"
+  title. I'd also alter the styling of the result card titles.
+
+Code
+
+- The code actually looks pretty good. I chose TypeScript + Node.js in part to
+  get a good model of how to write a back end REST API in
+  TypeScript/Node/Express and review how to use React for a front end.
+- **Error response**: I'd update the error object format to have an error code
+  and a message. This is a recommended pattern, and I initially specified the
+  errors to be expressed this way (and it's even documented that way in places),
+  but the AI model decided to just return a single attribute `error` with the
+  error message as its value. I don't think it matters for an application this
+  simple, and I might not make this fix prior to shipping, but for a more
+  substantial project, I probably would. Actually, I probably would have
+  corrected it immediately instead of waiting to see what it would do. Even
+  these two attributes are fairly minimal for solid error reporting, but I don't
+  think this project benefits from the additional complexity.
+
+Data
+
+- **Completeness**: The dictionary is insufficient for production. This one
+  contains just 3- and 4-letter words, with "burst" as the only 5-letter word
+  that I see. Having more words would be necessary for it to be useful. Now that
+  I know about SCOWL, I could probably generate a far more comprehensive word
+  list—or ask the AI model to extract a more comprehensive word list from SCOWL.
+
+Security
+
+- **HTTPS**: I'd make it run over HTTPS in all environments. Creating my own CA
+  (self-signed) and using it to issue certificates that my (and my coworkers')
+  computers can recognize as valid and secure is doable with OpenSSL. Let's
+  Encrypt is another good approach, perhaps superior, but I haven't used it yet.
+- **Testing**: Perform penetration testing. I've heard that Claude Mythos is
+  supposed to be excellent at penetration testing, which is a significant risk
+  factor for all existing software systems because it will expose their security
+  holes once it becomes available to the public. At least have Opus do an _ad
+  hoc_ review for OWASP Top 10 issues. I'd seriously consider figuring out how
+  to build skills: `/bmad-penetration-test` or `/bmad-security-test`. Running
+  Snyk or Fortify on the code base (or building a BMAD skill to do so) would be
+  helpful. I'd separate the security test from the penetration test because they
+  feel different to me.
+  1. The security test would use established conventions to inspect the code and
+     configuration for patterns that reveal potential security issues. For
+     example, concatenating strings to build queries may be susceptible to SQL
+     injection attacks. Using sequential integers as IDs is susceptible to an
+     attacker guessing object IDs and then using an API with insufficient
+     authorization to read (or even write!) objects they should be unable to
+     access (or cannot access through the UI).
+  2. The penetration test would leverage knowledge of security vulnerabilities
+     to craft attacks against a running instance of the software. This should
+     run in a sandbox environment to avoid the attack scripts from affecting
+     other systems and to allow the attack scripts to change and even corrupt
+     data. This is where we carry out the attacks that demonstrate the gravity
+     of the problems discovered in the security test. My philosophy is that all
+     software is penetration testing; we get to decide who does it: a
+     penetration tester who generates a report of issues we can fix or a
+     malicious actor who says nothing and takes advantage of our defects to sow
+     chaos.
+- **DDoS**: I'd add rate limiting and abuse detection. If a particular host
+  starts sending a high rate of requests, I'd detect that (either in my code or
+  in a gateway) and shut down that server's access to this software for a time
+  (this is why I'd probably favor doing this in a gateway). If a particular host
+  seems to be probing with edge case parameters (too long, too many wildcards,
+  etc.), then I'd also shut down that host's access to this software for a time.
+  This part may have to be in code, in which case, I'd need a gateway that has
+  an API for me to invoke to take these actions. PingIntelligence for APIs is
+  (or was) and API gateway that used AI to detect and block malicious requests,
+  but probably too expensive to justify for this project.
+
+Documentation
+
+- **Completeness** It seemed to forget about my request to use OpenAPI 3.1 for
+  API documentation. Granted, the API is trivial, and it's intended to be used
+  exclusively by the front end (though it does protect itself in case someone
+  manages to find it and attempt to cause problems), but any non-trivial app
+  that uses an API for integration with other apps (most enterprise
+  applications) should document its API thoroughly, and OpenAPI is the standard
+  for doing that. I've heard that AI search may favor well-documented APIs that
+  it can find and use, so creating a paid API that is preferred by AI models
+  could improve revenue.
+
+Deployment
+
+- **AWS**: Investigate the best way to deploy this in AWS.
+- **IAC**: (Infrastructure-as-code) Create a Terraform script to create and
+  manage the AWS resources.
+- **CI/CD**: Evaluate whether to use Terraform or a GitHub action (or a
+  Terraform script initiated by a GitHub action) to deploy to AWS.
+
+Other
+
+- **Code Documentation**: Had I written it, I'd include more documentation. I'm
+  relatively new to TypeScript and it's been a long time since I've used React,
+  but I try to stay on top of JavaDoc when I'm in Java, documenting all classes
+  and public methods. I use it to capture intent, because intent changes for
+  less often than the specific implementation. I see nothing analogous to
+  JavaDoc comments in this code base.
+- **Semantic Clarity**: I generally avoid inline comments because it's so easy
+  for them to be ignored when the code changes. Instead, I prefer semantic
+  clarity: selecting variable and method names to accurately reflect what they
+  do and using functional decomposition to keep methods readable. The code
+  becomes self-documenting to an extent, and then there are no comments (or very
+  few) to become outdated when code changes happen.
+- **Inconsistencies**: I'd have the model go through and look for
+  inconsistencies. I know about things like 3-7 vs 3-10, `/health` vs
+  `/api/health`, and the Node.js version. It seems to me that an AI model should
+  find these things more efficiently than a human (even though it generally
+  hasn't so far!).
 
 ### What would you do differently if you were to do this again?
 
@@ -203,17 +348,20 @@ This experiment was to answer four questions:
 - Another experiment could be to start with an existing code base and see how it
   handles adding features, fixing defects, etc.
 - While working on this, I learned about a Karpathy `CLAUDE.md` that looks quite
-  promising. I might use it for Epic 4 and Epic 5.
+  promising. I might used it for Epics 4 and 5. It felt like the code reviews
+  found less, except I messed up with Git in Epic 5 and that generated more code
+  review issues because it wound up reviewing the Docker configuration multiple
+  times.
 
 ### What would you do the same if you were to do this again?
 
-- I would definitely try to keep the amount of work being done in a single cycle
-  of architecture, planning, and implementation as simple as possible. I
-  understand that more complex projects probably require a lot more analysis
-  work up front to define the MVP and align some follow-on work. Just like with
-  human-driven processes, it takes a lot of time (and in this case, tokens) to
-  do the planning stages. Just like with human-driven processes, it makes sense
-  to defer the analysis and definition of anything not pertaining to MVP or a
+- I would definitely try to keep the work being done in a single cycle of
+  architecture, planning, and implementation as simple as possible. I understand
+  that more complex projects probably require a lot more analysis work up front
+  to define the MVP and align follow-on work. Just like with human-driven
+  processes, it takes a lot of time (and in this case, tokens) to do the
+  planning stages. Just like with human-driven processes, it makes sense to
+  defer the analysis and definition of anything not pertaining to MVP or a
   current effort (possibly covering multiple sprints) until it's time to
   implement that portion, because the risk of the work being invalidated or
   becoming irrelevant is moderate and it doesn't contribute to the immediate
@@ -241,36 +389,93 @@ With this particular project, I'm moving quickly to understand what the
 AI-assisted software development process can do—in particular as a force
 multiplier—and therefore focusing on having the model do most of the work. While
 I have observed closely enough to be able to flag a number of errors and
-inconsistency, building a maintainable software project would require a far
+inconsistencies, building a maintainable software project would require a far
 greater level of comprehension. AI is an accelerator: I don't need to write
 boilerplate code like getters and setters; I can leave the details of using a
 new library to a model that knows the library better than I do. Working with
 production code, I cannot get away without understanding the code in depth so
 that I can address the benefits, shortcomings, the best strategies to enhance
-it, and the drawbacks to certain approaches or features. The big advantage to
+it, and the drawbacks to certain approaches or features. One big advantage to
 AI-assisted software development is that I can _understand_ code before I can
 write that same code, even in languages or frameworks that are new to me, at
 least to a degree. The disadvantage is that I must take the time to more fully
-understand the code separate from generating it. Where that understanding came
+understand the code since I’m not generating it. Where that understanding came
 for free as part of writing the code myself, it is no longer free. Fred Brooks
 talked about this cost when bringing a new developer onto a project, but now it
 applies to everyone all the time, and we must account for that in planning. AI
 might make us 5–10x faster at generating the code, but a non-trivial portion of
-that gain is consumed by building understanding of something we didnt' write
+that gain is consumed by building understanding of something we didn’t write
 ourselves.
+
+What it feels like is that, with AI-assisted software development, all software
+developers are now lead developers, only our teams are now AI models instead of
+humans. In my first assignment at Kroger, I was the lead developer but an
+offshore team did most of the work and my role covered three primary tasks:
+
+1. Stay ahead of the offshore team with respect to charting a future course to
+   address the specified features. This includes proactively recognizing and
+   solving problems before they arise.
+2. Review the offshore team's work to make sure it complies with our standards
+   for building secure, performant, maintainable software.
+3. Mentor the offshore team so they continue to improve.
+
+An example of how this worked was when we were trying to release the second
+version of our SSO/MFA dashboard product for suppliers. The dashboard was
+created for a specific reporting tool and the vision expanded to include all
+supplier tools. Since the initial release, the corporate information security
+team decided that we needed to switch identity providers. The reporting tool
+used vendor-specific libraries that didn't work with the new identity provider.
+I recognized that we needed to establish a contract based on open standards. All
+supplier tools would need to implement the contract and we would continue to
+support the contract. As long as the contract remained, both the tools and our
+product were free to vary independently. We used OpenID Connect (recommending
+vendor-neutral libraries) for authentication and SCIM for updating user
+information between out dashboard tool, the identity provider, and supplier
+tools.
+
+When I started, I noticed that most code reviews were going through multiple
+cycles involving complex recommended changes. I wrote a series of Confluence
+articles explaining the patterns I wanted to see in the code. As the offshore
+team used those articles to guide their implementation, their code quality
+improved and the time required to merge a single pull request dropped
+significantly.
+
+The BMAD method feels very similar to this way of working.
+
+1. As the human software developer, I make strategic decisions and stay ahead of
+   the AI model that I'm directing to implement the software.
+2. Reviewing the code produced by the AI models to ensure that it meets the
+   standards of high quality software is identical to reviewing the code
+   produced by an offshore team, except that now I have the option of deploying
+   AI code reviewers to help. Understanding that code to make sure my mental
+   model of the software product is also unchanged.
+3. As I notice quality issues, I can write or update Markdown files to direct
+   the AI models to behave differently. And they can choose to heed or ignore
+   those instructions.
+
+I believe that, moving forward, even the most junior developer becomes
+equivalent to today's lead developer. I think that, within 1–2 years, the mark
+of a senior developer will be the ability to direct an AI model to build high
+quality software and identify failures early.
+
+For now, at least, understanding the syntax is still important to catch problems
+early and understand what the AI model is building. But I believe expertise with
+a specific programming language will decline in importance. We already see job
+posts being loose in specifying language skills: "Experience in a modern
+language, such as Java, Go, or TypeScript." With AI-assisted software
+development, I see this trend accelerating.
 
 ### Assembly Language to High Level Languages to Natural Language
 
 One thing that I realized fairly early on in my explorations of AI, AI-assisted
 software development, and BMAD, is that where we are today is much like where
-the industry was in the 60's or 70's with the transition from assembly language
-to high-level languages. But it's an even more dramatic change today. Moving
-from assembly language to a high level language, there are details we no longer
-need to know about. For a while, it was necessary and even useful to drop into
-assembly language for some specific high-performance operations. However, today
-with architecture-independent runtime environments like Java and JavaScript,
-assembly language is more of an obstacle to portability than a benefit to
-performance.
+the industry was with the transition from assembly language to high-level
+languages. But it's an even more dramatic change today. Moving from assembly
+language to a high level language, there are details we no longer need to know
+about. For a while, it was necessary and even useful to drop into assembly
+language for some specific high-performance operations. However, today with
+architecture-independent runtime environments like Java and JavaScript, assembly
+language is more of an obstacle to portability than a benefit to performance.
 
 AI is a similar type of abstraction, but a much larger step. For now,
 understanding the underlying code is essential, but eventually it may be
@@ -282,7 +487,7 @@ understand the underlying implementation is rapidly approaching.
 
 The bar for quality production code has not changed. It is still challenging to
 develop software products that are secure, stable, scalable, maintainable, and
-all of the other qualities we associated with solid production code. What has
+all of the other qualities associated with solid production code. What has
 changed significantly is the bar for entry.
 
 Consider the music industry. To build the skills with an instrument or voice to
@@ -303,7 +508,27 @@ those people mastering their craft and paying them to apply that skill to a
 particular project.
 
 Software development seems to be a lot like that. In some ways, AI will make
-software development easier. In many ways, nothing changes when we need to
-produce excellent software.
+software development easier. It certainly reduces the need to write boilerplate
+code. Regardless of the techniques used to produce software, the standards
+expected of high quality software products have not changed. It must still be
+secure, performant, and have a great user experience.
 
 ### Back to the Future
+
+I used Claude Code in the terminal. The combination of Claude Code with Markdown
+and git on the command line reminds me of using computers exclusively from the
+command line. Granted, it's a far more sophisticated command line with bold
+text, colors, emojis, rewriting segments, etc. but it's a command line. Even in
+the Claude Code app or Visual Studio Code, interacting with the LLM is
+essentially a command line.
+
+Plus, Markdown seems to be the dominant file format for AI. I read that using
+Markdown for input document saves significantly on input tokens compared to PDF,
+Word, and other formats that support formatting for human benefit—by a factor of
+up to 20x for PDF. Markdown is completely text-based. Yes, it can be rendered
+with visual formatting, but the text files can be read and understood without
+such rendering.
+
+Combined with a quantum leap forward to programming in natural language, it
+really feels like going back to command line days in order to move forward into
+a future incorporating AI.
