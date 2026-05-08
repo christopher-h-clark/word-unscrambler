@@ -79,7 +79,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 md:max-w-lg md:mx-auto">
       <Input
         id="search-input"
         type="text"
@@ -98,7 +98,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
       <div id="search-hint" className="text-sm text-gray-400">
         3-10 letters accepted, max 3 wildcards (?)
       </div>
-      <Button onClick={handleSubmit} disabled={!isValid || isSubmitting} className="w-full">
+      <Button
+        onClick={handleSubmit}
+        disabled={!isValid || isSubmitting}
+        className="w-full md:w-auto md:max-w-md md:min-w-[25vw] h-10 md:h-16 md:self-center"
+      >
         {isSubmitting ? 'Unscrambling...' : 'Unscramble!'}
       </Button>
     </div>
