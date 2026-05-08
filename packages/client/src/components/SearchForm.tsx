@@ -101,7 +101,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSubmit }) => {
       <Button
         onClick={handleSubmit}
         disabled={!isValid || isSubmitting}
-        className="w-full md:w-auto md:max-w-md md:min-w-[25vw] h-10 md:h-16 md:self-center"
+        className="w-full md:w-auto md:max-w-md md:min-w-[25vw] h-16 md:self-center"
       >
         {isSubmitting ? 'Unscrambling...' : 'Unscramble!'}
       </Button>
