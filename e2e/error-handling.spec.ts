@@ -6,7 +6,7 @@ test.describe('Word Lookup - Error Handling', () => {
     await page.goto('/');
     const input = page.locator('input[placeholder*="letters"]');
     const button = page.locator('button:has-text("Unscramble")');
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
     await expect(page.locator('text=/no words match/i')).toBeVisible({ timeout: 10000 });
   });
@@ -16,7 +16,7 @@ test.describe('Word Lookup - Error Handling', () => {
     await page.goto('/');
     const input = page.locator('input[placeholder*="letters"]');
     const button = page.locator('button:has-text("Unscramble")');
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
     await expect(page.locator('text=/try different/i')).toBeVisible({ timeout: 10000 });
   });
@@ -28,7 +28,7 @@ test.describe('Word Lookup - Error Handling', () => {
     const button = page.locator('button:has-text("Unscramble")');
 
     // First lookup - no results
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
     await expect(page.locator('text=/no words match/i')).toBeVisible({ timeout: 10000 });
 

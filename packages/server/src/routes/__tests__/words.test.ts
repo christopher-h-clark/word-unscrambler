@@ -25,7 +25,7 @@ describe('GET /unscrambler/v1/words', () => {
     });
 
     test('returns empty array when no words match', async () => {
-      const res = await request(app).get('/unscrambler/v1/words?letters=xyz');
+      const res = await request(app).get('/unscrambler/v1/words?letters=xzz');
       expect(res.status).toBe(200);
       expect(res.body.words).toEqual([]);
       expect(res.body).not.toHaveProperty('error');
