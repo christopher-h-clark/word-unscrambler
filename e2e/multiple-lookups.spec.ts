@@ -58,7 +58,7 @@ test.describe('Word Lookup - Multiple Searches', () => {
 
     // Lookup 2: No results
     await input.click();
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
     await expect(page.locator('text=/no words match/i')).toBeVisible({ timeout: 10000 });
   });
@@ -93,7 +93,7 @@ test.describe('Word Lookup - Multiple Searches', () => {
 
     // Second search - no results
     await input.click();
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
 
     // Old results should be gone, replaced by no-match message

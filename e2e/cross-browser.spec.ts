@@ -62,7 +62,7 @@ test.describe('Word Lookup - Cross-Browser & Responsive', () => {
 
     // No results
     await input.click();
-    await input.fill('xyz');
+    await input.fill('xzz');
     await button.click();
     await expect(page.locator('text=/no words match/i')).toBeVisible({ timeout: 10000 });
 
